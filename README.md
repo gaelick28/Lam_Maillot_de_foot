@@ -11,7 +11,7 @@ This is a dead simple to kickstart your Laravel Inertia with React. Powered with
 
 ## Installation
 
-+ Clone this repository
++ Clone this repository `git clone git@github.com:didikz/laravel-inertia-react-starter.git`
 + Move to the project directory
 + Create `.env` file: `cp .env.example .env`
 + Install Laravel `composer install`
