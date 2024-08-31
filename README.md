@@ -1,13 +1,13 @@
-# Dead Simple Laravel React Inertia Kit
+# Dead Simple Laravel-Inertia-React Starter Kit
 
 This is a dead simple to kickstart your Laravel Inertia with React. Powered with:
 
-+ Laravel
-+ React
-+ Inertia.js
-+ Vite
-+ Tailwindcss
-+ Eslint
++ [Laravel](https://laravel.com)
++ [React](https://react.dev)
++ [Inertia](https://inertiajs.com)
++ [Vite](https://vitejs.dev)
++ [Tailwindcss](https://tailwindcss.com)
++ [Eslint](https://eslint.org)
 
 ## Installation
 
