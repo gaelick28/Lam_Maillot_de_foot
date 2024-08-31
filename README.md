@@ -7,6 +7,7 @@ This is a dead simple to kickstart your Laravel Inertia with React. Powered with
 + [Inertia](https://inertiajs.com)
 + [Vite](https://vitejs.dev)
 + [Tailwindcss](https://tailwindcss.com)
++ [Heroicons](https://heroicons.com/)
 + [Eslint](https://eslint.org)
 
 ## Installation
