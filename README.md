@@ -11,6 +11,8 @@ This is a dead simple to kickstart your Laravel Inertia with React. Powered with
 + [Heroicons](https://heroicons.com/)
 + [Eslint](https://eslint.org)
 
+> Blogpost: [Simple Laravel Inertia React and Tailwindcss Starter Kit](https://blog.didiktrisusanto.dev/simple-laravel-inertia-react-and-tailwindcss-starter-kit)
+
 ## Application Structure
 
 Available two separate basic application structures which are:
