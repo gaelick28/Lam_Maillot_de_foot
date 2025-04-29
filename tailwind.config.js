@@ -1,14 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./resources/**/*.blade.php","./resources/**/*.jsx",],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter var'],
-      },
-    },
-  },
-  plugins: [
-    require('@tailwindcss/forms'),
+  content: [
+    './resources/**/*.blade.php',
+    './resources/**/*.js',
+    './resources/**/*.jsx',
   ],
-};
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
