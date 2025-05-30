@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { GiAbstract039 } from "react-icons/gi";
-import { GiSoccerBall } from 'react-icons/gi';
 
+// logo ballon foot 
+function BallonFootIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 496 496"
+      fill="currentColor"
+    >
+      <path d="M248 0C111 0 0 111 0 248s111 248 248 248 248-111 248-248S385 0 248 0zm0 464C123.5 464 32 372.5 32 248S123.5 32 248 32s216 91.5 216 216-91.5 216-216 216z"/>
+      <path d="M248 104c-79.5 0-144 64.5-144 144s64.5 144 144 144 144-64.5 144-144S327.5 104 248 104zm0 256c-61.9 0-112-50.1-112-112S186.1 136 248 136s112 50.1 112 112-50.1 112-112 112z"/>
+    </svg>
+  );
+}
 
-export default function Header() {
+export default function HeaderLogOut() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-
-  
   const leagues = [
     {
       name: 'Sélections Nationales',
@@ -66,8 +77,8 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-gradient-to-r from-red-800 to-blue-500 py-2 text-white shadow-lg relative">
-     {/* ou sans gradiant <header className="bg-blue-800 text-white shadow-lg relative">  */}
+    <HeaderLogOut className="bg-gradient-to-r from-red-800 to-blue-500 py-2 text-white shadow-lg relative">
+     {/* ou sans gradiant <HeaderLogOut className="bg-blue-800 text-white shadow-lg relative">  */}
       
       <div className="container mx-auto px-4 py-3">
         {/* Structure réorganisée en colonne */}
@@ -75,7 +86,7 @@ export default function Header() {
           {/* Ligne supérieure avec logo et éléments de droite */}
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              < GiSoccerBall className="h-10 w-10 text-black" />
+              <BallonFootIcon className="h-10 w-10 text-black" />
               <span className="text-xl font-bold text-black">Fou2Foot</span>
 
             </Link>
@@ -109,8 +120,8 @@ export default function Header() {
                 <Link href="/account" className="hover:text-blue-200 transition-colors">
                   Mon compte
                 </Link>
-                
-              </div>
+                </div>
+              
               {/* Panier */}
               <Link href="/cart" className="relative hover:text-blue-200  transition-colors text-black">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,17 +132,24 @@ export default function Header() {
                 </span>
               </Link>
             </div>
+            {/* Déconnexion 1 */}
+                {/* <div className="hidden md:flex items-center gap-4 text-black">
+                <Link href="/account" className="hover:text-blue-200 transition-colors">
+                  Se déconnecter
+                </Link>
+                </div> */}
+
+            {/* ou déconnexion 2 */}
+                {/* <div className="hidden md:flex items-center gap-4 text-black">
+              <Link href="/logout" className="text hover:text-blue-200">
+                <FaSignOutAlt /> Se déconnecter
+              </Link>
+            </div> */}
+
           </div>
 
           {/* Navigation Desktop - Déplacée en dessous */}
           <nav className="hidden md:flex items-center gap-8 justify-center mt-4 relative z-10">
-            {/* Nouvel élément Accueil */}
-  <Link 
-    href="/" 
-    className="text hover:text-blue-200 transition-colors px-4 py-2"
-  >
-    Accueil
-  </Link>
             {leagues.map((league) => (
               <div 
                 key={league.name}
@@ -180,13 +198,6 @@ export default function Header() {
 
           {mobileMenuOpen && (
             <div className="mt-2 space-y-2">
-            {/* Ajout Accueil mobile */}
-      <Link
-        href="/"
-        className="block p-2 bg-blue-700 rounded text-white hover:bg-blue-600"
-      >
-        Accueil
-      </Link>  
               {leagues.map((league) => (
                 <div key={league.name} className="bg-blue-700 rounded p-2">
                   <div className="font-medium">{league.name}</div>
@@ -207,6 +218,6 @@ export default function Header() {
           )}
         </div>
       </div>
-    </header>
+    </HeaderLogOut>
   );
 }
