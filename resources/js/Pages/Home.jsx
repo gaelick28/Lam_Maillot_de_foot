@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-// import Header from '@/Components/Header';
+import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 
@@ -58,7 +58,7 @@ export default function Homepage({ products }) {
   return (
     <>
       <Head title="Accueil - Fou2Foot" />
-      {/* <Header /> */}
+      <Header />
 
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-800 to-blue-500 py-16">
