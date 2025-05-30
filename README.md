@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dead Simple Laravel-Inertia-React Starter Kit
 
 This is a dead simple to kickstart your Laravel Inertia with React. Powered with:
@@ -40,3 +41,6 @@ npm run dev
 ```
 
 Visit `http://localhost:8000` to see your runing project.
+=======
+# Lam_Maillot_de_foot
+>>>>>>> 05e38c001192ccba5874840e29d3435b7dd958e7
