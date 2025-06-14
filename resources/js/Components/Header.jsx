@@ -1,97 +1,180 @@
-import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { GiAbstract039 } from "react-icons/gi";
-import { GiSoccerBall } from 'react-icons/gi';
+"use client"
 
+import { useState } from "react"
+import { Link } from "@inertiajs/react"
+
+// Logo ballon foot
+function BallonFootIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 496 496"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M248 0C111 0 0 111 0 248s111 248 248 248 248-111 248-248S385 0 248 0zm0 464C123.5 464 32 372.5 32 248S123.5 32 248 32s216 91.5 216 216-91.5 216-216 216z" />
+      <path d="M248 104c-79.5 0-144 64.5-144 144s64.5 144 144 144 144-64.5 144-144S327.5 104 248 104zm0 256c-61.9 0-112-50.1-112-112S186.1 136 248 136s112 50.1 112 112-50.1 112-112 112z" />
+    </svg>
+  )
+}
 
 export default function Header() {
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeMobileLeague, setActiveMobileLeague] = useState(null)
 
-
-  
   const leagues = [
     {
-      name: 'Sélections Nationales',
+      name: "Sélections Nationales",
       clubs: [
-        { name: 'France', href: '/teams/france' },
-        { name: 'Brésil', href: '/teams/bresil' },
-        // ...
-      ]
-    },
-    
-    { 
-      name: 'Ligue 1',
-      clubs: [
-        { name: 'Olympique Lyonnais', href: '/clubs/ol' },
-        { name: 'Girondins de Bordeaux', href: '/clubs/bordeaux' },
-        { name: 'Lille', href: '/clubs/losc' },
-        
-        // Ajouter tous les clubs...enfin presque 
-      ]
+        { name: "France", href: "/teams/france" },
+        { name: "Brésil", href: "/teams/bresil" },
+        { name: "Argentine", href: "/teams/argentine" },
+        { name: "Espagne", href: "/teams/espagne" },
+      ],
     },
     {
-      name: 'Premier League',
+      name: "Ligue 1",
       clubs: [
-        { name: 'Liverpool', href: '/clubs/liverpool' },
-        { name: 'Manchester City', href: '/clubs/mancity' },
-        // ...
-      ]
+        { name: "Olympique Lyonnais", href: "/clubs/ol" },
+        { name: "Girondins de Bordeaux", href: "/clubs/bordeaux" },
+        { name: "Lille", href: "/clubs/losc" },
+        { name: "Monaco", href: "/clubs/monaco" },
+        { name: "Rennes", href: "/clubs/rennes" },
+        { name: "Nice", href: "/clubs/nice" },
+        { name: "Nantes", href: "/clubs/nantes" },
+        { name: "Strasbourg", href: "/clubs/strasbourg" },
+        { name: "Toulouse", href: "/clubs/toulouse" },
+        { name: "Lens", href: "/clubs/lens" },
+        { name: "Montpellier", href: "/clubs/montpellier" },
+        { name: "Reims", href: "/clubs/reims" },
+        { name: "Clermont", href: "/clubs/clermont" },
+        { name: "Angers", href: "/clubs/angers" },
+        { name: "Brest", href: "/clubs/brest" },
+      ],
     },
     {
-      name: 'Bundesliga',
+      name: "Premier League",
       clubs: [
-      { name: 'Bayern Munich', href: '/clubs/bayern' },
-      { name: 'Borussia Dortmund', href: '/clubs/dortmund' },
-      // ...
-    ]
+        { name: "Liverpool", href: "/clubs/liverpool" },
+        { name: "Manchester City", href: "/clubs/mancity" },
+        { name: "Arsenal", href: "/clubs/arsenal" },
+        { name: "Chelsea", href: "/clubs/chelsea" },
+        { name: "Tottenham", href: "/clubs/tottenham" },
+        { name: "Newcastle", href: "/clubs/newcastle" },
+        { name: "Aston Villa", href: "/clubs/astonvilla" },
+        { name: "West Ham", href: "/clubs/westham" },
+        { name: "Leicester City", href: "/clubs/leicester" },
+        { name: "Brighton", href: "/clubs/brighton" },
+        { name: "Wolves", href: "/clubs/wolves" },
+        { name: "Crystal Palace", href: "/clubs/crystalpalace" },
+        { name: "Brentford", href: "/clubs/brentford" },
+        { name: "Fulham", href: "/clubs/fulham" },
+        { name: "Bournemouth", href: "/clubs/bournemouth" },
+        { name: "Nottingham Forest", href: "/clubs/nottingham" },
+      ],
     },
     {
-      name: 'Liga',
+      name: "Bundesliga",
       clubs: [
-      { name: 'Athletico Madrid', href: '/clubs/athletico' },
-      { name: 'Athletico Bilbao', href: '/clubs/bilbao' },
-      // ...
-    ]
+        { name: "Bayern Munich", href: "/clubs/bayern" },
+        { name: "Borussia Dortmund", href: "/clubs/dortmund" },
+        { name: "RB Leipzig", href: "/clubs/leipzig" },
+        { name: "Bayer Leverkusen", href: "/clubs/leverkusen" },
+        { name: "Borussia Mönchengladbach", href: "/clubs/monchengladbach" },
+        { name: "VfL Wolfsburg", href: "/clubs/wolfsburg" },
+        { name: "Eintracht Francfort", href: "/clubs/francfort" },
+        { name: "SC Freiburg", href: "/clubs/freiburg" },
+        { name: "Hoffenheim", href: "/clubs/hoffenheim" },
+        { name: "Hertha Berlin", href: "/clubs/hertha" },
+        { name: "Union Berlin", href: "/clubs/union" },
+        { name: "Mainz 05", href: "/clubs/mainz" },
+        { name: "VfB Stuttgart", href: "/clubs/stuttgart" },
+        { name: "FC Cologne", href: "/clubs/cologne" },
+        { name: "Augsbourg", href: "/clubs/augsbourg" },
+        { name: "Schalke 04", href: "/clubs/schalke" },
+        { name: "Bochum", href: "/clubs/bochum" },
+      ],
     },
     {
-  name: 'Série A',
-  clubs: [
-    { name: 'Inter Milan', href: '/clubs/inter' },
-    { name: 'Naples', href: '/clubs/naples' },
-    // ...
+      name: "Liga",
+      clubs: [
+        { name: "Atletico Madrid", href: "/clubs/atletico" },
+        { name: "Athletic Bilbao", href: "/clubs/bilbao" },
+        { name: "Real Madrid", href: "/clubs/real" },
+        { name: "FC Barcelone", href: "/clubs/barca" },
+        { name: "Real Sociedad", href: "/clubs/sociedad" },
+        { name: "Valence", href: "/clubs/valence" },
+        { name: "Sevilla", href: "/clubs/sevilla" },
+        { name: "Real Betis", href: "/clubs/betis" },
+        { name: "Villarreal", href: "/clubs/villarreal" },
+        { name: "Celta Vigo", href: "/clubs/celta" },
+        { name: "Getafe", href: "/clubs/getafe" },
+        { name: "Espanyol", href: "/clubs/espanyol" },
+        { name: "Osasuna", href: "/clubs/osasuna" },
+        { name: "Granada", href: "/clubs/granada" },
+        { name: "Alaves", href: "/clubs/alaves" },
+        { name: "Mallorca", href: "/clubs/mallorca" },
+        { name: "Cadix", href: "/clubs/cadix" },
+        { name: "Elche", href: "/clubs/elche" },
+        { name: "Rayo Vallecano", href: "/clubs/rayo" },
+      ],
+    },
+    {
+      name: "Série A",
+      clubs: [
+        { name: "Inter Milan", href: "/clubs/inter" },
+        { name: "Naples", href: "/clubs/naples" },
+        { name: "Juventus", href: "/clubs/juventus" },
+        { name: "AC Milan", href: "/clubs/milan" },
+        { name: "AS Roma", href: "/clubs/roma" },
+        { name: "Lazio", href: "/clubs/lazio" },
+        { name: "Atalanta", href: "/clubs/atalanta" },
+        { name: "Fiorentina", href: "/clubs/fiorentina" },
+        { name: "Torino", href: "/clubs/torino" },
+        { name: "Bologne", href: "/clubs/bologne" },
+        { name: "Sassuolo", href: "/clubs/sassuolo" },
+        { name: "Genoa", href: "/clubs/genoa" },
+        { name: "Sampdoria", href: "/clubs/sampdoria" },
+        { name: "Cagliari", href: "/clubs/cagliari" },
+        { name: "Udinese", href: "/clubs/udinese" },
+        { name: "Empoli", href: "/clubs/empoli" },
+      ],
+    },
   ]
-    },
-    // Voir ajout autres ligues...
-  ];
+
+  const toggleMobileLeague = (leagueName) => {
+    setActiveMobileLeague(activeMobileLeague === leagueName ? null : leagueName)
+  }
 
   return (
     <header className="bg-gradient-to-r from-red-800 to-blue-500 py-2 text-white shadow-lg relative">
-     {/* ou sans gradiant <header className="bg-blue-800 text-white shadow-lg relative">  */}
-      
       <div className="container mx-auto px-4 py-3">
         {/* Structure réorganisée en colonne */}
         <div className="flex flex-col">
           {/* Ligne supérieure avec logo et éléments de droite */}
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              < GiSoccerBall className="h-10 w-10 text-black" />
-              <span className="text-xl font-bold text-black">Fou2Foot</span>
-
+            <Link href="/" className="flex items-center gap-2 text-black" aria-label="Accueil de Fou2Foot">
+              <BallonFootIcon className="h-10 w-10" />
+              <span className="text-xl font-bold">Fou2Foot</span>
             </Link>
- {/* Barre de recherche ajoutée ici */}
-            <div className="flex-grow max-w-xl">
+
+            {/* Barre de recherche */}
+            <div className="flex-grow max-w-xl mx-4">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Recherche de produits..."
                   className="w-full px-4 py-2 rounded-full bg-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  aria-label="Rechercher des produits"
                 />
                 <svg
                   className="absolute right-3 top-2.5 h-5 w-5 text-white/50"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -106,55 +189,91 @@ export default function Header() {
             {/* Éléments de droite */}
             <div className="flex items-center gap-6">
               <div className="hidden md:flex items-center gap-4 text-black">
-                <Link href="/account" className="hover:text-blue-200 transition-colors">
+                <Link
+                  href="/account"
+                  className="hover:text-blue-200 transition-colors "
+                  aria-label="Mon compte"
+                >
                   Mon compte
                 </Link>
-                
               </div>
+
               {/* Panier */}
-              <Link href="/cart" className="relative hover:text-blue-200  transition-colors text-black">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              <Link
+                href="/cart"
+                className="relative hover:text-blue-200 transition-colors text-black "
+                aria-label="Panier (3 articles)"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
                 </svg>
-                <span className="absolute -top-1 -right-2 bg-red-500 text-xs text-white rounded-full px-1.5 py-0.5">
+                <span
+                  className="absolute -top-1 -right-2 bg-red-500 text-xs text-white rounded-full px-1.5 py-0.5"
+                  aria-hidden="true"
+                >
                   3
                 </span>
               </Link>
             </div>
           </div>
 
-          {/* Navigation Desktop - Déplacée en dessous */}
-          <nav className="hidden md:flex items-center gap-8 justify-center mt-4 relative z-10">
-            {/* Nouvel élément Accueil */}
-  <Link 
-    href="/" 
-    className="text hover:text-blue-200 transition-colors px-4 py-2"
-  >
-    Accueil
-  </Link>
+          {/* Navigation Desktop */}
+          <nav
+            className="hidden md:flex items-center gap-8 justify-center mt-4 relative z-10"
+            aria-label="Navigation principale"
+          >
+            {/* Élément Accueil */}
+            <Link
+              href="/"
+              className="text-white hover:text-blue-200 transition-colors px-4 py-2 "
+              aria-current="page"
+            >
+              Accueil
+            </Link>
+
             {leagues.map((league) => (
-              <div 
+              <div
                 key={league.name}
                 className="relative group"
                 onMouseEnter={() => setActiveMenu(league.name)}
-                // onMouseLeave={() => setActiveMenu(null)}
-                onClick={() => setActiveMenu(activeMenu === league.name ? null : league.name)}
+                // onMouseLeave={() => setActiveMenu(null)} // FIX: Ferme le menu quand la souris sort
               >
-                <button className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2">
+                <button
+                  className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2 "
+                  aria-expanded={activeMenu === league.name}
+                  aria-haspopup="true"
+                  aria-label={`Menu ${league.name}`}
+                  onClick={() => setActiveMenu(activeMenu === league.name ? null : league.name)}
+                >
                   {league.name}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className={`w-4 h-4 transition-transform ${activeMenu === league.name ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 {/* Menu déroulant */}
                 {activeMenu === league.name && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white text-gray-800 rounded-lg shadow-xl min-w-[240px] py-2 z-50">
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-purple-200 text-gray-800 rounded-lg shadow-xl min-w-[240px] py-2 z-50"
+                    role="menu"
+                  >
                     {league.clubs.map((club) => (
                       <Link
                         key={club.name}
                         href={club.href}
-                        className="block px-6 py-2 hover:bg-blue-50 transition-colors text-sm whitespace-nowrap"
+                        className="block px-6 py-2 hover:bg-blue-50 transition-colors text-sm whitespace-nowrap focus:outline-none focus:bg-blue-50"
+                        role="menuitem"
                       >
                         {club.name}
                       </Link>
@@ -166,41 +285,78 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* Version Mobile */}
+        {/* Version Mobile - AMÉLIORÉE */}
         <div className="md:hidden mt-4">
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-full flex justify-between items-center p-2 bg-blue-700 rounded"
+            className="w-full flex justify-between items-center p-3 bg-blue-700 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+            aria-expanded={mobileMenuOpen}
+            aria-label="Menu mobile"
+            aria-controls="mobile-menu"
           >
-            Menu
-            <svg className={`w-5 h-5 transform transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`}>
-              <path stroke="currentColor" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            <span className="font-medium">Menu</span>
+            <svg
+              className={`w-5 h-5 transform transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           {mobileMenuOpen && (
-            <div className="mt-2 space-y-2">
-            {/* Ajout Accueil mobile */}
-      <Link
-        href="/"
-        className="block p-2 bg-blue-700 rounded text-white hover:bg-blue-600"
-      >
-        Accueil
-      </Link>  
+            <div
+              id="mobile-menu"
+              className="mt-2 space-y-2 bg-blue-200/20 rounded-lg p-2"
+              aria-label="Navigation mobile"
+            >
+              <Link
+                href="/"
+                className="block bg-blue-700 rounded-lg p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-current="page"
+              >
+                <span className="font-medium">Accueil</span>
+              </Link>
+
               {leagues.map((league) => (
-                <div key={league.name} className="bg-blue-700 rounded p-2">
-                  <div className="font-medium">{league.name}</div>
-                  <div className="ml-4 mt-1 space-y-1">
-                    {league.clubs.map((club) => (
-                      <Link
-                        key={club.name}
-                        href={club.href}
-                        className="block p-1 text-sm hover:bg-blue-600 rounded"
-                      >
-                        {club.name}
-                      </Link>
-                    ))}
-                  </div>
+                <div key={league.name} className="bg-blue-700 rounded-lg overflow-hidden">
+                  <button
+                    className="w-full flex justify-between items-center p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    onClick={() => toggleMobileLeague(league.name)}
+                    aria-expanded={activeMobileLeague === league.name}
+                    aria-controls={`mobile-${league.name.replace(/\s+/g, "-").toLowerCase()}`}
+                  >
+                    <span className="font-medium">{league.name}</span>
+                    <svg
+                      className={`w-4 h-4 transform transition-transform ${activeMobileLeague === league.name ? "rotate-180" : ""}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* FIX: Les clubs n'apparaissent que si la ligue est sélectionnée */}
+                  {activeMobileLeague === league.name && (
+                    <div
+                      id={`mobile-${league.name.replace(/\s+/g, "-").toLowerCase()}`}
+                      className="bg-blue-800 px-3 pb-2"
+                    >
+                      {league.clubs.map((club) => (
+                        <Link
+                          key={club.name}
+                          href={club.href}
+                          className="block p-2 text-sm hover:bg-blue-600 rounded transition-colors focus:outline-none focus:bg-blue-600"
+                        >
+                          {club.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -208,5 +364,7 @@ export default function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
+
+export { BallonFootIcon }

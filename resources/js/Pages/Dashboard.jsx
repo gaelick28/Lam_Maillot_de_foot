@@ -3,51 +3,16 @@ import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart, FaSignOutAlt } from 'react-icons/fa';
-
+import Sidebar from '@/Components/Sidebar';
 export default function Dashboard() {
   return (
     <>
       <Head title="Dashboard" />
       <Header />
+  
       <div className="min-h-screen bg-gray-300 flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-gray-500 text-white p-6 hidden md:block">
-          <h2 className="text-lg font-bold mb-6 text-blue-900">Navigation</h2>
-          <ul className="space-y-4">
-            <li>
-              <Link href="/account/Tableau de bord " className="flex items-center gap-2 text-black hover:text-blue-200">
-                <FaMapMarkerAlt /> Tableau de bord
-              </Link>
-            </li>
-           
-            <li>
-              <Link href="/account/orders" className="flex items-center gap-2 hover:text-blue-200">
-                <FaBoxOpen /> Commandes
-              </Link>
-            </li>
-            <li>
-              <Link href="/account/address" className="flex items-center gap-2 hover:text-blue-200">
-                <FaMapMarkerAlt /> Adresse
-              </Link>
-            </li>
-            <li>
-              <Link href="/account/details" className="flex items-center gap-2 hover:text-blue-200">
-                <FaUser /> Détails du compte
-              </Link>
-            </li>
-            <li>
-              <Link href="/account/wishlist" className="flex items-center gap-2 hover:text-blue-200">
-                <FaHeart /> Ma wishlist
-              </Link>
-            </li>
-            <li>
-              <Link href="/logout" className="flex items-center gap-2 text-red-300 hover:text-red-500">
-                <FaSignOutAlt /> Se déconnecter
-              </Link>
-            </li>
-          </ul>
-        </aside>
-
+      <Sidebar />
+      
         {/* Main Content */}
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-4xl mx-auto">

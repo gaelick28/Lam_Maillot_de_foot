@@ -15,6 +15,7 @@ import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
+
 export default function Homepage({ products }) {
   // Données exemple pour les maillots
   const featuredProducts = [
@@ -64,7 +65,7 @@ export default function Homepage({ products }) {
         <div className="container mx-auto px-4 text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Maillots de Football Officiels</h1>
           <p className="text-xl mb-8">Retrouvez les tenues des plus grands clubs et des plus grandes sélections</p>
-          <p className="text-xl mb-8">Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité , personnalisables, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide.Si vous ne trouvez pas le maillot de football que vous aimez, n'hésitez pas à me contacter. Mises à jours régulières du site</p>
+          <p className="text-xl mb-8">Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité , pouvant être personnalisés, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide. Si vous ne trouvez pas le maillot de football de votre choix, n'hésitez pas à nous contacter. Mises à jours régulières du site pour vous offrir de nouveaux produits.</p>
         </div>
       </div>
 
@@ -104,7 +105,7 @@ export default function Homepage({ products }) {
       </section>
 
       {/* Section Équipes */}
-      <section className="bg-gray-100 py-16">
+      <section className="bg-gray-200 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Nos Équipes</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -143,4 +144,3 @@ function TeamCard({ team, image, count }) {
     </div>
   );
 }
-

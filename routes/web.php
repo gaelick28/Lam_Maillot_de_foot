@@ -33,9 +33,21 @@ Route::get('/order', function () {
 });
 
 
+Route::get('/addresses', function () {
+    return Inertia::render('Addresses');  
+});
+
 Route::post('/addresses', function () {
     return Inertia::render('Addresses');  
 });
+
+Route::put('/addresses', function () {
+    return Inertia::render('Addresses');  
+});
+
+
+
+
 // Route::resource('addresses', AddressController::class)
 //    ->only(['index', 'store', 'update', 'destroy']);
 
