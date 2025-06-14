@@ -338,7 +338,7 @@ export default function Header() {
             >
               <Link
                 href="/"
-                className="block bg-blue-700 rounded-lg p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="block bg-gray-400 rounded-lg p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-current="page"
               >
                 <span className="font-medium">Accueil</span>
