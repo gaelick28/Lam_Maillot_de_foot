@@ -51,7 +51,6 @@ export default function Header() {
         { name: "Suède", href: "/teams/suede" },
         { name: "Danemark", href: "/teams/danemark" },
         { name: "Ukraine", href: "/teams/ukraine" },
-        { name: "Pays-Bas", href: "/teams/pays-bas" },
       ],
     },
     {

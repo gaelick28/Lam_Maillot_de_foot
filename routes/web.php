@@ -45,8 +45,13 @@ Route::put('/addresses', function () {
     return Inertia::render('Addresses');  
 });
 
+Route::get('/accountdetails', function () {
+    return Inertia::render('AccountDetails');  
+});
 
-
+Route::get('/mywishlist', function () {
+    return Inertia::render('MyWishlist');  
+});
 
 // Route::resource('addresses', AddressController::class)
 //    ->only(['index', 'store', 'update', 'destroy']);
