@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "@inertiajs/react"
 
 // Logo ballon foot
@@ -23,6 +23,15 @@ export default function Header() {
   const [activeMenu, setActiveMenu] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMobileLeague, setActiveMobileLeague] = useState(null)
+  const [timeoutId, setTimeoutId] = useState(null)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+    }
+  }, [timeoutId])
 
   const leagues = [
     {
@@ -30,8 +39,19 @@ export default function Header() {
       clubs: [
         { name: "France", href: "/teams/france" },
         { name: "Brésil", href: "/teams/bresil" },
-        { name: "Argentine", href: "/teams/argentine" },
         { name: "Espagne", href: "/teams/espagne" },
+        { name: "Pays-Bas", href: "/teams/pays-bas" },
+        { name: "Belgique", href: "/teams/belgique" },
+        { name: "Sénégal", href: "/teams/senegal" },
+        { name: "Côte d'Ivoire", href: "/teams/cote-d-ivoire" },
+        { name: "Maroc", href: "/teams/maroc" },
+        { name: "Suisse", href: "/teams/suisse" },
+        { name: "Pologne", href: "/teams/pologne" },
+        { name: "Croatie", href: "/teams/croatie" },
+        { name: "Suède", href: "/teams/suede" },
+        { name: "Danemark", href: "/teams/danemark" },
+        { name: "Ukraine", href: "/teams/ukraine" },
+        { name: "Pays-Bas", href: "/teams/pays-bas" },
       ],
     },
     {
@@ -41,17 +61,16 @@ export default function Header() {
         { name: "Girondins de Bordeaux", href: "/clubs/bordeaux" },
         { name: "Lille", href: "/clubs/losc" },
         { name: "Monaco", href: "/clubs/monaco" },
-        { name: "Rennes", href: "/clubs/rennes" },
         { name: "Nice", href: "/clubs/nice" },
-        { name: "Nantes", href: "/clubs/nantes" },
+        { name: "Rennes", href: "/clubs/rennes" },
         { name: "Strasbourg", href: "/clubs/strasbourg" },
         { name: "Toulouse", href: "/clubs/toulouse" },
-        { name: "Lens", href: "/clubs/lens" },
+        { name: "Nantes", href: "/clubs/nantes" },
         { name: "Montpellier", href: "/clubs/montpellier" },
+        { name: "Lens", href: "/clubs/lens" },
         { name: "Reims", href: "/clubs/reims" },
-        { name: "Clermont", href: "/clubs/clermont" },
         { name: "Angers", href: "/clubs/angers" },
-        { name: "Brest", href: "/clubs/brest" },
+        { name: "Auxerre", href: "/clubs/auxerre" },
       ],
     },
     {
@@ -61,18 +80,16 @@ export default function Header() {
         { name: "Manchester City", href: "/clubs/mancity" },
         { name: "Arsenal", href: "/clubs/arsenal" },
         { name: "Chelsea", href: "/clubs/chelsea" },
-        { name: "Tottenham", href: "/clubs/tottenham" },
-        { name: "Newcastle", href: "/clubs/newcastle" },
-        { name: "Aston Villa", href: "/clubs/astonvilla" },
-        { name: "West Ham", href: "/clubs/westham" },
+        { name: "Tottenham Hotspur", href: "/clubs/tottenham" },
         { name: "Leicester City", href: "/clubs/leicester" },
-        { name: "Brighton", href: "/clubs/brighton" },
-        { name: "Wolves", href: "/clubs/wolves" },
+        { name: "Aston Villa", href: "/clubs/astonvilla" },
+        { name: "Newcastle United", href: "/clubs/newcastle" },
+        { name: "Everton", href: "/clubs/everton" },
+        { name: "Wolverhampton Wanderers", href: "/clubs/wolves" },
+        { name: "Brighton & Hove Albion", href: "/clubs/brighton" },
         { name: "Crystal Palace", href: "/clubs/crystalpalace" },
         { name: "Brentford", href: "/clubs/brentford" },
         { name: "Fulham", href: "/clubs/fulham" },
-        { name: "Bournemouth", href: "/clubs/bournemouth" },
-        { name: "Nottingham Forest", href: "/clubs/nottingham" },
       ],
     },
     {
@@ -85,16 +102,11 @@ export default function Header() {
         { name: "Borussia Mönchengladbach", href: "/clubs/monchengladbach" },
         { name: "VfL Wolfsburg", href: "/clubs/wolfsburg" },
         { name: "Eintracht Francfort", href: "/clubs/francfort" },
-        { name: "SC Freiburg", href: "/clubs/freiburg" },
         { name: "Hoffenheim", href: "/clubs/hoffenheim" },
         { name: "Hertha Berlin", href: "/clubs/hertha" },
-        { name: "Union Berlin", href: "/clubs/union" },
-        { name: "Mainz 05", href: "/clubs/mainz" },
         { name: "VfB Stuttgart", href: "/clubs/stuttgart" },
         { name: "FC Cologne", href: "/clubs/cologne" },
-        { name: "Augsbourg", href: "/clubs/augsbourg" },
         { name: "Schalke 04", href: "/clubs/schalke" },
-        { name: "Bochum", href: "/clubs/bochum" },
       ],
     },
     {
@@ -105,20 +117,13 @@ export default function Header() {
         { name: "Real Madrid", href: "/clubs/real" },
         { name: "FC Barcelone", href: "/clubs/barca" },
         { name: "Real Sociedad", href: "/clubs/sociedad" },
-        { name: "Valence", href: "/clubs/valence" },
-        { name: "Sevilla", href: "/clubs/sevilla" },
-        { name: "Real Betis", href: "/clubs/betis" },
+        { name: "Valence CF", href: "/clubs/valence" },
         { name: "Villarreal", href: "/clubs/villarreal" },
+        { name: "Sevilla FC", href: "/clubs/sevilla" },
+        { name: "Real Betis", href: "/clubs/betis" },
         { name: "Celta Vigo", href: "/clubs/celta" },
-        { name: "Getafe", href: "/clubs/getafe" },
         { name: "Espanyol", href: "/clubs/espanyol" },
-        { name: "Osasuna", href: "/clubs/osasuna" },
-        { name: "Granada", href: "/clubs/granada" },
-        { name: "Alaves", href: "/clubs/alaves" },
-        { name: "Mallorca", href: "/clubs/mallorca" },
-        { name: "Cadix", href: "/clubs/cadix" },
-        { name: "Elche", href: "/clubs/elche" },
-        { name: "Rayo Vallecano", href: "/clubs/rayo" },
+        
       ],
     },
     {
@@ -129,17 +134,12 @@ export default function Header() {
         { name: "Juventus", href: "/clubs/juventus" },
         { name: "AC Milan", href: "/clubs/milan" },
         { name: "AS Roma", href: "/clubs/roma" },
-        { name: "Lazio", href: "/clubs/lazio" },
+        { name: "Lazio Rome", href: "/clubs/lazio" },
         { name: "Atalanta", href: "/clubs/atalanta" },
         { name: "Fiorentina", href: "/clubs/fiorentina" },
         { name: "Torino", href: "/clubs/torino" },
         { name: "Bologne", href: "/clubs/bologne" },
-        { name: "Sassuolo", href: "/clubs/sassuolo" },
-        { name: "Genoa", href: "/clubs/genoa" },
-        { name: "Sampdoria", href: "/clubs/sampdoria" },
-        { name: "Cagliari", href: "/clubs/cagliari" },
-        { name: "Udinese", href: "/clubs/udinese" },
-        { name: "Empoli", href: "/clubs/empoli" },
+
       ],
     },
   ]
@@ -240,11 +240,24 @@ export default function Header() {
               <div
                 key={league.name}
                 className="relative group"
-                onMouseEnter={() => setActiveMenu(league.name)}
-                // onMouseLeave={() => setActiveMenu(null)} // FIX: Ferme le menu quand la souris sort
+                onMouseEnter={() => {
+                  // Annuler le timeout s'il existe
+                  if (timeoutId) {
+                    clearTimeout(timeoutId)
+                    setTimeoutId(null)
+                  }
+                  setActiveMenu(league.name)
+                }}
+                onMouseLeave={() => {
+                  // Ajouter un délai avant de fermer le menu
+                  const id = setTimeout(() => {
+                    setActiveMenu(null)
+                  }, 300) // 300ms de délai
+                  setTimeoutId(id)
+                }}
               >
                 <button
-                  className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2 "
+                  className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2"
                   aria-expanded={activeMenu === league.name}
                   aria-haspopup="true"
                   aria-label={`Menu ${league.name}`}
@@ -265,14 +278,25 @@ export default function Header() {
                 {/* Menu déroulant */}
                 {activeMenu === league.name && (
                   <div
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-purple-200 text-gray-800 rounded-lg shadow-xl min-w-[240px] py-2 z-50"
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-blue-50 text-gray-800 rounded-lg shadow-xl min-w-[240px] py-2 z-50"
                     role="menu"
+                    onMouseEnter={() => {
+                      // Annuler le timeout quand on entre dans le menu
+                      if (timeoutId) {
+                        clearTimeout(timeoutId)
+                        setTimeoutId(null)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      // Fermer immédiatement quand on quitte le menu
+                      setActiveMenu(null)
+                    }}
                   >
                     {league.clubs.map((club) => (
                       <Link
                         key={club.name}
                         href={club.href}
-                        className="block px-6 py-2 hover:bg-blue-50 transition-colors text-sm whitespace-nowrap focus:outline-none focus:bg-blue-50"
+                        className="block px-6 py-2 hover:bg-blue-100 transition-colors text-sm whitespace-nowrap focus:outline-none focus:bg-blue-50"
                         role="menuitem"
                       >
                         {club.name}
@@ -309,7 +333,7 @@ export default function Header() {
           {mobileMenuOpen && (
             <div
               id="mobile-menu"
-              className="mt-2 space-y-2 bg-blue-200/20 rounded-lg p-2"
+              className="mt-2 space-y-2 bg-blue-800/50 rounded-lg p-2"
               aria-label="Navigation mobile"
             >
               <Link
