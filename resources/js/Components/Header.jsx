@@ -51,6 +51,9 @@ export default function Header() {
         { name: "Suède", href: "/teams/suede" },
         { name: "Danemark", href: "/teams/danemark" },
         { name: "Ukraine", href: "/teams/ukraine" },
+        { name: "Japon", href: "/teams/japon" },
+        { name: "Corée du Sud", href: "/teams/corée-du-sud" },
+        { name: "Mexique", href: "/teams/mexique" },
       ],
     },
     {
@@ -122,7 +125,6 @@ export default function Header() {
         { name: "Real Betis", href: "/clubs/betis" },
         { name: "Celta Vigo", href: "/clubs/celta" },
         { name: "Espanyol", href: "/clubs/espanyol" },
-        
       ],
     },
     {
@@ -138,7 +140,21 @@ export default function Header() {
         { name: "Fiorentina", href: "/clubs/fiorentina" },
         { name: "Torino", href: "/clubs/torino" },
         { name: "Bologne", href: "/clubs/bologne" },
+      ],
+    },
 
+    {
+      name: "Autres",
+      clubs: [
+        { name: "Porto", href: "/clubs/porto" },
+        { name: "Benfica", href: "/clubs/benfica" },
+        { name: "Sporting CP", href: "/clubs/sporting" },
+        { name: "Galatasaray", href: "/clubs/galatasaray" },
+        { name: "Fenerbahçe", href: "/clubs/fenerbahce" },
+        { name: "Celtic FC", href: "/clubs/celtic" },
+        { name: "Rangers FC", href: "/clubs/rangers" },
+        { name: "Ajax Amsterdam", href: "/clubs/ajax" },
+        { name: "PSV Eindhoven", href: "/clubs/psv" },
       ],
     },
   ]
@@ -156,7 +172,7 @@ export default function Header() {
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 text-black" aria-label="Accueil de Fou2Foot">
               <BallonFootIcon className="h-10 w-10" />
-              <span className="text-xl font-bold">Fou2Foot</span>
+              <span className="text-xl font-bold">FOU2FOOT</span>
             </Link>
 
             {/* Barre de recherche */}
@@ -188,11 +204,7 @@ export default function Header() {
             {/* Éléments de droite */}
             <div className="flex items-center gap-6">
               <div className="hidden md:flex items-center gap-4 text-black">
-                <Link
-                  href="/account"
-                  className="hover:text-blue-200 transition-colors "
-                  aria-label="Mon compte"
-                >
+                <Link href="/login" className="hover:text-blue-200 transition-colors " aria-label="Mon compte">
                   Mon compte
                 </Link>
               </div>
@@ -227,11 +239,7 @@ export default function Header() {
             aria-label="Navigation principale"
           >
             {/* Élément Accueil */}
-            <Link
-              href="/"
-              className="text-white hover:text-blue-200 transition-colors px-4 py-2 "
-              aria-current="page"
-            >
+            <Link href="/" className="text-white hover:text-blue-200 transition-colors px-4 py-2 " aria-current="page">
               Accueil
             </Link>
 

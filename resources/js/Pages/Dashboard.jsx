@@ -1,26 +1,30 @@
-import React from 'react';
-import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header';
-import Footer from '@/Components/Footer';
-import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart, FaSignOutAlt } from 'react-icons/fa';
-import Sidebar from '@/Components/Sidebar';
+import { Head, Link } from "@inertiajs/react"
+import Header from "@/Components/Header"
+import Footer from "@/Components/Footer"
+import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart } from "react-icons/fa"
+import Sidebar from "@/Components/Sidebar"
 export default function Dashboard() {
   return (
     <>
       <Head title="Dashboard" />
       <Header />
-  
+
       <div className="min-h-screen bg-gray-300 flex">
-      <Sidebar />
-      
+        <Sidebar />
+
         {/* Main Content */}
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold text-center mb-8">Mon Tableau de Bord</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {/* Card: Commandes */}
-              <Link href="/account/orders" className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50">
-                <FaBoxOpen className="text-blue-600 text-3xl" />
+              <Link
+                href="/order"
+                className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Accéder à mes commandes"
+                role="button"
+              >
+                <FaBoxOpen className="text-blue-600 text-3xl" aria-hidden="true" />
                 <div>
                   <h2 className="font-bold text-lg">Mes Commandes</h2>
                   <p className="text-gray-600 text-sm">Suivez vos achats passés et en cours.</p>
@@ -28,8 +32,13 @@ export default function Dashboard() {
               </Link>
 
               {/* Card: Adresse */}
-              <Link href="/account/address" className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50">
-                <FaMapMarkerAlt className="text-blue-600 text-3xl" />
+              <Link
+                href="/addresses"
+                className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Gérer mon adresse de livraison"
+                role="button"
+              >
+                <FaMapMarkerAlt className="text-blue-600 text-3xl" aria-hidden="true" />
                 <div>
                   <h2 className="font-bold text-lg">Adresse</h2>
                   <p className="text-gray-600 text-sm">Gérez votre adresse de livraison.</p>
@@ -37,8 +46,13 @@ export default function Dashboard() {
               </Link>
 
               {/* Card: Détails compte */}
-              <Link href="/account/details" className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50">
-                <FaUser className="text-blue-600 text-3xl" />
+              <Link
+                href="/accountdetails"
+                className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Modifier mes informations personnelles"
+                role="button"
+              >
+                <FaUser className="text-blue-600 text-3xl" aria-hidden="true" />
                 <div>
                   <h2 className="font-bold text-lg">Détails du compte</h2>
                   <p className="text-gray-600 text-sm">Modifiez vos informations personnelles.</p>
@@ -46,8 +60,13 @@ export default function Dashboard() {
               </Link>
 
               {/* Card: Wishlist */}
-              <Link href="/account/wishlist" className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50">
-                <FaHeart className="text-blue-600 text-3xl" />
+              <Link
+                href="/mywishlist"
+                className="bg-white p-6 rounded shadow flex items-center gap-4 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Voir ma liste de souhaits"
+                role="button"
+              >
+                <FaHeart className="text-blue-600 text-3xl" aria-hidden="true" />
                 <div>
                   <h2 className="font-bold text-lg">Ma wishlist</h2>
                   <p className="text-gray-600 text-sm">Retrouvez vos articles favoris.</p>
@@ -59,7 +78,9 @@ export default function Dashboard() {
             <div className="mt-12">
               <h2 className="text-2xl font-semibold mb-4">Activité récente</h2>
               <ul className="space-y-2">
-                <li className="bg-white p-4 rounded shadow text-sm text-gray-700">Vous avez passé une commande le 21 mai.</li>
+                <li className="bg-white p-4 rounded shadow text-sm text-gray-700">
+                  Vous avez passé une commande le 21 mai.
+                </li>
                 <li className="bg-white p-4 rounded shadow text-sm text-gray-700">Adresse modifiée le 18 mai.</li>
               </ul>
             </div>
@@ -68,5 +89,5 @@ export default function Dashboard() {
       </div>
       <Footer />
     </>
-  );
+  )
 }
