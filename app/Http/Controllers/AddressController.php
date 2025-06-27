@@ -2,83 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Address;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AddressController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
-        $user = Auth::user();
+        $addresses = request()->user()->addresses()->get();
 
-        return Inertia::render('AddressesPage', [
-            'billingAddresses' => $user->addresses()->where('type', 'billing')->get(),
-            'shippingAddresses' => $user->addresses()->where('type', 'shipping')->get(),
+        return Inertia::render('Addresses', [
+            'addresses' => $addresses,
         ]);
+
+        
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'type' => 'required|in:billing,shipping',
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
+        $validated = $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'street' => 'required|string',
+            'city' => 'required|string',
+            'postal_code' => 'required|string',
             'country' => 'required|string|max:2',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string',
             'is_default' => 'boolean',
         ]);
 
-        if ($data['is_default'] ?? false) {
-            Address::where('user_id', Auth::id())
-                ->where('type', $data['type'])
-                ->update(['is_default' => false]);
-        }
+        $address = $request->user()->addresses()->create($validated);
 
-        Address::create([
-            ...$data,
-            'user_id' => Auth::id(),
-        ]);
-
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Adresse ajoutée.');
     }
 
-    public function update(Request $request, Address $address)
+    public function update(Request $request, UserAddress $address)
     {
-        $this->authorize('update', $address);
+        // $this->authorize('update', $address); 
 
-        $data = $request->validate([
-            'type' => 'required|in:billing,shipping',
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
+        $validated = $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'street' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
+            'city'   => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:2',
-            'phone' => 'nullable|string|max:20',
-            'is_default' => 'boolean',
         ]);
 
-        if ($data['is_default'] ?? false) {
-            Address::where('user_id', Auth::id())
-                ->where('type', $data['type'])
-                ->update(['is_default' => false]);
-        }
+        $address->update($validated);
 
-        $address->update($data);
-
-        return redirect()->back();
+        return redirect()->route('addresses.index')->with('success', 'Adresse mise à jour.');
     }
 
-    public function destroy(Address $address)
+    public function destroy(UserAddress $address)
     {
-        $this->authorize('delete', $address);
+        // $this->authorize('delete', $address); // facultatif mais conseillé
+
         $address->delete();
 
-        return redirect()->back();
+        return redirect()->route('addresses.index')->with('success', 'Adresse supprimée.');
     }
 }

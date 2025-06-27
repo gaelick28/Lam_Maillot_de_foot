@@ -104,6 +104,7 @@ class User extends Authenticatable
         return $this->hasMany(UserAddress::class);
     }
 
+
     // Scopes
     public function scopeActive($query)
     {

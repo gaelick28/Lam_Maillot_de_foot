@@ -1,60 +1,36 @@
 <?php
-
-
-
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-});
+// Routes publiques
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
 
-Route::get('/login', function () {
-    return Inertia::render('LoginRegister');
-})->name('Login');
-
-
-Route::get('/auth', [AuthController::class, 'showAuthForm'])->name('auth.form');
+// Affiche le formulaire
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+// Déconnexion
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-Route::middleware('auth.session')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-    
-    Route::get('/compte', function () {
-        return Inertia::render('Account');
-    });
-    
-    Route::get('/order', function () {
-        return Inertia::render('Order');
-    });
-    
-    Route::get('/addresses', function () {
-        return Inertia::render('Addresses');
-    });
-    
-    Route::post('/addresses', function () {
-        return Inertia::render('Addresses');
-    });
-    
-    Route::put('/addresses', function () {
-        return Inertia::render('Addresses');
-    });
-    
-    Route::get('/accountdetails', function () {
-        return Inertia::render('AccountDetails');
-    });
-    
-    Route::get('/mywishlist', function () {
-        return Inertia::render('MyWishlist');
-    });
+// Routes protégées
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('/compte', [PageController::class, 'account'])->name('account');
+    Route::get('/order', [PageController::class, 'order'])->name('order');
+ 
+    Route::get('/accountdetails', [PageController::class, 'accountDetails'])->name('account.details');
+    Route::get('/mywishlist', [PageController::class, 'wishlist'])->name('wishlist');
 });
 
-Route::fallback(function () {
-    return Inertia::render('Page404');
+Route::fallback([PageController::class, 'page404']);
+
+// Routes pour la gestion des adresses
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
+
+    Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+    Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+    Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
