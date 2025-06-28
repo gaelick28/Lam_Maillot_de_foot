@@ -11,6 +11,11 @@ Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page
 // Affiche le formulaire
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+// inscription
+
+Route::post('/register', [AuthController::class, 'register'])->name('register'); // Ajoutez cette ligne
+Route::get('/register', [PageController::class, 'loginRegister'])->name('register.page'); // Affiche le formulaire d'inscription
+
 // Déconnexion
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -34,3 +39,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
+
