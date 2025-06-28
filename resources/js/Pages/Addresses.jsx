@@ -24,14 +24,24 @@ export default function AddressPage({ addresses = [] }) {
   const { data, setData, post, put, delete: destroy, processing, errors, reset } = useForm(initialForm);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (editingAddress && editingAddress !== 'new') {
-      put(`/addresses/${data.id}`);
-    } else {
-      post('/addresses');
-    }
-  };
+  if (editingAddress && editingAddress !== 'new') {
+    put(`/addresses/${data.id}`, {
+      onSuccess: () => {
+        setEditingAddress(null);
+        reset();
+      },
+    });
+  } else {
+    post('/addresses', {
+      onSuccess: () => {
+        setEditingAddress(null);
+        reset();
+      },
+    });
+  }
+};
 
   const handleEdit = (address) => {
     setEditingAddress(address.id);
