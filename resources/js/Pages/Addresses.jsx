@@ -8,7 +8,6 @@ import Sidebar from "@/Components/Sidebar"
 
 export default function AddressPage({ addresses = [] }) {
   const { url } = usePage()
-const { user } = usePage().props;
 
   // SÉPARER les états d'édition
   const [editingBilling, setEditingBilling] = useState(null)
