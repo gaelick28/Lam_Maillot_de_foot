@@ -13,7 +13,7 @@ export default function AddressPage({ addresses = [] }) {
   const [editingBilling, setEditingBilling] = useState(null)
   const [editingShipping, setEditingShipping] = useState(null)
 
-  // DEUX useForm SÉPARÉS
+  // DEUX useForm SÉPARÉS avec les champs de votre table
   const billingForm = useForm({
     id: null,
     type: "billing", // ← TYPE FIXE
@@ -44,11 +44,15 @@ export default function AddressPage({ addresses = [] }) {
   const handleBillingSubmit = (e) => {
     e.preventDefault()
 
+    // S'ASSURER que le type est bien "billing"
+    billingForm.setData("type", "billing")
+
     if (editingBilling && editingBilling !== "new") {
       billingForm.put(`/addresses/${billingForm.data.id}`, {
         onSuccess: () => {
           setEditingBilling(null)
           billingForm.reset()
+          billingForm.setData("type", "billing") // Remettre le type après reset
         },
       })
     } else {
@@ -56,6 +60,7 @@ export default function AddressPage({ addresses = [] }) {
         onSuccess: () => {
           setEditingBilling(null)
           billingForm.reset()
+          billingForm.setData("type", "billing") // Remettre le type après reset
         },
       })
     }
@@ -75,17 +80,22 @@ export default function AddressPage({ addresses = [] }) {
   const handleBillingCancel = () => {
     setEditingBilling(null)
     billingForm.reset()
+    billingForm.setData("type", "billing")
   }
 
   // FONCTIONS SÉPARÉES pour livraison
   const handleShippingSubmit = (e) => {
     e.preventDefault()
 
+    // S'ASSURER que le type est bien "shipping"
+    shippingForm.setData("type", "shipping")
+
     if (editingShipping && editingShipping !== "new") {
       shippingForm.put(`/addresses/${shippingForm.data.id}`, {
         onSuccess: () => {
           setEditingShipping(null)
           shippingForm.reset()
+          shippingForm.setData("type", "shipping") // Remettre le type après reset
         },
       })
     } else {
@@ -93,6 +103,7 @@ export default function AddressPage({ addresses = [] }) {
         onSuccess: () => {
           setEditingShipping(null)
           shippingForm.reset()
+          shippingForm.setData("type", "shipping") // Remettre le type après reset
         },
       })
     }
@@ -112,6 +123,7 @@ export default function AddressPage({ addresses = [] }) {
   const handleShippingCancel = () => {
     setEditingShipping(null)
     shippingForm.reset()
+    shippingForm.setData("type", "shipping")
   }
 
   // FONCTIONS DE SUPPRESSION
@@ -119,8 +131,8 @@ export default function AddressPage({ addresses = [] }) {
     if (confirm("Supprimer cette adresse de facturation ?")) {
       billingForm.delete(`/addresses/${id}`, {
         onSuccess: () => {
-          // Réinitialiser le formulaire après suppression
           billingForm.reset()
+          billingForm.setData("type", "billing")
         },
       })
     }
@@ -130,8 +142,8 @@ export default function AddressPage({ addresses = [] }) {
     if (confirm("Supprimer cette adresse de livraison ?")) {
       shippingForm.delete(`/addresses/${id}`, {
         onSuccess: () => {
-          // Réinitialiser le formulaire après suppression
           shippingForm.reset()
+          shippingForm.setData("type", "shipping")
         },
       })
     }
@@ -157,27 +169,35 @@ export default function AddressPage({ addresses = [] }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">Adresse de facturation</h3>
-                <button
-                  onClick={handleBillingAddNew}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  + Ajouter  adresse facturation
-                </button>
+                {billingAddresses.length === 0 && (
+                  <button
+                    onClick={handleBillingAddNew}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    + Ajouter facturation
+                  </button>
+                )}
               </div>
 
-              {editingBilling && (
+              {(editingBilling || billingAddresses.length === 0) && (
                 <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                   <form onSubmit={handleBillingSubmit} className="space-y-6">
-                    <div className="text-sm text-blue-600 mb-2">📋 Formulaire de facturation</div>
+                    <div className="text-sm text-blue-600 mb-2">
+                      📋 Formulaire de facturation (Type: {billingForm.data.type})
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
                         <input
-                          value={billingForm.data.first_name} // ← billingForm
-                          onChange={(e) => billingForm.setData("first_name", e.target.value)} // ← billingForm
+                          value={billingForm.data.first_name}
+                          onChange={(e) => billingForm.setData("first_name", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          required
                         />
+                        {billingForm.errors.first_name && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.first_name}</p>
+                        )}
                       </div>
 
                       <div>
@@ -186,16 +206,25 @@ export default function AddressPage({ addresses = [] }) {
                           value={billingForm.data.last_name}
                           onChange={(e) => billingForm.setData("last_name", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          required
                         />
+                        {billingForm.errors.last_name && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.last_name}</p>
+                        )}
                       </div>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
-                        <input
+                        <textarea
                           value={billingForm.data.street}
                           onChange={(e) => billingForm.setData("street", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          rows="2"
+                          required
                         />
+                        {billingForm.errors.street && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.street}</p>
+                        )}
                       </div>
 
                       <div>
@@ -204,7 +233,11 @@ export default function AddressPage({ addresses = [] }) {
                           value={billingForm.data.postal_code}
                           onChange={(e) => billingForm.setData("postal_code", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          required
                         />
+                        {billingForm.errors.postal_code && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.postal_code}</p>
+                        )}
                       </div>
 
                       <div>
@@ -213,7 +246,11 @@ export default function AddressPage({ addresses = [] }) {
                           value={billingForm.data.city}
                           onChange={(e) => billingForm.setData("city", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          required
                         />
+                        {billingForm.errors.city && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.city}</p>
+                        )}
                       </div>
 
                       <div>
@@ -223,6 +260,9 @@ export default function AddressPage({ addresses = [] }) {
                           onChange={(e) => billingForm.setData("phone", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
+                        {billingForm.errors.phone && (
+                          <p className="text-red-500 text-sm mt-1">{billingForm.errors.phone}</p>
+                        )}
                       </div>
 
                       <div className="flex items-center">
@@ -240,9 +280,9 @@ export default function AddressPage({ addresses = [] }) {
                       <button
                         type="submit"
                         disabled={billingForm.processing}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {editingBilling !== "new" ? "Modifier" : "Ajouter"}
+                        {billingForm.processing ? "Traitement..." : editingBilling !== "new" ? "Modifier" : "Ajouter"}
                       </button>
                       <button
                         type="button"
@@ -263,6 +303,11 @@ export default function AddressPage({ addresses = [] }) {
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2 inline-block">
                       Facturation
                     </span>
+                    {address.is_default && (
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mb-2 inline-block ml-2">
+                        Par défaut
+                      </span>
+                    )}
                     <div className="space-y-2">
                       <p className="font-medium">
                         {address.first_name} {address.last_name}
@@ -271,6 +316,8 @@ export default function AddressPage({ addresses = [] }) {
                       <p className="text-gray-600">
                         {address.postal_code} {address.city}
                       </p>
+                      <p className="text-gray-600">{address.country}</p>
+                      {address.phone && <p className="text-gray-600">{address.phone}</p>}
                     </div>
                     <div className="mt-4 flex gap-3">
                       <button
@@ -295,27 +342,35 @@ export default function AddressPage({ addresses = [] }) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">Adresse de livraison</h3>
-                <button
-                  onClick={handleShippingAddNew}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                >
-                  + Ajouter adresse livraison
-                </button>
+                {shippingAddresses.length === 0 && (
+                  <button
+                    onClick={handleShippingAddNew}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  >
+                    + Ajouter livraison
+                  </button>
+                )}
               </div>
 
-              {editingShipping && (
+              {(editingShipping || shippingAddresses.length === 0) && (
                 <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
-                    <div className="text-sm text-green-600 mb-2">🚚 Formulaire de livraison</div>
+                    <div className="text-sm text-green-600 mb-2">
+                      🚚 Formulaire de livraison (Type: {shippingForm.data.type})
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
                         <input
-                          value={shippingForm.data.first_name} // ← shippingForm
-                          onChange={(e) => shippingForm.setData("first_name", e.target.value)} // ← shippingForm
+                          value={shippingForm.data.first_name}
+                          onChange={(e) => shippingForm.setData("first_name", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+                          required
                         />
+                        {shippingForm.errors.first_name && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.first_name}</p>
+                        )}
                       </div>
 
                       <div>
@@ -324,16 +379,25 @@ export default function AddressPage({ addresses = [] }) {
                           value={shippingForm.data.last_name}
                           onChange={(e) => shippingForm.setData("last_name", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+                          required
                         />
+                        {shippingForm.errors.last_name && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.last_name}</p>
+                        )}
                       </div>
 
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
-                        <input
+                        <textarea
                           value={shippingForm.data.street}
                           onChange={(e) => shippingForm.setData("street", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+                          rows="2"
+                          required
                         />
+                        {shippingForm.errors.street && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.street}</p>
+                        )}
                       </div>
 
                       <div>
@@ -342,7 +406,11 @@ export default function AddressPage({ addresses = [] }) {
                           value={shippingForm.data.postal_code}
                           onChange={(e) => shippingForm.setData("postal_code", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+                          required
                         />
+                        {shippingForm.errors.postal_code && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.postal_code}</p>
+                        )}
                       </div>
 
                       <div>
@@ -351,7 +419,11 @@ export default function AddressPage({ addresses = [] }) {
                           value={shippingForm.data.city}
                           onChange={(e) => shippingForm.setData("city", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+                          required
                         />
+                        {shippingForm.errors.city && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.city}</p>
+                        )}
                       </div>
 
                       <div>
@@ -361,6 +433,9 @@ export default function AddressPage({ addresses = [] }) {
                           onChange={(e) => shippingForm.setData("phone", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
                         />
+                        {shippingForm.errors.phone && (
+                          <p className="text-red-500 text-sm mt-1">{shippingForm.errors.phone}</p>
+                        )}
                       </div>
 
                       <div className="flex items-center">
@@ -378,9 +453,9 @@ export default function AddressPage({ addresses = [] }) {
                       <button
                         type="submit"
                         disabled={shippingForm.processing}
-                        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
                       >
-                        {editingShipping !== "new" ? "Modifier" : "Ajouter"}
+                        {shippingForm.processing ? "Traitement..." : editingShipping !== "new" ? "Modifier" : "Ajouter"}
                       </button>
                       <button
                         type="button"
@@ -401,6 +476,11 @@ export default function AddressPage({ addresses = [] }) {
                     <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mb-2 inline-block">
                       Livraison
                     </span>
+                    {address.is_default && (
+                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2 inline-block ml-2">
+                        Par défaut
+                      </span>
+                    )}
                     <div className="space-y-2">
                       <p className="font-medium">
                         {address.first_name} {address.last_name}
@@ -409,6 +489,8 @@ export default function AddressPage({ addresses = [] }) {
                       <p className="text-gray-600">
                         {address.postal_code} {address.city}
                       </p>
+                      <p className="text-gray-600">{address.country}</p>
+                      {address.phone && <p className="text-gray-600">{address.phone}</p>}
                     </div>
                     <div className="mt-4 flex gap-3">
                       <button
