@@ -3,7 +3,8 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart } from "react-icons/fa"
 import Sidebar from "@/Components/Sidebar"
-export default function Dashboard() {
+
+export default function Dashboard({ user }) {
   return (
     <>
       <Head title="Dashboard" />
@@ -15,6 +16,12 @@ export default function Dashboard() {
         {/* Main Content */}
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-4xl mx-auto">
+            {/* Message de bienvenue */}
+                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
+                </div>
+
             <h1 className="text-3xl font-bold text-center mb-8">Mon Tableau de Bord</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {/* Card: Commandes */}

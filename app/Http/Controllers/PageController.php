@@ -15,10 +15,12 @@ class PageController extends Controller
         return Inertia::render('LoginRegister');
     }
 
-    public function dashboard() {
-        return Inertia::render('Dashboard');
-    }
-
+public function dashboard()
+{
+    return Inertia::render('Dashboard', [
+        'user' => request()->user(), // corrected to use request()->user()
+    ]);
+}
     public function account() {
         return Inertia::render('Account');
     }
@@ -32,6 +34,7 @@ class PageController extends Controller
     //         'addresses' => request()->user()->addresses()->get(),
     //     ]);
     // }
+    
     public function accountDetails() {
         return Inertia::render('AccountDetails');
     }
