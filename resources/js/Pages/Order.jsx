@@ -4,7 +4,7 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
 
-export default function OrderHistory() {
+export default function OrderHistory({ user }) {
   // Données mockées
   const orders = [
     {
@@ -42,6 +42,12 @@ export default function OrderHistory() {
         <Sidebar currentRoute="/order" />
         <div className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
+            {/* Message de bienvenue */}
+                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
+                </div>
+
             <div className="flex items-center gap-3 mb-8">
               <GiSoccerBall className="w-8 h-8 text-blue-600" />
               <h1 className="text-3xl font-bold text-gray-900">Historique des commandes</h1>

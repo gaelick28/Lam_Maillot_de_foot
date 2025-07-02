@@ -122,6 +122,13 @@ export default function AccountDetails({ user = {} }) {
 
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
+            
+             {/* Message de bienvenue */}
+                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
+                </div>
+                
             {/* En-tête */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon compte</h1>
