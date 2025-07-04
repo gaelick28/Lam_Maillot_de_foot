@@ -1,4 +1,4 @@
-// "use client"
+"use client"
 
 import { useState } from "react"
 import { Head, useForm, usePage } from "@inertiajs/react"
@@ -183,7 +183,8 @@ export default function AddressPage({ addresses = [] }) {
                 <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                   <form onSubmit={handleBillingSubmit} className="space-y-6">
                     <div className="text-sm text-blue-600 mb-2">
-                      📋 Formulaire de facturation (Type: {billingForm.data.type})
+                      📋 Formulaire de facturation 
+                      {/* (Type: {billingForm.data.type}) */}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -356,7 +357,8 @@ export default function AddressPage({ addresses = [] }) {
                 <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
                     <div className="text-sm text-green-600 mb-2">
-                      🚚 Formulaire de livraison (Type: {shippingForm.data.type})
+                      🚚 Formulaire de livraison 
+                      {/* (Type: {shippingForm.data.type}) */}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

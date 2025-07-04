@@ -43,7 +43,7 @@ public function dashboard()
    
     // public function addresses() {
     //     return Inertia::render('Addresses', [
-    //         'user' => request()->user()->addresses()->get(),
+    //         'Addresses' => request()->user()->addresses()->get(),
     //     ]);
     // }
 

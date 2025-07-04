@@ -3,6 +3,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AccountDetailController;
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
+    Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
+
+
+Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('account.details');
+Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
+Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
+});
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -19,6 +32,11 @@ Route::get('/register', [PageController::class, 'loginRegister'])->name('registe
 // Déconnexion
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('home');
+})->name('logout');
+
 // Routes protégées
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
@@ -27,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
  
     Route::get('/accountdetails', [PageController::class, 'accountDetails'])->name('account.details');
     Route::get('/mywishlist', [PageController::class, 'wishlist'])->name('wishlist');
+
 });
 
 Route::fallback([PageController::class, 'page404']);

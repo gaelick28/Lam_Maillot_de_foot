@@ -16,7 +16,7 @@ const UserIcon = ({ className }) => (
       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
     />
   </svg>
-)
+);
 
 const MailIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@ const MailIcon = ({ className }) => (
       d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
     />
   </svg>
-)
+);
 
 const PhoneIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@ const PhoneIcon = ({ className }) => (
       d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
     />
   </svg>
-)
+);
 
 const CalendarIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@ const CalendarIcon = ({ className }) => (
       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
     />
   </svg>
-)
+);
 
 const ShieldIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@ const ShieldIcon = ({ className }) => (
       d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
     />
   </svg>
-)
+);
 
 const SettingsIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,13 +72,16 @@ const SettingsIcon = ({ className }) => (
     />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
-)
+);
+
 
 export default function AccountDetails({ user = {} }) {
   const [editingSection, setEditingSection] = useState(null)
   const { url } = usePage()
 
+  // Ajout de username dans le formulaire
   const personalInfoForm = useForm({
+    username: user.username || "",
     first_name: user.first_name || "",
     last_name: user.last_name || "",
     email: user.email || "",
@@ -123,12 +126,12 @@ export default function AccountDetails({ user = {} }) {
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
             
-             {/* Message de bienvenue */}
-                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
-                </div>
-                
+            {/* Message de bienvenue */}
+            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
+            </div>
+            
             {/* En-tête */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon compte</h1>
@@ -159,6 +162,27 @@ export default function AccountDetails({ user = {} }) {
                 {editingSection === "personal" ? (
                   <form onSubmit={handlePersonalInfoSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Champ Identifiant */}
+                      <div>
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                          Identifiant *
+                        </label>
+                        <input
+                          id="username"
+                          type="text"
+                          required
+                          value={personalInfoForm.data.username}
+                          onChange={(e) => personalInfoForm.setData("username", e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                          aria-describedby={personalInfoForm.errors.username ? "username_error" : undefined}
+                        />
+                        {personalInfoForm.errors.username && (
+                          <p id="username_error" className="text-red-500 text-sm mt-1" role="alert">
+                            {personalInfoForm.errors.username}
+                          </p>
+                        )}
+                      </div>
+                      {/* Prénom */}
                       <div>
                         <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
                           Prénom *
@@ -178,7 +202,7 @@ export default function AccountDetails({ user = {} }) {
                           </p>
                         )}
                       </div>
-
+                      {/* Nom */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
                         <input
@@ -191,7 +215,7 @@ export default function AccountDetails({ user = {} }) {
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.last_name}</p>
                         )}
                       </div>
-
+                      {/* Email */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input
@@ -204,7 +228,7 @@ export default function AccountDetails({ user = {} }) {
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.email}</p>
                         )}
                       </div>
-
+                      {/* Téléphone */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                         <input
@@ -217,7 +241,7 @@ export default function AccountDetails({ user = {} }) {
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.phone}</p>
                         )}
                       </div>
-
+                      {/* Date de naissance */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
                         <input
@@ -230,7 +254,7 @@ export default function AccountDetails({ user = {} }) {
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.birth_date}</p>
                         )}
                       </div>
-
+                      {/* Genre */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
                         <select
@@ -248,7 +272,6 @@ export default function AccountDetails({ user = {} }) {
                         )}
                       </div>
                     </div>
-
                     <div className="flex gap-4">
                       <button
                         type="submit"
@@ -268,6 +291,15 @@ export default function AccountDetails({ user = {} }) {
                   </form>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Affichage Identifiant */}
+                    <div className="flex items-center gap-3">
+                      <UserIcon className="w-5 h-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Identifiant</p>
+                        <p className="font-medium">{user.username}</p>
+                      </div>
+                    </div>
+                    {/* Nom complet */}
                     <div className="flex items-center gap-3">
                       <UserIcon className="w-5 h-5 text-gray-400" />
                       <div>
@@ -277,7 +309,7 @@ export default function AccountDetails({ user = {} }) {
                         </p>
                       </div>
                     </div>
-
+                    {/* Email */}
                     <div className="flex items-center gap-3">
                       <MailIcon className="w-5 h-5 text-gray-400" />
                       <div>
@@ -285,7 +317,7 @@ export default function AccountDetails({ user = {} }) {
                         <p className="font-medium">{user.email}</p>
                       </div>
                     </div>
-
+                    {/* Téléphone */}
                     <div className="flex items-center gap-3">
                       <PhoneIcon className="w-5 h-5 text-gray-400" />
                       <div>
@@ -293,12 +325,15 @@ export default function AccountDetails({ user = {} }) {
                         <p className="font-medium">{user.phone || "Non renseigné"}</p>
                       </div>
                     </div>
-
+                    {/* Date de naissance */}
                     <div className="flex items-center gap-3">
                       <CalendarIcon className="w-5 h-5 text-gray-400" />
                       <div>
-                        <p className="text-sm text-gray-500">Date de naissance</p>
-                        <p className="font-medium">{user.birth_date || "Non renseignée"}</p>
+                        <span>
+                            {user.birth_date
+                              ? new Date(user.birth_date).toLocaleDateString('fr-FR') // ou autre locale
+                              : ''}
+                        </span>
                       </div>
                     </div>
                   </div>
