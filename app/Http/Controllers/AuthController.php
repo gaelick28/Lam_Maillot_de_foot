@@ -55,7 +55,7 @@ class AuthController extends Controller
             'is_active'  => true, // Valeur par défaut ajoutée ici
         ]);
 
-        // Auth::login($user);
+        Auth::login($user);
 
         return redirect()->route('dashboard')->with('success', 'Inscription réussie');
     }

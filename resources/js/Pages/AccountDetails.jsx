@@ -75,19 +75,19 @@ const SettingsIcon = ({ className }) => (
 );
 
 
-export default function AccountDetails({ user = {} }) {
+export default function AccountDetails({ user = {}, defaultAddress = {} }) {
   const [editingSection, setEditingSection] = useState(null)
   const { url } = usePage()
 
   // Ajout de username dans le formulaire
   const personalInfoForm = useForm({
-    username: user.username || "",
-    first_name: user.first_name || "",
-    last_name: user.last_name || "",
-    email: user.email || "",
-    phone: user.phone || "",
-    birth_date: user.birth_date || "",
-    gender: user.gender || "",
+     username: user.username || "",
+  first_name: defaultAddress.first_name || user.first_name || "",
+  last_name: defaultAddress.last_name || user.last_name || "",
+  email: user.email || "",
+  phone: defaultAddress.phone || user.phone || "",
+  birth_date: user.birth_date || "",
+  gender: user.gender || "",
   })
 
   const passwordForm = useForm({

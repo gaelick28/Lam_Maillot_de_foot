@@ -14,16 +14,27 @@ class AccountDetailController extends Controller
 {
     public function edit()
 {
-      $user = Auth::user();
+    $user = \App\Models\User::with(['addresses' => function ($query) {
+        $query->where('type', 'billing')->where('is_default', true);
+    }])->find(Auth::id());
 
-    $defaultAddress = \App\Models\UserAddress::where('user_id', Auth::id())
-    ->where('type', 'billing')
-    ->where('is_default', true)
-    ->first();
+    // Récupérer l’adresse de facturation si elle existe
+    $defaultAddress = $user->addresses->first();
+
+    // Fusionner les données utilisateur + adresse
+    $userData = [
+        'id' => $user->id,
+        'username' => $user->username,
+        'email' => $user->email,
+        'birth_date' => $user->birth_date,
+        'gender' => $user->gender,
+        'first_name' => $defaultAddress->first_name ?? '',
+        'last_name' => $defaultAddress->last_name ?? '',
+        'phone' => $defaultAddress->phone ?? '',
+    ];
 
     return Inertia::render('AccountDetails', [
-        'user' => $user,
-        'defaultAddress' => $defaultAddress,
+        'user' => $userData,
     ]);
 }
 
