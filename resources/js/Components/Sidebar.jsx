@@ -1,5 +1,12 @@
-import { Link } from "@inertiajs/react"
-import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart, FaSignOutAlt, FaTachometerAlt } from "react-icons/fa"
+import { Link, router } from "@inertiajs/react"
+import {
+  FaBoxOpen,
+  FaMapMarkerAlt,
+  FaUser,
+  FaHeart,
+  FaSignOutAlt,
+  FaTachometerAlt,
+} from "react-icons/fa"
 
 export default function Sidebar({ currentRoute = "" }) {
   const menuItems = [
@@ -33,14 +40,11 @@ export default function Sidebar({ currentRoute = "" }) {
       icon: FaHeart,
       active: currentRoute.includes("/mywishlist"),
     },
-    {
-      href: "/logout",
-      label: "Se déconnecter",
-      icon: FaSignOutAlt,
-      className: "text-red-300 hover:text-red-500 mt-8",
-      active: false,
-    },
   ]
+
+  const handleLogout = () => {
+    router.post("/logout")
+  }
 
   return (
     <aside className="w-64 bg-gray-500 text-white p-6 hidden md:block">
@@ -50,13 +54,26 @@ export default function Sidebar({ currentRoute = "" }) {
           <li key={index}>
             <Link
               href={item.href}
-              className={`flex items-center gap-2 ${item.active ? "text-blue-900 font-bold" : "text-black hover:text-blue-200"} ${item.className || ""}`}
+              className={`flex items-center gap-2 ${
+                item.active ? "text-blue-900 font-bold" : "text-black hover:text-blue-200"
+              } ${item.className || ""}`}
             >
               <item.icon />
               {item.label}
             </Link>
           </li>
         ))}
+
+        {/* Bouton de déconnexion */}
+        <li>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-red-300 hover:text-red-500 mt-8"
+          >
+            <FaSignOutAlt />
+            Se déconnecter
+          </button>
+        </li>
       </ul>
     </aside>
   )
