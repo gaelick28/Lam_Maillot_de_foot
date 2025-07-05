@@ -7,15 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AccountDetailController;
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
-    Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
-
-
-Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('account.details');
-Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
-Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
-});
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -30,7 +21,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/register', [PageController::class, 'loginRegister'])->name('register.page'); // Affiche le formulaire d'inscription
 
 // Déconnexion
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -59,3 +50,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
+    Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
+
+
+Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('account.details');
+Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
+Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
+});

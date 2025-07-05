@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Link } from "@inertiajs/react"
+import { usePage, Link } from "@inertiajs/react"
 
 // Logo ballon foot
 function BallonFootIcon({ className }) {
@@ -32,6 +32,9 @@ export default function Header() {
       }
     }
   }, [timeoutId])
+
+  const { auth } = usePage().props; // "auth" est le nom classique, adapte selon ton backend
+const user = auth?.user; // ou juste "auth" selon ta structure
 
   const leagues = [
     {
@@ -203,13 +206,31 @@ export default function Header() {
 
             {/* Éléments de droite */}
             <div className="flex items-center gap-6">
-              <div className="hidden md:flex items-center gap-4 text-black">
-                <Link href="/login" className="hover:text-blue-200 transition-colors " aria-label="Mon compte">
-                  Mon compte
-                </Link>
-              </div>
-
-              {/* Panier */}
+              
+<div className="hidden md:flex items-center gap-4 text-black">
+  {user ? (
+  <>
+    <Link href="/dashboard" className="hover:text-blue-200 transition-colors" aria-label="Mon compte">
+      Mon compte
+    </Link>
+    <Link
+      href="/logout"
+      method="post"
+      as="button"
+      className="hover:text-red-500 transition-colors ml-4"
+      aria-label="Déconnexion"
+    >
+      Déconnexion
+    </Link>
+  </>
+) : (
+  <Link href="/login" className="hover:text-blue-200 transition-colors" aria-label="Mon compte">
+    Mon compte
+  </Link>
+)}
+     </div>
+     
+             {/* Panier */}
               <Link
                 href="/cart"
                 className="relative hover:text-blue-200 transition-colors text-black "
