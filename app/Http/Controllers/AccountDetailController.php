@@ -18,47 +18,55 @@ class AccountDetailController extends Controller
         $query->where('type', 'billing')->where('is_default', true);
     }])->find(Auth::id());
 
-    // Récupérer l’adresse de facturation si elle existe
-    $defaultAddress = $user->addresses->first();
+    $billingAddress = $user->addresses()
+    ->where('type', 'billing')
+    ->where('is_default', true)
+    ->first();
 
-    // Fusionner les données utilisateur + adresse
-    $userData = [
+
+return Inertia::render('AccountDetails', [
+    'user' => [
         'id' => $user->id,
         'username' => $user->username,
         'email' => $user->email,
         'birth_date' => $user->birth_date,
         'gender' => $user->gender,
-        'first_name' => $defaultAddress->first_name ?? '',
-        'last_name' => $defaultAddress->last_name ?? '',
-        'phone' => $defaultAddress->phone ?? '',
-    ];
-
-    return Inertia::render('AccountDetails', [
-        'user' => $userData,
-    ]);
+        'first_name' => $user->first_name ?? $billingAddress->first_name ?? '',
+        'last_name' => $user->last_name ?? $billingAddress->last_name ?? '',
+        'phone' => $user->phone ?? $billingAddress->phone ?? '',
+    ],
+]);
 }
 
     public function updatePersonalInfo(Request $request)
-    {
-        $user = User::find(Auth::id());
+{
+    $user = $request->user();
 
-        $validated = $request->validate([
-            'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'nullable|string|max:100',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|string|max:20',
-            'birth_date' => 'nullable|date',
-            'gender' => 'nullable|in:male,female,other',
+    $validated = $request->validate([
+        'username'   => 'required|string|max:50|unique:users,username,' . $user->id,
+        'first_name' => 'nullable|string|max:100',
+        'last_name'  => 'nullable|string|max:100',
+        'email'      => 'required|email|unique:users,email,' . $user->id,
+        'phone'      => 'nullable|string|max:20',
+        'birth_date' => 'nullable|date',
+        'gender'     => 'nullable|in:male,female,other',
+    ]);
+
+    $user->update($validated);
+
+    // 🔄 Synchroniser les données avec l'adresse de facturation
+    $billingAddress = $user->addresses()->where('type', 'billing')->first();
+
+    if ($billingAddress) {
+        $billingAddress->update([
+            'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
+            'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
+            'phone'      => $validated['phone'] ?? $billingAddress->phone,
         ]);
-
-        foreach ($validated as $key => $value) {
-            $user->$key = $value;
-        }
-        $user->save();
-
-        return redirect()->back()->with('success', 'Informations mises à jour.');
     }
+
+    return back()->with('success', 'Informations mises à jour avec succès.');
+}
 
     public function updatePassword(Request $request)
     {

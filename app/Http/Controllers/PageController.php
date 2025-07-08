@@ -41,23 +41,7 @@ public function dashboard()
 }
    
    
-    // public function addresses() {
-    //     return Inertia::render('Addresses', [
-    //         'Addresses' => request()->user()->addresses()->get(),
-    //     ]);
-    // }
 
-    // public function addresses() {
-//     $addresses = request()->user() ? request()->user()->addresses()->get() : [];
-//     return Inertia::render('Addresses', [
-//         'addresses' => $addresses,
-//         'user' => request()->user() // Nécessaire pour que {user} soit disponible
-//     ]);
-// }
-
-//  public function accountDetails() {
-//         return Inertia::render('AccountDetails');
-//     }
 
     public function accountDetails() {
        return Inertia::render('AccountDetails', [

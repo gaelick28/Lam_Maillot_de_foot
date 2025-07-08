@@ -107,16 +107,36 @@ class AddressController extends Controller
         }
 
         // Si cette adresse est par défaut, désactiver les autres du même type
-        if ($validated['is_default'] ?? false) {
-            UserAddress::where('user_id', $userId)
-                ->where('type', $validated['type'])
-                ->where('id', '!=', $address->id)
-                ->update(['is_default' => false]);
-        }
+        if ($address->type === 'billing' && $address->is_default) {
+    $user = $address->user;
+    $user->update([
+        'first_name' => $address->first_name,
+        'last_name'  => $address->last_name,
+        'phone'      => $address->phone,
+    ]);
+}
 
         $address->update($validated);
 
         return redirect()->route('addresses.index')->with('success', 'Adresse mise à jour.');
+        $address->update($validated);
+
+// Synchronisation vers le compte utilisateur si adresse de facturation par défaut
+$this->syncBillingAddressToUser($address);
+if ($address->type === 'billing' && $address->user_id) {
+    // si c’est la seule ou la première adresse de facturation, on peut forcer
+    $isOnlyBilling = $address->user->addresses()
+        ->where('type', 'billing')
+        ->count() === 1;
+
+    if ($address->is_default || $isOnlyBilling) {
+        $address->user->update([
+            'first_name' => $address->first_name,
+            'last_name'  => $address->last_name,
+            'phone'      => $address->phone,
+        ]);
+    }
+}
     }
 
     /**
@@ -135,4 +155,14 @@ class AddressController extends Controller
 
         return redirect()->route('addresses.index')->with('success', 'Adresse supprimée avec succès !');
     }
+    private function syncBillingAddressToUser(UserAddress $address)
+{
+    if ($address->type === 'billing' && $address->is_default && $address->user) {
+        $address->user->update([
+            'first_name' => $address->first_name,
+            'last_name'  => $address->last_name,
+            'phone'      => $address->phone,
+        ]);
+    }
+}
 }

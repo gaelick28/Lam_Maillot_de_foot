@@ -51,7 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
+    // Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
     Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
 
 
