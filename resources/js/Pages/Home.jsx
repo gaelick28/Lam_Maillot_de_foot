@@ -15,6 +15,8 @@ import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
+
+
 export default function Homepage({ products }) {
   // Données exemple pour les maillots
   const featuredProducts = [
@@ -23,7 +25,7 @@ export default function Homepage({ products }) {
       team: 'Girondins de Bordeaux',
       type: 'Maillot Domicile 2023/24',
       price: 79.90,
-      image: 'https://via.placeholder.com/300x400/0000FF/FFFFFF?text=Bordeaux+Home',
+      image: '/images/maillot/images_maillot/girondins.jfif',
       badge: 'Nouveauté'
     },
     {
@@ -31,7 +33,7 @@ export default function Homepage({ products }) {
       team: 'Girondins de Bordeaux',
       type: 'Maillot Extérieur',
       price: 74.90,
-      image: 'https://via.placeholder.com/300x400/FFFFFF/000000?text=Bordeaux+Away'
+      image: '/images/maillot/images_maillot/girondins_ext_202425.JPG',
     },
     // Répéter pour 4 maillots Bordeaux
     {
@@ -39,7 +41,7 @@ export default function Homepage({ products }) {
       team: 'Olympique Lyonnais',
       type: 'Maillot Third 2024',
       price: 84.90,
-      image: 'https://via.placeholder.com/300x400/FF0000/FFFFFF?text=OL+Third',
+      image: '/images/maillot/images_maillot/OL_2024-2025-Third-webp.webp',
       badge: 'Limited Edition'
     },
     // 4 maillots OL
@@ -48,7 +50,7 @@ export default function Homepage({ products }) {
       team: 'Equipe de France',
       type: 'Maillot Coupe du Monde 2022',
       price: 129.90,
-      image: 'https://via.placeholder.com/300x400/0000FF/FFFFFF?text=France+Home',
+      image: '/images/maillot/images_maillot/france.JPG',
       badge: 'Champions Edition'
     },
     // 4 maillots France
@@ -110,17 +112,17 @@ export default function Homepage({ products }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <TeamCard 
               team="Girondins de Bordeaux" 
-              image="https://via.placeholder.com/600x400/0000FF/FFFFFF?text=Bordeaux"
+              image='/images/maillot/images_maillot/girondins.jfif'
               count={4}
             />
             <TeamCard 
               team="Olympique Lyonnais" 
-              image="https://via.placeholder.com/600x400/FF0000/FFFFFF?text=OL"
+              image="/images/maillot/images_maillot/OL-2025-75-ans.webp"
               count={4}
             />
             <TeamCard 
               team="Équipe de France" 
-              image="https://via.placeholder.com/600x400/0000FF/FFFFFF?text=France"
+              image='/images/maillot/images_maillot/france.JPG'
               count={4}
             />
           </div>

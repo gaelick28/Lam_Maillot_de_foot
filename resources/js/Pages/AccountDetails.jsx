@@ -74,10 +74,26 @@ const SettingsIcon = ({ className }) => (
   </svg>
 );
 
-
+ const EyeIcon = ({ show }) => (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {show ? (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3l18 18M9.88 9.88a3 3 0 104.24 4.24M6.23 6.23A10.46 10.46 0 0112 4.5c4.76 0 8.77 3.16 10.07 7.5a10.5 10.5 0 01-4.3 5.77M15.54 15.54a10.46 10.46 0 01-3.54.96c-4.76 0-8.77-3.16-10.07-7.5a10.47 10.47 0 012.04-3.78" />
+      ) : (
+        <>
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M2.04 12.32c1.38-4.81 5.32-7.82 9.96-7.82s8.58 3.01 9.96 7.18c.07.21.07.43 0 .64-1.38 4.81-5.32 7.82-9.96 7.82s-8.58-3.01-9.96-7.18z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </>
+      )}
+    </svg>
+  )
+  
 export default function AccountDetails({ user = {}, defaultAddress = {} }) {
   const [editingSection, setEditingSection] = useState(null)
   const { url } = usePage()
+
+const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+const [showNewPassword, setShowNewPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Ajout de username dans le formulaire
   const personalInfoForm = useForm({
@@ -368,12 +384,23 @@ export default function AccountDetails({ user = {}, defaultAddress = {} }) {
                       <label className="block text-sm font-medium text-gray-700 mb-1"
                         aria-label="Mot de passe actuel"
                       >Mot de passe actuel</label>
-                      <input
-                        type="password"
-                        value={passwordForm.data.current_password}
-                        onChange={(e) => passwordForm.setData("current_password", e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showCurrentPassword ? "text" : "password"}
+                          value={passwordForm.data.current_password}
+                          onChange={(e) => passwordForm.setData("current_password", e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                          className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+                          aria-label={showCurrentPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                        >
+                          <EyeIcon show={showCurrentPassword} />
+                        </button>
+                      </div>
+
                       {passwordForm.errors.current_password && (
                         <p className="text-red-500 text-sm mt-1">{passwordForm.errors.current_password}</p>
                       )}
@@ -384,12 +411,22 @@ export default function AccountDetails({ user = {}, defaultAddress = {} }) {
                         aria-label="Nouveau mot de passe"
                       >Nouveau mot de passe</label>
                       
-                      <input
-                        type="password"
-                        value={passwordForm.data.password}
-                        onChange={(e) => passwordForm.setData("password", e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showNewPassword ? "text" : "password"}
+                          value={passwordForm.data.password}
+                          onChange={(e) => passwordForm.setData("password", e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+                          aria-label={showNewPassword ? "Masquer" : "Afficher"}
+                        >
+                          <EyeIcon show={showNewPassword} />
+                        </button>
+                      </div>
                       {passwordForm.errors.password && (
                         <p className="text-red-500 text-sm mt-1">{passwordForm.errors.password}</p>
                       )}
@@ -401,12 +438,22 @@ export default function AccountDetails({ user = {}, defaultAddress = {} }) {
                         Confirmer le nouveau mot de passe
                       </label>
                       
-                      <input
-                        type="password"
-                        value={passwordForm.data.password_confirmation}
-                        onChange={(e) => passwordForm.setData("password_confirmation", e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={passwordForm.data.password_confirmation}
+                          onChange={(e) => passwordForm.setData("password_confirmation", e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+                          aria-label={showConfirmPassword ? "Masquer" : "Afficher"}
+                        >
+                          <EyeIcon show={showConfirmPassword} />
+                        </button>
+                      </div>
                       {passwordForm.errors.password_confirmation && (
                         <p className="text-red-500 text-sm mt-1">{passwordForm.errors.password_confirmation}</p>
                       )}

@@ -72,5 +72,8 @@ class User extends Authenticatable
     {
         return $this->username === 'admin';
     }
-    
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }
