@@ -5,7 +5,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AccountDetailController;
-
+use App\Http\Controllers\ClubController;
 
 
 // Routes publiques
@@ -59,3 +59,7 @@ Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('a
 Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
 Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
 });
+
+// Routes pour les clubs
+Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
+        // Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
