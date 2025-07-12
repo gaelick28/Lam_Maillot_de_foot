@@ -62,4 +62,4 @@ Route::put('/account/password', [AccountDetailController::class, 'updatePassword
 
 // Routes pour les clubs
 Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
-        // Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
+        Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
