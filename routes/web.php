@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AccountDetailController;
 use App\Http\Controllers\ClubController;
-
+use App\Http\Controllers\MaillotController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -63,3 +63,6 @@ Route::put('/account/password', [AccountDetailController::class, 'updatePassword
 // Routes pour les clubs
 Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
         Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
+
+// Routes pour les maillots
+Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');
