@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { usePage, Link } from "@inertiajs/react"
+import { usePage, Link, router } from "@inertiajs/react"
 
 // Logo ballon foot
 function BallonFootIcon({ className }) {
@@ -24,6 +24,26 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMobileLeague, setActiveMobileLeague] = useState(null)
   const [timeoutId, setTimeoutId] = useState(null)
+
+
+  const [searchValue, setSearchValue] = useState('');
+const [searchError, setSearchError] = useState('');
+function handleSearch() {
+  if (searchValue.trim()) {
+    fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.slug) {
+          setSearchError('')
+          router.get(`/clubs/${data.slug}/maillots`);
+          setSearchValue('');
+        } else {
+          setSearchError('Aucun club trouvé pour votre recherche.');
+        }
+      })
+      .catch(() => setSearchError('Erreur lors de la recherche'));
+  }
+}
 
   useEffect(() => {
     return () => {
@@ -179,30 +199,43 @@ const user = auth?.user; // ou juste "auth" selon ta structure
             </Link>
 
             {/* Barre de recherche */}
-            <div className="flex-grow max-w-xl mx-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Recherche de produits..."
-                  className="w-full px-4 py-2 rounded-full bg-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  aria-label="Rechercher des produits"
-                />
-                <svg
-                  className="absolute right-3 top-2.5 h-5 w-5 text-white/50"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
+       <div className="relative w-full max-w-xl mx-auto">
+  <input
+    type="text"
+    value={searchValue}
+    placeholder="Recherche un club…"
+    onChange={e => setSearchValue(e.target.value)}
+    onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
+    className="block w-full pl-4 pr-12 py-2 rounded-full bg-white/20 border border-blue-300 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-300"
+    aria-label="Rechercher un club"
+    style={{ boxSizing: 'border-box' }}
+  />
+  <button
+    type="button"
+    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center"
+    onClick={handleSearch}
+    aria-label="Rechercher"
+    tabIndex={-1}
+    style={{ background: 'transparent', border: 0, padding: 0, margin: 0 }}
+  >
+    <svg
+      className="h-6 w-6 text-white/60"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+  </button>
+</div>
+
+
 
             {/* Éléments de droite */}
             <div className="flex items-center gap-6">

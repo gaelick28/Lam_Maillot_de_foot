@@ -13,10 +13,9 @@ class MaillotController extends Controller
     {
         $maillot = Maillot::with('club')->findOrFail($id);
 
-        // Ici tu peux ajouter les tailles, quantités, etc. selon ta structure de BDD
-        // Exemple simple :
+        //  ajouter les tailles, quantités
         $tailles = ['S', 'M', 'L', 'XL'];
-        $quantite = 10; // ou récupère depuis la BDD
+        $quantite = 1200; // ou récupère depuis la BDD
 
         return Inertia::render('MaillotDetail', [
             'maillot' => $maillot,

@@ -63,6 +63,10 @@ Route::put('/account/password', [AccountDetailController::class, 'updatePassword
 // Routes pour les clubs
 Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
         Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
+        Route::get('/maillots/{id}', [ClubController::class, 'maillotDetail'])->name('maillot.detail');
+       Route::get('/club-slug', [ClubController::class, 'findSlugByName']);
+
+
 
 // Routes pour les maillots
 Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Club;
 
 class PageController extends Controller
 {
@@ -58,5 +59,32 @@ public function dashboard()
     public function page404() {
         return Inertia::render('Page404');
     }
+    
+   
+    // barre de recherche 
+public function search(Request $request)
+{
+    $query = $request->get('q');
+    
+    if (empty($query)) {
+        return redirect()->route('home');
+    }
+    
+    // Rechercher le club par nom
+    $club = Club::where('name', 'LIKE', '%' . $query . '%')->first();
+    
+    if ($club) {
+        // Si on trouve le club, rediriger vers ses maillots
+        return redirect()->route('club.maillots', ['slug' => $club->slug]);
+    }
+    
+    // Si aucun club trouvé, afficher page de résultats vides
+    return inertia('SearchResults', [
+        'query' => $query,
+        'found' => false
+    ]);
+}
+
+
 }
 

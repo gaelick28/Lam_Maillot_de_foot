@@ -17,4 +17,18 @@ class ClubController extends Controller
             'maillots' => $maillots,
         ]);
     }
+    
+    public function findSlugByName(Request $request)
+{
+    $term = $request->query('name');
+    $club = \App\Models\Club::whereRaw('LOWER(name) = ?', [strtolower($term)])->first();
+
+    if(!$club) {
+        return response()->json(['error' => 'Club non trouvé'], 404);
+    }
+
+    return response()->json(['slug' => $club->slug]);
+}
+
+
 }
