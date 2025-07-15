@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-
+import { router } from "@inertiajs/react";
 export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_numero, prix_nom }) {
   const [taille, setTaille] = useState(tailles[0]);
   const [qte, setQte] = useState(1);
@@ -10,6 +10,20 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
 
   let total = prix + (personnalisation.numero && numero ? prix_numero : 0) + (personnalisation.nom && nom ? prix_nom : 0);
+
+function handleAddToCart() {
+  //  code pour constituer 'item'
+  router.post('/cart/add', {
+    maillot_id: maillot.id,
+    size: taille,
+    quantity: qte,
+    numero: personnalisation.numero ? numero : null,
+    nom: personnalisation.nom ? nom : null,
+  }, {
+    onSuccess: () => alert("Produit ajouté au panier !"), // ou toast
+  });
+}
+
 
   return (
     <>
@@ -83,11 +97,11 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
             </div>
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
             <button
-              className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900"
-              // onClick={...} // Ici tu pourras ajouter la logique de commande/panier
-            >
-              AJOUTER AU PANIER
-            </button>
+  onClick={handleAddToCart}
+  className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900"
+>
+  AJOUTER AU PANIER
+</button>
           </div>
         </div>
       </main>

@@ -62,28 +62,28 @@ public function dashboard()
     
    
     // barre de recherche 
-public function search(Request $request)
-{
-    $query = $request->get('q');
+// public function search(Request $request)
+// {
+//     $query = $request->get('q');
     
-    if (empty($query)) {
-        return redirect()->route('home');
-    }
+//     if (empty($query)) {
+//         return redirect()->route('home');
+//     }
     
-    // Rechercher le club par nom
-    $club = Club::where('name', 'LIKE', '%' . $query . '%')->first();
+//     // Rechercher le club par nom
+//     $club = Club::where('name', 'LIKE', '%' . $query . '%')->first();
     
-    if ($club) {
-        // Si on trouve le club, rediriger vers ses maillots
-        return redirect()->route('club.maillots', ['slug' => $club->slug]);
-    }
+//     if ($club) {
+//         // Si on trouve le club, rediriger vers ses maillots
+//         return redirect()->route('club.maillots', ['slug' => $club->slug]);
+//     }
     
-    // Si aucun club trouvé, afficher page de résultats vides
-    return inertia('SearchResults', [
-        'query' => $query,
-        'found' => false
-    ]);
-}
+//     // Si aucun club trouvé, afficher page de résultats vides
+//     return inertia('SearchResults', [
+//         'query' => $query,
+//         'found' => false
+//     ]);
+// }
 
 
 }

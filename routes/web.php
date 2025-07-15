@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AccountDetailController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\MaillotController;
+use App\Http\Controllers\OrderController;
+use Inertia\Inertia;
+use App\Http\Controllers\CartController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -70,3 +73,23 @@ Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name(
 
 // Routes pour les maillots
 Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/panier', function () {
+        return Inertia::render('Panier');
+    })->name('panier');
+
+    // API commande  :
+    // Route::post('/api/commande', [App\Http\Controllers\OrderController::class, 'store']);
+
+    Route::middleware(['auth'])->group(function() {
+    Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/panier/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/panier/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+});
+
+});

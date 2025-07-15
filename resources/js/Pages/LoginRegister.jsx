@@ -7,6 +7,7 @@ export default function LoginRegister() {
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  
 
   const { data, setData, post, processing, errors } = useForm({
     login: "",

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { usePage, Link, router } from "@inertiajs/react"
+import PanierLink from "@/Components/PanierLink";
 
 // Logo ballon foot
 function BallonFootIcon({ className }) {
@@ -27,7 +28,8 @@ export default function Header() {
 
 
   const [searchValue, setSearchValue] = useState('');
-const [searchError, setSearchError] = useState('');
+
+  const [searchError, setSearchError] = useState('');
 function handleSearch() {
   if (searchValue.trim()) {
     fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`)
@@ -45,6 +47,19 @@ function handleSearch() {
   }
 }
 
+const [isFocused, setIsFocused] = useState(false);
+
+function handlePanierClick() {
+  const { auth } = usePage().props;
+  if (auth?.user) {
+    router.get('/panier');
+  } else {
+    localStorage.setItem('postLoginRedirect', '/panier');
+    router.get('/login');
+  }
+}
+
+
   useEffect(() => {
     return () => {
       if (timeoutId) {
@@ -53,8 +68,8 @@ function handleSearch() {
     }
   }, [timeoutId])
 
-  const { auth } = usePage().props; // "auth" est le nom classique, adapte selon ton backend
-const user = auth?.user; // ou juste "auth" selon ta structure
+  const { auth } = usePage().props; 
+const user = auth?.user;               // ou juste "auth" selon la structure, à vérifier 
 
   const leagues = [
     {
@@ -200,37 +215,29 @@ const user = auth?.user; // ou juste "auth" selon ta structure
 
             {/* Barre de recherche */}
        <div className="relative w-full max-w-xl mx-auto">
-  <input
-    type="text"
-    value={searchValue}
-    placeholder="Recherche un club…"
-    onChange={e => setSearchValue(e.target.value)}
-    onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
-    className="block w-full pl-4 pr-12 py-2 rounded-full bg-white/20 border border-blue-300 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-300"
-    aria-label="Rechercher un club"
-    style={{ boxSizing: 'border-box' }}
-  />
+    <input
+      type="text"
+      value={searchValue}
+      onChange={e => setSearchValue(e.target.value)}
+      placeholder="Rechercher un club..."
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      className="block w-full pl-4 pr-12 py-2 rounded-full bg-white/20 border border-blue-300
+                 text-white placeholder-white/60 transition-shadow focus:shadow-xl focus:ring-2 focus:ring-blue-400"
+    />
   <button
     type="button"
-    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center"
+    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center transition-transform duration-150 active:scale-110"
     onClick={handleSearch}
-    aria-label="Rechercher"
-    tabIndex={-1}
-    style={{ background: 'transparent', border: 0, padding: 0, margin: 0 }}
   >
     <svg
-      className="h-6 w-6 text-white/60"
+      className={`h-6 w-6 transition-colors duration-300 ${isFocused ? "text-white/60" : "text-blue-900"}`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
-      aria-hidden="true"
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
     </svg>
   </button>
 </div>
@@ -263,27 +270,8 @@ const user = auth?.user; // ou juste "auth" selon ta structure
 )}
      </div>
      
-             {/* Panier */}
-              <Link
-                href="/cart"
-                className="relative hover:text-blue-200 transition-colors text-black "
-                aria-label="Panier (3 articles)"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-                <span
-                  className="absolute -top-1 -right-2 bg-red-500 text-xs text-white rounded-full px-1.5 py-0.5"
-                  aria-hidden="true"
-                >
-                  3
-                </span>
-              </Link>
+<PanierLink />
+
             </div>
           </div>
 
