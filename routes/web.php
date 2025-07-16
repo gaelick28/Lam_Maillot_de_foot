@@ -84,12 +84,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::post('/api/commande', [App\Http\Controllers\OrderController::class, 'store']);
 
     Route::middleware(['auth'])->group(function() {
+        
     Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/panier/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/panier/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
     Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    
+    Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
+
+
+
+    
 });
 
 });

@@ -23,10 +23,17 @@ use App\Models\Maillot;
 class CartItem extends Model
 {
     use HasFactory;
-    protected $fillable = ['cart_id', 'maillot_id', 'size', 'quantity'];
+    protected $fillable = ['cart_id', 'maillot_id', 'size', 'quantity', 'numero', 'nom'];
 
     public function maillot()
     {
         return $this->belongsTo(Maillot::class); // ou Maillot::class
     }
+   
+   
+    public function items()
+{
+    return $this->hasMany(CartItem::class);
+}
+
 }

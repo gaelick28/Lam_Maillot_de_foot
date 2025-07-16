@@ -270,6 +270,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
 )}
      </div>
      
+
 <PanierLink />
 
             </div>

@@ -12,7 +12,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   let total = prix + (personnalisation.numero && numero ? prix_numero : 0) + (personnalisation.nom && nom ? prix_nom : 0);
 
 function handleAddToCart() {
-  //  code pour constituer 'item'
+  // ...tout ton code pour constituer 'item'
   router.post('/cart/add', {
     maillot_id: maillot.id,
     size: taille,

@@ -12,29 +12,48 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class CartController extends Controller
 {
     use AuthorizesRequests;
-    public function show()
-    {
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-        $cart->load('items.maillot');
-        return inertia('Checkout', [
-            'cartItems' => $cart->items->map(fn($item) => [
-    'id' => $item->id,
-    'maillot_id' => $item->maillot_id,
-    'name' => $item->maillot->name,
-    'number' => $item->maillot->number,
-    'size' => $item->size,
-    'quantity' => $item->quantity,
-    'price' => $item->maillot->price,
-    'image' => $item->maillot->image,
-    'total' => $item->maillot->price * $item->quantity,
-    // AJOUTE ceci :
-    'numero' => $item->numero,
-    'nom' => $item->nom,
-]),
-            'user' => Auth::user(),
-            // Ajouter l'adresse, etc.
-        ]);
-    }
+
+
+public function show()
+{
+    $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+    $cart->load('items.maillot');
+
+    return inertia('Panier', [
+        'cartItems' => $cart->items->map(function($item) {
+            // Prix unitaire du maillot
+            $maillot = $item->maillot;
+            $price = $maillot ? $maillot->price : 0;
+            $image = $maillot ? $maillot->image : null;
+            $name = $maillot ? $maillot->name : '???';
+
+            // Suppléments personnalisation
+            $price = $maillot ? $maillot->price : 0;
+            $suppNom = $item->nom ? 3 : 0;         // 3€ pour nom
+            $suppNumero = $item->numero ? 2 : 0;   //  2€ pour numéro
+            $supplement = $suppNom + $suppNumero;
+
+            // Total ligne
+            $total = ($price + $supplement) * $item->quantity;
+
+            return [
+                'id'         => $item->id,
+                'maillot_id' => $item->maillot_id,
+                'name'       => $name,
+                'image'      => $image,
+                'size'       => $item->size,
+                'quantity'   => $item->quantity,
+                'price'      => $price,
+                'nom'        => $item->nom,
+                'numero'     => $item->numero,
+                'supplement' => $supplement,
+                'total'      => $total,
+            ];
+        }),
+    ]);
+}
+
+
 
     public function add(Request $request)
 {
@@ -85,4 +104,17 @@ class CartController extends Controller
         return redirect()->route('orders.index')->with('success', 'Commande validée !');
     }
     
+//     public function supprimer($id)
+// {
+//     $panier = session()->get('panier', []);
+
+//     // Supprimer le produit portant cet ID
+//     if(isset($panier[$id])) {
+//         unset($panier[$id]);
+//         session()->put('panier', $panier);
+//     }
+
+//     return redirect()->route('panier.index')->with('success', 'Produit supprimé du panier');
+// }
+
 }
