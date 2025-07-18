@@ -7,90 +7,90 @@ use App\Models\Maillot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
 class CartController extends Controller
 {
-    use AuthorizesRequests;
+    public function show()
+    {
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $cart->load('items.maillot');
 
+        return inertia('Panier', [
+            'cartItems' => $cart->items->map(function($item) {
+                $maillot = $item->maillot;
+                $price = $maillot ? $maillot->price : 0;
+                $image = $maillot ? $maillot->image : null;
+                $name = $maillot ? $maillot->name : '???';
 
-public function show()
-{
-    $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-    $cart->load('items.maillot');
+                // Suppléments personnalisation
+                $suppNom = $item->nom ? 3 : 0;         // 3€ pour nom
+                $suppNumero = $item->numero ? 2 : 0;   // 2€ pour numéro
+                $supplement = $suppNom + $suppNumero;
 
-    return inertia('Panier', [
-        'cartItems' => $cart->items->map(function($item) {
-            // Prix unitaire du maillot
-            $maillot = $item->maillot;
-            $price = $maillot ? $maillot->price : 0;
-            $image = $maillot ? $maillot->image : null;
-            $name = $maillot ? $maillot->name : '???';
+                // Total ligne
+                $total = ($price + $supplement) * $item->quantity;
 
-            // Suppléments personnalisation
-            $price = $maillot ? $maillot->price : 0;
-            $suppNom = $item->nom ? 3 : 0;         // 3€ pour nom
-            $suppNumero = $item->numero ? 2 : 0;   //  2€ pour numéro
-            $supplement = $suppNom + $suppNumero;
-
-            // Total ligne
-            $total = ($price + $supplement) * $item->quantity;
-
-            return [
-                'id'         => $item->id,
-                'maillot_id' => $item->maillot_id,
-                'name'       => $name,
-                'image'      => $image,
-                'size'       => $item->size,
-                'quantity'   => $item->quantity,
-                'price'      => $price,
-                'nom'        => $item->nom,
-                'numero'     => $item->numero,
-                'supplement' => $supplement,
-                'total'      => $total,
-            ];
-        }),
-    ]);
-}
-
-
-
-    public function add(Request $request)
-{
-    $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-    $item = $cart->items()
-        ->where('maillot_id', $request->maillot_id)
-        ->where('size', $request->size)
-        ->where('numero', $request->numero)
-        ->where('nom', $request->nom)
-        ->first();
-
-    if ($item) {
-        $item->increment('quantity', $request->quantity);
-    } else {
-        $cart->items()->create([
-            'maillot_id' => $request->maillot_id,
-            'size' => $request->size,
-            'quantity' => $request->quantity,
-            'numero' => $request->numero,
-            'nom' => $request->nom,
+                return [
+                    'id'         => $item->id,
+                    'maillot_id' => $item->maillot_id,
+                    'name'       => $name,
+                    'image'      => $image,
+                    'size'       => $item->size,
+                    'quantity'   => $item->quantity,
+                    'price'      => $price,
+                    'nom'        => $item->nom,
+                    'numero'     => $item->numero,
+                    'supplement' => $supplement,
+                    'total'      => $total,
+                ];
+            }),
         ]);
     }
-    return redirect()->route('cart.show');
-}
+
+    public function add(Request $request)
+    {
+        
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        $item = $cart->items()
+            ->where('maillot_id', $request->maillot_id)
+            ->where('size', $request->size)
+            ->where('numero', $request->numero)
+            ->where('nom', $request->nom)
+            ->first();
+
+        if ($item) {
+            $item->increment('quantity', $request->quantity);
+        } else {
+            $cart->items()->create([
+                'maillot_id' => $request->maillot_id,
+                'size' => $request->size,
+                'quantity' => $request->quantity,
+                'numero' => $request->numero,
+                'nom' => $request->nom,
+            ]);
+        }
+        return redirect()->route('cart.show');
+    }
 
     public function remove(CartItem $item)
     {
-        $this->authorize('delete', $item); // optionnel
+        // Vérifier que l'item appartient bien à l'utilisateur connecté
+        if ($item->cart->user_id !== Auth::id()) {
+            abort(403, 'Non autorisé');
+        }
+        
         $item->delete();
-        return back();
+        
+        return back()->with('success', 'Article supprimé du panier');
     }
 
     public function clear()
     {
         $cart = Cart::where('user_id', Auth::id())->first();
-        if ($cart) $cart->items()->delete();
-        return back();
+        if ($cart) {
+            $cart->items()->delete();
+        }
+        
+        return back()->with('success', 'Panier vidé');
     }
 
     public function checkout(Request $request)
@@ -103,18 +103,4 @@ public function show()
         $cart->items()->delete(); // vide le panier
         return redirect()->route('orders.index')->with('success', 'Commande validée !');
     }
-    
-//     public function supprimer($id)
-// {
-//     $panier = session()->get('panier', []);
-
-//     // Supprimer le produit portant cet ID
-//     if(isset($panier[$id])) {
-//         unset($panier[$id]);
-//         session()->put('panier', $panier);
-//     }
-
-//     return redirect()->route('panier.index')->with('success', 'Produit supprimé du panier');
-// }
-
 }
