@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { router } from "@inertiajs/react";
+
 export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_numero, prix_nom }) {
   const [taille, setTaille] = useState(tailles[0]);
   const [qte, setQte] = useState(1);
@@ -9,21 +10,25 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [nom, setNom] = useState("");
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
 
-  let total = prix + (personnalisation.numero && numero ? prix_numero : 0) + (personnalisation.nom && nom ? prix_nom : 0);
+  // Calcul du supplément pour personnalisation
+  const supplement =
+    (personnalisation.numero && numero ? prix_numero : 0) +
+    (personnalisation.nom && nom ? prix_nom : 0);
 
-function handleAddToCart() {
-  // ...tout ton code pour constituer 'item'
-  router.post('/cart/add', {
-    maillot_id: maillot.id,
-    size: taille,
-    quantity: qte,
-    numero: personnalisation.numero ? numero : null,
-    nom: personnalisation.nom ? nom : null,
-  }, {
-    onSuccess: () => alert("Produit ajouté au panier !"), // ou toast
-  });
-}
+  // Multiplie bien par la quantité choisie
+  const total = (prix + supplement) * parseInt(qte || 1, 10);
 
+  function handleAddToCart() {
+    router.post('/cart/add', {
+      maillot_id: maillot.id,
+      size: taille,
+      quantity: qte,
+      numero: personnalisation.numero ? numero : null,
+      nom: personnalisation.nom ? nom : null,
+    }, {
+      onSuccess: () => alert("Maillot ajouté au panier !"), 
+    });
+  }
 
   return (
     <>
@@ -33,9 +38,10 @@ function handleAddToCart() {
           <div className="flex-1">
             <img src={`/${maillot.image}`} alt={maillot.nom} className="w-full max-w-md rounded shadow" />
           </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2">{maillot.nom}</h1>
-            <div className="text-lg mb-4 text-gray-700">{maillot.club?.name}</div>
+          <div className="flex-1">  
+            <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
+            <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
+            <div className="mb-2">Prix : <span className="font-semibold">{prix} €</span></div>
             <div className="mb-2">Type : <span className="font-semibold">{maillot.type || "Maillot"}</span></div>
             <div className="mb-2">Quantité disponible : <span className="font-semibold">{quantite}</span></div>
             <div className="mb-2">
@@ -97,11 +103,11 @@ function handleAddToCart() {
             </div>
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
             <button
-  onClick={handleAddToCart}
-  className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900"
->
-  AJOUTER AU PANIER
-</button>
+              onClick={handleAddToCart}
+              className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900"
+            >
+              AJOUTER AU PANIER
+            </button>
           </div>
         </div>
       </main>

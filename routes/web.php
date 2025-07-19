@@ -92,6 +92,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
     Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     
+    Route::put('/panier/item/{item}', [CartController::class, 'update'])->name('cart.update');
+        
+    
     Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
 

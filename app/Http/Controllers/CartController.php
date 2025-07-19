@@ -30,7 +30,9 @@ class CartController extends Controller
                 $total = ($price + $supplement) * $item->quantity;
 
                 return [
-                    'id'         => $item->id,
+                    'id' => $maillot->id,
+                    'club_name' => $maillot->club->name,
+                    'maillot_name' => $maillot->nom,
                     'maillot_id' => $item->maillot_id,
                     'name'       => $name,
                     'image'      => $image,
@@ -103,4 +105,51 @@ class CartController extends Controller
         $cart->items()->delete(); // vide le panier
         return redirect()->route('orders.index')->with('success', 'Commande validée !');
     }
+    
+   public function update(Request $request, CartItem $item)
+{
+    if ($item->cart->user_id !== Auth::id()) abort(403);
+
+    $data = $request->validate([
+        'size'     => 'required|string|max:10',
+        'quantity' => 'required|integer|min:1',
+        'nom'      => 'nullable|string|max:50',
+        'numero'   => 'nullable|integer|min:0|max:99',
+    ]);
+    $item->update($data);
+
+    // Regénère le panier entier et l'envoie
+    $cart = $item->cart;
+    $cart->load('items.maillot');
+    $cartItems = $cart->items->map(function($item) {
+        $maillot = $item->maillot;
+        $price = $maillot ? $maillot->price : 0;
+        $suppNom = $item->nom ? 3 : 0;
+        $suppNumero = $item->numero ? 2 : 0;
+        $supplement = $suppNom + $suppNumero;
+        $total = ($price + $supplement) * $item->quantity;
+        return [
+            'id'          => $maillot->id,
+            'club_name'   => $maillot->club->name,
+            'maillot_name'=> $maillot->nom,
+            'maillot_id'  => $item->maillot_id,
+            'name'        => $maillot->name ?? '???',
+            'image'       => $maillot->image ?? null,
+            'size'        => $item->size,
+            'quantity'    => $item->quantity,
+            'price'       => $price,
+            'nom'         => $item->nom,
+            'numero'      => $item->numero,
+            'supplement'  => $supplement,
+            'total'       => $total,
+        ];
+    });
+
+    return response()->json([
+      'success' => true,
+      'cartItems' => $cartItems,
+    ]);
+}
+
+
 }
