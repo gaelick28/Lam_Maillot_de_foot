@@ -76,9 +76,9 @@ Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/panier', function () {
-        return Inertia::render('Panier');
-    })->name('panier');
+    // Route::get('/panier', function () {
+    //     return Inertia::render('Panier');
+    // })->name('panier');
 
     // API commande  :
     // Route::post('/api/commande', [App\Http\Controllers\OrderController::class, 'store']);

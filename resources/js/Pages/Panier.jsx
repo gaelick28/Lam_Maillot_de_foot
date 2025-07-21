@@ -19,6 +19,8 @@ export default function Panier() {
   const [cartItems, setCartItems] = useState(initialCartItems)
   const [loadingId, setLoadingId] = useState(null)
 
+  const [dirtyMap, setDirtyMap] = useState({});
+
   // A l'initialisation, on recalcule tous les suppléments et totaux
   useEffect(() => {
   setCartItems(items =>
@@ -77,46 +79,53 @@ export default function Panier() {
   function handleEdit(itemId, field, value) {
   setCartItems(prev =>
     prev.map(i => {
-      if (i.id !== itemId) return i
-      const updatedNom = field === "nom" ? value : (i.nom || "");
-      const updatedNumero = field === "numero" ? value : (i.numero || "");
+      if (i.id !== itemId) return i;
+      // Nouvelle logique calculs
+      let updatedNom = field === "nom" ? value : (i.nom || "");
+      let updatedNumero = field === "numero" ? value : (i.numero || "");
       let supplement = 0;
-      if(updatedNom) supplement += nomPrix;
-      if(updatedNumero) supplement += numeroPrix;
-      const quantity = field === "quantity" ? value : i.quantity || 1;
-      // SAUVEGARDE numérique:
-      const prixMaillot = i.priceNum || parseFloat(i.price) || 0;
-      const total = (prixMaillot + supplement) * quantity;
+      if (updatedNom) supplement += nomPrix;
+      if (updatedNumero) supplement += numeroPrix;
+      let quantity = field === "quantity" ? value : i.quantity || 1;
+      // Prix principal
+      let prixMaillot = i.priceNum || parseFloat(i.price) || 0;
+      let total = (prixMaillot + supplement) * quantity;
       return {
         ...i,
         [field]: value,
         supplement,
         total,
         priceNum: prixMaillot
-      }
+      };
     })
+  );
+  setDirtyMap(prev => ({ ...prev, [itemId]: true }));
+}
+
+// sauvegarde côté serveur)
+function handleSave(item) {
+  setLoadingId(item.id)
+  router.put(
+    `/panier/item/${item.id}`,
+    {
+      size: item.size,
+      quantity: item.quantity,
+      nom: item.nom,
+      numero: item.numero,
+    },
+    {
+      preserveScroll: true,
+      onSuccess: () => {
+        setDirtyMap(prev => ({ ...prev, [item.id]: false })) // <-- reset après succès
+        setLoadingId(null)
+        alert("Modifications enregistrées ✅") // <-- ou toast custom
+      },
+      onError: () => setLoadingId(null),
+      
+    }
   )
 }
 
-
-  // sauvegarde côté serveur)
-  function handleSave(item) {
-    setLoadingId(item.id)
-    router.put(
-      `/panier/item/${item.id}`,
-      {
-        size: item.size,
-        quantity: item.quantity,
-        nom: item.nom,
-        numero: item.numero,
-      },
-      {
-        preserveScroll: true,
-        onSuccess: () => setLoadingId(null),
-        onError: () => setLoadingId(null),
-      }
-    )
-  }
 
   return (
     <>
@@ -154,82 +163,83 @@ export default function Panier() {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-200 hover:bg-gray-50">
-                        {/* Nom du maillot + image */}
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <p className="font-medium">
-                                {item.club_name}, {item.maillot_name}
-                              </p>
-                            </div>
-                            {item.image && (
-                              <img src={item.image} alt="" className="w-16 h-16 object-cover rounded-md" />
-                            )}
-                          </div>
-                        </td>
-                        {/* Taille éditable */}
-                        <td className="p-4">
-                          <select
-                            value={item.size}
-                            onChange={e => handleEdit(item.id, "size", e.target.value)}
-                            className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300 shadow-sm transition-all"
-                          >
-                            {["S","M","L","XL"].map(sz => (
-                              <option key={sz} value={sz}>{sz}</option>
-                            ))}
-                          </select>
-                        </td>
-                        <td className="p-4">
-                          <input
-                            type="number"
-                            min={1}
-                            className="border-none w-16 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300 shadow-sm transition-all"
-                            value={item.quantity}
-                            onChange={e => handleEdit(item.id, "quantity", Number(e.target.value))}
-                          />
-                        </td>
-                        <td className="p-4">
-                          <input
-                            type="text"
-                            className="border-none w-24 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300 shadow-sm transition-all"
-                            value={item.nom || ''}
-                            onChange={e => handleEdit(item.id, "nom", e.target.value)}
-                          />
-                        </td>
-                        <td className="p-4">
-                          <input
-                            type="number"
-                            min={0}
-                            max={99}
-                            className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300 shadow-sm transition-all"
-                            value={item.numero || ''}
-                            onChange={e => handleEdit(item.id, "numero", e.target.value)}
-                          />
-                        </td>
-                        {/* Prix maillot */}
-                       <td className="p-4">{Number(item.priceNum).toFixed(0)} €</td>
-                        {/* Suppléments */}
-                        <td className="p-4">
-  {item.supplement > 0
-    ? <span className="text-orange-600">{Number(item.supplement).toFixed(2)} €</span>
-    : "-"}
-</td>
-                        {/* Total ligne */}
-                     <td className="p-4 font-bold text-blue-600">{Number(item.total).toFixed(2)} €</td>
-                        {/* Actions */}
-                        <td className="p-4 space-x-2 flex flex-col md:flex-row">
-                          <button
-                            onClick={() => handleRemove(item.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition-all"
-                          >
-                            Supprimer
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+  {cartItems.map((item) => (
+    <tr key={item.id} className="border-b border-gray-200 hover:bg-gray-50">
+      {/* NOM, image */}
+      <td className="p-4">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="font-medium">{item.club_name}, {item.maillot_name}</p>
+          </div>
+          {item.image && <img src={item.image} alt="" className="w-16 h-16 object-cover rounded-md" />}
+        </div>
+      </td>
+      {/* Taille */}
+      <td className="p-4">
+        <select
+          value={item.size}
+          onChange={e => handleEdit(item.id, "size", e.target.value)}
+          className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
+        >
+          {["S","M","L","XL"].map(sz => <option key={sz} value={sz}>{sz}</option>)}
+        </select>
+      </td>
+      {/* Quantité */}
+      <td className="p-4">
+        <input
+          type="number"
+          min={1}
+          className="border-none w-16 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
+          value={item.quantity}
+          onChange={e => handleEdit(item.id, "quantity", Number(e.target.value))}
+        />
+      </td>
+      {/* Nom */}
+      <td className="p-4">
+        <input
+          type="text"
+          className="border-none w-24 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
+          value={item.nom || ''}
+          onChange={e => handleEdit(item.id, "nom", e.target.value)}
+        />
+      </td>
+      {/* Numéro */}
+      <td className="p-4">
+        <input
+          type="number"
+          min={0} max={99}
+          className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
+          value={item.numero || ''}
+          onChange={e => handleEdit(item.id, "numero", e.target.value)}
+        />
+      </td>
+      {/* Prix, supplément, total */}
+      <td className="p-4">{Number(item.priceNum).toFixed(0)} €</td>
+      <td className="p-4">
+        {item.supplement > 0
+          ? <span className="text-orange-600">{Number(item.supplement).toFixed(2)} €</span>
+          : "-"}
+      </td>
+      <td className="p-4 font-bold text-blue-600">{Number(item.total).toFixed(2)} €</td>
+      {/* Actions */}
+      <td className="p-4 flex flex-col md:flex-row space-x-0 md:space-x-2 space-y-2 md:space-y-0">
+        <button onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">
+          Supprimer
+        </button>
+        {dirtyMap[item.id] && (
+          <button
+            onClick={() => handleSave(item)}
+            className={`bg-green-600 text-white px-3 py-1 rounded hover:bg-green-800 ml-0 md:ml-2 transition ${loadingId===item.id ? "opacity-50" : ""}`}
+            disabled={loadingId===item.id}
+          >
+            {loadingId===item.id ? "Enregistrement..." : "Sauvegarder"}
+          </button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
                 </table>
               </div>
               {/* Total & autres actions */}
@@ -272,7 +282,7 @@ export default function Panier() {
                 <button
                   onClick={handleOrder}
                   disabled={!address || !address.street}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg transition-colors"
+                  className="w-full bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg transition-colors"
                 >
                   Confirmer ma commande ({Number(prixTotal).toFixed(2)} €)
                 </button>

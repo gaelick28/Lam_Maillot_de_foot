@@ -30,10 +30,10 @@ class CartController extends Controller
                 $total = ($price + $supplement) * $item->quantity;
 
                 return [
-                    'id' => $maillot->id,
+                    'id' => $item->id, 
                     'club_name' => $maillot->club->name,
                     'maillot_name' => $maillot->nom,
-                    'maillot_id' => $item->maillot_id,
+                    'maillot_id' => $maillot ? $maillot->id : null,
                     'name'       => $name,
                     'image'      => $image,
                     'size'       => $item->size,
@@ -144,11 +144,9 @@ class CartController extends Controller
             'total'       => $total,
         ];
     });
+$item->update($data);
 
-    return response()->json([
-      'success' => true,
-      'cartItems' => $cartItems,
-    ]);
+   return redirect()->route('cart.show')->with('success', 'Article du panier mis à jour !');
 }
 
 
