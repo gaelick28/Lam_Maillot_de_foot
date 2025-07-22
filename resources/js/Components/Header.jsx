@@ -40,7 +40,7 @@ function handleSearch() {
           router.get(`/clubs/${data.slug}/maillots`);
           setSearchValue('');
         } else {
-          setSearchError('Aucun club trouvé pour votre recherche.');
+          setSearchError('Aucun club correspondant à votre recherche');
         }
       })
       .catch(() => setSearchError('Erreur lors de la recherche'));
@@ -236,6 +236,9 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
       type="submit" // Changé de "button" à "submit" pour déclencher le formulaire
       className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center transition-transform duration-150 active:scale-110"
     >
+      {searchError && (
+              <p className="text-red-900 text-lm mt-1">{searchError}</p>
+            )}
       <svg
         className={`h-6 w-6 transition-colors duration-300 ${isFocused ? "text-white/60" : "text-blue-900"}`}
         fill="none"
@@ -244,10 +247,12 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      </svg>
+      </svg> 
+      
     </button>
   </form>
 </div>
+           
 
 
 

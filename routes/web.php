@@ -88,13 +88,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/panier/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/panier/count', [CartController::class, 'getCount'])->name('cart.count');
     Route::post('/panier/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
-    Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-    
-    Route::put('/panier/item/{item}', [CartController::class, 'update'])->name('cart.update');
-        
-    
+    Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout'); 
+    Route::put('/panier/item/{item}', [CartController::class, 'update'])->name('cart.update');   
     Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
 
