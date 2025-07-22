@@ -213,8 +213,15 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
               <span className="text-xl font-bold">FOU2FOOT</span>
             </Link>
 
-            {/* Barre de recherche */}
-       <div className="relative w-full max-w-xl mx-auto">
+            {/* Barre de recherche - MODIFIÉE */}
+<div className="relative w-full max-w-xl mx-auto">
+  <form
+    onSubmit={(e) => {
+      e.preventDefault(); // Empêche le rechargement de la page
+      handleSearch(); // Appelle la même fonction que le bouton
+    }}
+    className="w-full"
+  >
     <input
       type="text"
       value={searchValue}
@@ -225,22 +232,23 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
       className="block w-full pl-4 pr-12 py-2 rounded-full bg-white/20 border border-blue-300
                  text-white placeholder-white/60 transition-shadow focus:shadow-xl focus:ring-2 focus:ring-blue-400"
     />
-  <button
-    type="button"
-    className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center transition-transform duration-150 active:scale-110"
-    onClick={handleSearch}
-  >
-    <svg
-      className={`h-6 w-6 transition-colors duration-300 ${isFocused ? "text-white/60" : "text-blue-900"}`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
+    <button
+      type="submit" // Changé de "button" à "submit" pour déclencher le formulaire
+      className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center transition-transform duration-150 active:scale-110"
     >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-    </svg>
-  </button>
+      <svg
+        className={`h-6 w-6 transition-colors duration-300 ${isFocused ? "text-white/60" : "text-blue-900"}`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+  </form>
 </div>
+
 
 
 

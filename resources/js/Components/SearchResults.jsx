@@ -40,7 +40,7 @@ export default function SearchResults({ clubs, query }) {
                     ) : (
                         <div className="text-center py-12">
                             <p className="text-xl text-gray-600">Aucun club trouvé pour "{query}"</p>
-                            <p className="text-gray-500 mt-2">Essayez "Real Madrid", "Barcelona", "PSG"...</p>
+                            <p className="text-gray-500 mt-2">Essayez "Olympique Lyonnais", "Girondins de Bordeaux", "France"...</p>
                         </div>
                     )}
                 </div>
