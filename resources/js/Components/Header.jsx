@@ -213,7 +213,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
               <span className="text-xl font-bold">FOU2FOOT</span>
             </Link>
 
-            {/* Barre de recherche - MODIFIÉE */}
+            {/* Barre de recherche */}
 <div className="relative w-full max-w-xl mx-auto">
   <form
     onSubmit={(e) => {
@@ -253,8 +253,6 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
   </form>
 </div>
            
-
-
 
 
             {/* Éléments de droite */}
