@@ -81,9 +81,9 @@ export default function Homepage({ maillots }) {
     },
 
 {
-      id: '4',
+      id: '390',
       team: 'Brésil',
-      type: 'Maillot Extérieur 2025',
+      type: 'Maillot concept 2025',
       price: 20.00,
       image: '/images/maillot/images_maillot/bresil2.jfif',
       badge: 'Nouveauté'
