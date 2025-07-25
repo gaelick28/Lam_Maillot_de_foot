@@ -9,7 +9,7 @@ export default function Panier() {
   const { auth, cartItems: initialCartItems = [] } = usePage().props
   const user = auth?.user
   const address = user?.billingAddress || user?.adresse || {}
-
+const defaultShippingAddress = auth.defaultShippingAddress;
   // Prix fixes pour le supplément :
   const nomPrix = 3
   const numeroPrix = 2
@@ -258,27 +258,33 @@ function handleSave(item) {
                     Vider le panier
                   </button>
                 </div>
-                <div className="mb-6">
-                  <h2 className="font-semibold mb-3 text-lg">Adresse de livraison/facturation</h2>
-                  {address && address.street ? (
-                    <div className="bg-white p-4 rounded-md border">
-                      <div className="font-medium">
-                        {user.firstname} {user.lastname}
-                      </div>
-                      <div>{address.street}</div>
-                      <div>
-                        {address.city} {address.postalCode}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-                      <p className="text-yellow-800 mb-2">Aucune adresse de livraison configurée</p>
-                      <Link href="/addresses" className="text-blue-600 underline hover:text-blue-800">
-                        Ajouter une adresse
-                      </Link>
-                    </div>
-                  )}
-                </div>
+
+<div className="mb-6">
+  <h2 className="font-semibold mb-3 text-lg">Adresse de livraison</h2>
+  {user?.addresses?.find(addr => addr.type === 'shipping' && addr.is_default) ? (
+    <div className="bg-white p-4 rounded-md border">
+      <div className="font-medium">
+        {user.addresses.find(addr => addr.type === 'shipping' && addr.is_default).first_name}{' '}
+        {user.addresses.find(addr => addr.type === 'shipping' && addr.is_default).last_name}
+      </div>
+      <div>{user.addresses.find(addr => addr.type === 'shipping' && addr.is_default).street}</div>
+      <div>
+        {user.addresses.find(addr => addr.type === 'shipping' && addr.is_default).postal_code}{' '}
+        {user.addresses.find(addr => addr.type === 'shipping' && addr.is_default).city}
+      </div>
+      <Link href="/addresses" className="text-blue-600 underline hover:text-blue-800 text-sm mt-2 inline-block">
+        Changer d'adresse
+      </Link>
+    </div>
+  ) : (
+    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+      <p className="text-yellow-800 mb-2">Aucune adresse de livraison configurée</p>
+      <Link href="/addresses" className="text-blue-600 underline hover:text-blue-800">
+        Ajouter une adresse
+      </Link>
+    </div>
+  )}
+</div>
                 <button
                   onClick={handleOrder}
                   disabled={!address || !address.street}

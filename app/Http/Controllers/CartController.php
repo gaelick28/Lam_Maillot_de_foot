@@ -39,45 +39,60 @@ class CartController extends Controller
         }
     }
 
-    public function show()
-    {
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-        $cart->load('items.maillot.club');
+   public function show()
+{
+    $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+    $cart->load('items.maillot.club');
 
-        return inertia('Panier', [
-            'cartItems' => $cart->items->map(function($item) {
-                $maillot = $item->maillot;
-                $price = $maillot ? $maillot->price : 0;
-                $image = $maillot ? $maillot->image : null;
-                $name = $maillot ? $maillot->name : '???';
+    // Récupérer l'utilisateur avec ses adresses
+$user = \App\Models\User::with(['addresses' => function ($query) {
+    $query->orderBy('is_default', 'desc')
+          ->orderBy('type', 'asc');
+}])->findOrFail(Auth::id());
 
-                // Suppléments personnalisation
-                $suppNom = $item->nom ? 3 : 0;
-                $suppNumero = $item->numero ? 2 : 0;
-                $supplement = $suppNom + $suppNumero;
+    // Trouver l'adresse de livraison par défaut
+    $defaultShippingAddress = $user->addresses
+        ->where('type', 'shipping')
+        ->where('is_default', true)
+        ->first();
 
-                // Total ligne
-                $total = ($price + $supplement) * $item->quantity;
+    return inertia('Panier', [
+        'cartItems' => $cart->items->map(function($item) {
+            $maillot = $item->maillot;
+            $price = $maillot ? $maillot->price : 0;
+            $image = $maillot ? $maillot->image : null;
+            $name = $maillot ? $maillot->name : '???';
 
-                return [
-                    'id' => $item->id, // ID de l'item, pas du maillot
-                    'club_name' => $maillot->club->name ?? 'Club inconnu',
-                    'maillot_name' => $maillot->nom ?? $maillot->name ?? 'Maillot',
-                    'maillot_id' => $item->maillot_id,
-                    'name'       => $name,
-                    'image'      => $image,
-                    'size'       => $item->size,
-                    'quantity'   => $item->quantity,
-                    'price'      => $price,
-                    'nom'        => $item->nom,
-                    'numero'     => $item->numero,
-                    'supplement' => $supplement,
-                    'total'      => $total,
-                ];
-            }),
-        ]);
-    }
+            // Suppléments personnalisation
+            $suppNom = $item->nom ? 3 : 0;
+            $suppNumero = $item->numero ? 2 : 0;
+            $supplement = $suppNom + $suppNumero;
 
+            // Total ligne
+            $total = ($price + $supplement) * $item->quantity;
+
+            return [
+                'id' => $item->id,
+                'club_name' => $maillot->club->name ?? 'Club inconnu',
+                'maillot_name' => $maillot->nom ?? $maillot->name ?? 'Maillot',
+                'maillot_id' => $item->maillot_id,
+                'name' => $name,
+                'image' => $image,
+                'size' => $item->size,
+                'quantity' => $item->quantity,
+                'price' => $price,
+                'nom' => $item->nom,
+                'numero' => $item->numero,
+                'supplement' => $supplement,
+                'total' => $total,
+            ];
+        }),
+        'auth' => [
+            'user' => $user,
+            'defaultShippingAddress' => $defaultShippingAddress
+        ]
+    ]);
+}
     public function add(Request $request)
     {
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
@@ -105,26 +120,21 @@ class CartController extends Controller
     }
 
     public function update(Request $request, CartItem $item)
-    {
-        if ($item->cart->user_id !== Auth::id()) abort(403);
-        
-        $data = $request->validate([
-            'size'     => 'required|string|max:10',
-            'quantity' => 'required|integer|min:1',
-            'nom'      => 'nullable|string|max:50',
-            'numero'   => 'nullable|string|max:3',
-        ]);
+{
+    if ($item->cart->user_id !== Auth::id()) abort(403);
+    
+    $data = $request->validate([
+        'size'     => 'required|string|max:10',
+        'quantity' => 'required|integer|min:1',
+        'nom'      => 'nullable|string|max:50',
+        'numero'   => 'nullable|string|max:3',
+    ]);
 
-        $item->update($data);
+    $item->update($data);
 
-        // CORRECTION: Utiliser Inertia::render au lieu de response()->json
-        return Inertia::render('Panier', [
-            'success' => true,
-            'message' => 'Article sauvegardé avec succès',
-            'cartItems' => $this->getCartItems(),
-        ]);
-    }
-
+    // Retourner vers la page panier avec les données fraîches
+    return redirect()->route('cart.show')->with('success', 'Article sauvegardé avec succès');
+}
     // Méthode utilitaire pour récupérer les items du panier
     private function getCartItems()
     {
