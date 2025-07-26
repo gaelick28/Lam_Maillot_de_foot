@@ -370,83 +370,168 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
           </nav>
         </div>
 
-        {/* Version Mobile - AMÉLIORÉE */}
-        <div className="md:hidden mt-4">
+       
+       
+        {/* Version Mobile /}
+     
+     {/* BOUTON BURGER  */}
+<button
+  onClick={() => setMobileMenuOpen(true)}
+  className="md:hidden absolute top-4 right-4 z-50 flex items-center justify-center p-2 rounded-full bg-white/90 shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+  aria-label="Ouvrir le menu mobile"
+>
+  <svg className="h-7 w-7 text-blue-900" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+</button>
+
+{/* MENU MOBILE DRAWER  */}
+{mobileMenuOpen && (
+  <div
+    className="fixed inset-0 z-50 bg-black bg-opacity-30"
+    onClick={() => setMobileMenuOpen(false)}
+    aria-modal="true"
+    tabIndex={-1}
+  >
+    <nav
+      className="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-blue-500 text-white shadow-lg p-6 flex flex-col gap-6 overflow-y-auto"
+      onClick={e => e.stopPropagation()} // évite la fermeture quand on clique à l'intérieur
+      aria-label="Menu mobile"
+    >
+      {/* BOUTON FERMER */}
+      <button
+        onClick={() => setMobileMenuOpen(false)}
+        className="absolute top-3 right-3 p-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        aria-label="Fermer le menu"
+      >
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      {/* LOGO + ACCUEIL */}
+      <Link
+        href="/"
+        className="block font-bold text-2xl text-white mb-4 flex items-center gap-2"
+        onClick={() => setMobileMenuOpen(false)}
+        aria-label="Accueil"
+      >
+        <BallonFootIcon className="h-8 w-8" />
+        FOU2FOOT
+      </Link>
+
+      {/* BARRE RECHERCHE MOBILE */}
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          handleSearch();
+          setMobileMenuOpen(false);
+        }}
+        className="w-full mb-4"
+      >
+        <input
+          type="text"
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          placeholder="Rechercher un club..."
+          className="block w-full pl-4 pr-10 py-2 rounded bg-white/90 border border-blue-300 text-blue-900 placeholder-blue-400"
+          aria-label="Rechercher un club"
+        />
+      </form>
+
+      {/* LIEN ACCUEIL */}
+      <Link
+        href="/"
+        className="block px-3 py-2 rounded hover:bg-blue-400/30 text-white font-medium"
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        Accueil
+      </Link>
+
+      {/* LIGUES + CLUBS dépliables */}
+      {leagues.map((league) => (
+        <div key={league.name} className="mb-1">
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-full flex justify-between items-center p-3 bg-blue-700 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
-            aria-expanded={mobileMenuOpen}
-            aria-label="Menu mobile"
-            aria-controls="mobile-menu"
+            className="w-full flex justify-between items-center px-3 py-2 font-medium rounded hover:bg-blue-400/40 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            onClick={() => toggleMobileLeague(league.name)}
+            aria-expanded={activeMobileLeague === league.name}
+            aria-controls={`mobile-league-${league.name.replace(/\s+/g, "-").toLowerCase()}`}
           >
-            <span className="font-medium">Menu</span>
+            <span>{league.name}</span>
             <svg
-              className={`w-5 h-5 transform transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
+              className={`w-4 h-4 ml-2 transition-transform ${activeMobileLeague === league.name ? "rotate-180" : ""}`}
               fill="none"
               stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              <path d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-
-          {mobileMenuOpen && (
-            <div
-              id="mobile-menu"
-              className="mt-2 space-y-2 bg-blue-800/50 rounded-lg p-2"
-              aria-label="Navigation mobile"
-            >
-              <Link
-                href="/"
-                className="block bg-gray-400 rounded-lg p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
-                aria-current="page"
-              >
-                <span className="font-medium">Accueil</span>
-              </Link>
-
-              {leagues.map((league) => (
-                <div key={league.name} className="bg-blue-700 rounded-lg overflow-hidden">
-                  <button
-                    className="w-full flex justify-between items-center p-3 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    onClick={() => toggleMobileLeague(league.name)}
-                    aria-expanded={activeMobileLeague === league.name}
-                    aria-controls={`mobile-${league.name.replace(/\s+/g, "-").toLowerCase()}`}
-                  >
-                    <span className="font-medium">{league.name}</span>
-                    <svg
-                      className={`w-4 h-4 transform transition-transform ${activeMobileLeague === league.name ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {/* FIX: Les clubs n'apparaissent que si la ligue est sélectionnée */}
-                  {activeMobileLeague === league.name && (
-                    <div
-                      id={`mobile-${league.name.replace(/\s+/g, "-").toLowerCase()}`}
-                      className="bg-blue-800 px-3 pb-2"
-                    >
-                      {league.clubs.map((club) => (
-                        <Link
-                          key={club.name}
-                          href={club.href}
-                          className="block p-2 text-sm hover:bg-blue-600 rounded transition-colors focus:outline-none focus:bg-blue-600"
-                        >
-                          {club.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+          {activeMobileLeague === league.name && (
+            <div className="pl-5 py-1" id={`mobile-league-${league.name.replace(/\s+/g, "-").toLowerCase()}`}>
+              {league.clubs.map((club) => (
+                <Link
+                  key={club.name}
+                  href={club.href}
+                  className="block px-2 py-2 text-sm rounded hover:bg-blue-400/30 transition focus:outline-none"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {club.name}
+                </Link>
               ))}
             </div>
           )}
         </div>
+      ))}
+
+      {/* PANIER */}
+      <Link
+        href="/panier"
+        className="block px-3 py-2 rounded hover:bg-blue-400/30 text-white font-medium flex items-center gap-2"
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        <PanierLink />
+        <span>Panier</span>
+      </Link>
+
+      {/* COMPTE / CONNEXION / DECONNEXION */}
+      {user ? (
+        <>
+          <Link
+            href="/dashboard"
+            className="block px-3 py-2 rounded hover:bg-blue-400/30 text-white font-medium"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Mon compte
+          </Link>
+          <Link
+            href="/logout"
+            method="post"
+            as="button"
+            className="block px-3 py-2 rounded hover:bg-red-200/40 text-red-100 font-medium"
+            aria-label="Déconnexion"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Déconnexion
+          </Link>
+        </>
+      ) : (
+        <Link
+          href="/login"
+          className="block px-3 py-2 rounded hover:bg-blue-400/30 text-white font-medium"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Mon compte
+        </Link>
+      )}
+    </nav>
+  </div>
+)}
+
       </div>
     </header>
   )
