@@ -75,14 +75,18 @@ Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name(
 Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Route::get('/panier', function () {
+// Route::middleware(['auth', 'verified'])->group(function () {
+    
+// Route::get('/panier', function () {
     //     return Inertia::render('Panier');
     // })->name('panier');
 
     // API commande  :
     // Route::post('/api/commande', [App\Http\Controllers\OrderController::class, 'store']);
 
+    // });
+
+    
     Route::middleware(['auth'])->group(function() {
         
     Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
@@ -100,4 +104,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
 });
 
-});
+
