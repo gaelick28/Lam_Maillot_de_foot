@@ -125,7 +125,17 @@ function handleSave(item) {
     }
   )
 }
-
+function goToCheckout() {
+  if (!address || !address.street) {
+    alert("Veuillez d'abord renseigner votre adresse de livraison.");
+    return;
+  }
+  if (cartItems.length === 0) {
+    alert("Votre panier est vide !");
+    return;
+  }
+  router.visit('/checkout'); // juste une redirection, pas de POST ici!
+}
 
   return (
     <>
@@ -285,13 +295,24 @@ function handleSave(item) {
     </div>
   )}
 </div>
-                <button
-                  onClick={handleOrder}
-                  disabled={!address || !address.street}
-                  className="w-full bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg transition-colors"
-                >
-                  Confirmer ma commande ({Number(prixTotal).toFixed(2)} €)
-                </button>
+                <Link
+  href={address && address.street && cartItems.length ? "/checkout" : "#"}
+  className="w-full block bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg transition-colors text-center"
+  as="button"
+  onClick={e => {
+    if (!address || !address.street) {
+      e.preventDefault()
+      alert("Veuillez d'abord renseigner votre adresse de livraison.")
+    }
+    if (cartItems.length === 0) {
+      e.preventDefault()
+      alert("Votre panier est vide !")
+    }
+  }}
+>
+  Confirmer ma commande ({Number(prixTotal).toFixed(2)} €)
+</Link>
+
               </div>
             </div>
           )}

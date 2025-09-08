@@ -55,37 +55,73 @@
 //   );
 // }
 
-"use client"
-
-import { usePage, Link } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
+import React, { useState } from "react"
 import Header from "../Components/Header"
 import Footer from "../Components/Footer"
 
 export default function Checkout() {
-  const { flash } = usePage().props
+  const { cartItems = [], auth } = usePage().props
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const address = auth.user?.billingAddress || auth.user?.adresse || {}
+
+  function handleValidate() {
+    if (loading) return;
+    setLoading(true)
+    router.post('/panier/checkout', {}, {
+      onSuccess: () => {
+        setSuccess(true)
+        setLoading(false)
+      },
+      onError: () => setLoading(false)
+    })
+  }
+
+  if(success) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-[60vh] flex flex-col justify-center items-center bg-blue-50">
+          <h1 className="text-3xl font-bold mb-4">Merci pour votre commande 🎉</h1>
+          <p className="mb-4">Votre commande a bien été prise en compte.<br />Vous recevrez bientôt un email de confirmation.</p>
+          <a href="/" className="mt-4 text-blue-600 underline">Retour à la boutique</a>
+        </main>
+        <Footer />
+      </>
+    )
+  }
 
   return (
     <>
       <Header />
-      <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
-        <div className="container mx-auto max-w-4xl bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="mb-6">
-            <svg className="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+      <main className="bg-gray-50 min-h-[60vh] flex flex-col items-center justify-center py-10">
+        <div className="bg-white shadow rounded-lg p-8 max-w-xl w-full">
+          <h2 className="text-2xl font-bold mb-6">Récapitulatif de la commande</h2>
+          <ul className="mb-6">
+            {cartItems.map(item => (
+              <li key={item.id} className="flex justify-between mb-2">
+                <span>{item.maillot_name} (x{item.quantity})</span>
+                <span>{Number(item.total).toFixed(2)} €</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mb-8">
+            <strong>Adresse de livraison :</strong><br/>
+            {address.first_name} {address.last_name}<br/>
+            {address.street}<br/>
+            {address.postal_code} {address.city}<br/>
           </div>
-          <h1 className="text-3xl font-bold mb-4">Commande confirmée !</h1>
-          <p className="text-lg mb-6">Merci pour votre commande. Nous avons reçu votre paiement et traitons votre demande.</p>
-          <p className="text-gray-600 mb-8">Vous recevrez un email de confirmation sous peu.</p>
-          <Link 
-            href="/order" 
-            className="inline-block bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 font-semibold transition-colors"
+          <button
+            onClick={handleValidate}
+            className={"bg-green-600 text-white px-6 py-3 rounded font-semibold text-lg w-full hover:bg-green-800 " + (loading && "opacity-60 cursor-wait")}
+            disabled={loading}
           >
-            Voir mes commandes
-          </Link>
+            {loading ? "Validation..." : "Valider la commande"}
+          </button>
         </div>
       </main>
       <Footer />
     </>
-  )
+  );
 }

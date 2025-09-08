@@ -200,4 +200,5 @@ $user = \App\Models\User::with(['addresses' => function ($query) {
         
         return redirect()->route('orders.index')->with('success', 'Commande validée !');
     }
+    
 }
