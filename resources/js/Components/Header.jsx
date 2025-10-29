@@ -71,7 +71,11 @@ function handlePanierClick() {
   const { auth } = usePage().props; 
 const user = auth?.user;               // ou juste "auth" selon la structure, à vérifier 
 
-  const leagues = [
+  // --- juste avant ta déclaration de `leagues` ---
+const collator = new Intl.Collator('fr', { sensitivity: 'base', numeric: true });
+
+// --- remplace ta constante `leagues = [ ... ]` par ceci ---
+const leagues = [
     {
       name: "Sélections Nationales",
       clubs: [
@@ -199,6 +203,8 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
       ],
     },
   ]
+// 👉 tri A→Z à l’intérieur de chaque catégorie, sans modifier tes données
+.map(l => ({ ...l, clubs: [...l.clubs].sort((a, b) => collator.compare(a.name, b.name)) }));
 
   const toggleMobileLeague = (leagueName) => {
     setActiveMobileLeague(activeMobileLeague === leagueName ? null : leagueName)
