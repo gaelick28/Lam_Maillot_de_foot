@@ -112,7 +112,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
         { name: "Reims", href: "/clubs/reims/maillots" },
         { name: "Angers", href: "/clubs/angers/maillots" },
         { name: "Auxerre", href: "/clubs/auxerre/maillots" },
-        { name: "AS Cannes",          href: "/clubs/cannes/maillots" },    
+        { name: "AS Cannes", href: "/clubs/cannes/maillots" },    
       ],
     },
     {
