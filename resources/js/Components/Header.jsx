@@ -300,44 +300,42 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
               Accueil
             </Link>
 
-            {leagues.map((league) => (
-              <div
-                key={league.name}
-                className="relative group"
-                onMouseEnter={() => {
-                  // Annuler le timeout s'il existe
-                  if (timeoutId) {
-                    clearTimeout(timeoutId)
-                    setTimeoutId(null)
-                  }
-                  setActiveMenu(league.name)
-                }}
-                onMouseLeave={() => {
-                  // Ajouter un délai avant de fermer le menu
-                  const id = setTimeout(() => {
-                    setActiveMenu(null)
-                  }, 300) // 300ms de délai
-                  setTimeoutId(id)
-                }}
-              >
-                <button
-                  className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2"
-                  aria-expanded={activeMenu === league.name}
-                  aria-haspopup="true"
-                  aria-label={`Menu ${league.name}`}
-                  onClick={() => setActiveMenu(activeMenu === league.name ? null : league.name)}
-                >
-                  {league.name}
-                  <svg
-                    className={`w-4 h-4 transition-transform ${activeMenu === league.name ? "rotate-180" : ""}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+{leagues.map((league) => (
+  <div
+    key={league.name}
+    className="relative group"
+    onMouseEnter={() => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        setTimeoutId(null)
+      }
+      setActiveMenu(league.name)
+    }}
+    onMouseLeave={() => {
+      const id = setTimeout(() => {
+        setActiveMenu(null)
+      }, 300)
+      setTimeoutId(id)
+    }}
+  >
+    <button
+      className="flex items-center gap-1 hover:text-blue-200 transition-colors px-4 py-2 whitespace-nowrap" // Ajout de whitespace-nowrap ici
+      aria-expanded={activeMenu === league.name}
+      aria-haspopup="true"
+      aria-label={`Menu ${league.name}`}
+      onClick={() => setActiveMenu(activeMenu === league.name ? null : league.name)}
+    >
+      {league.name}
+      <svg
+        className={`w-4 h-4 transition-transform ${activeMenu === league.name ? "rotate-180" : ""}`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
 
                 {/* Menu déroulant */}
                 {activeMenu === league.name && (
