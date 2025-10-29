@@ -92,6 +92,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
         { name: "Japon", href: "/clubs/japon/maillots" },
         { name: "Corée du Sud", href: "/clubs/corée-du-sud/maillots" },
         { name: "Mexique", href: "/clubs/mexique/maillots" },
+         { name: "Inde",   href: "/clubs/inde/maillots" },
       ],
     },
     {
@@ -111,6 +112,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
         { name: "Reims", href: "/clubs/reims/maillots" },
         { name: "Angers", href: "/clubs/angers/maillots" },
         { name: "Auxerre", href: "/clubs/auxerre/maillots" },
+        { name: "AS Cannes",          href: "/clubs/cannes/maillots" },    
       ],
     },
     {
@@ -193,6 +195,7 @@ const user = auth?.user;               // ou juste "auth" selon la structure, à
         { name: "Rangers FC", href: "/clubs/rangers-fc/maillots" },
         { name: "Ajax Amsterdam", href: "/clubs/ajax-amsterdam/maillots" },
         { name: "PSV Eindhoven", href: "/clubs/psv-eindhoven/maillots" },
+        { name: "Grêmio", href: "/clubs/gremio/maillots" }, 
       ],
     },
   ]
