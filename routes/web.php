@@ -15,6 +15,35 @@ use App\Http\Controllers\CartController;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
 
+
+// Pages légales
+Route::get('/legal', function () {
+    return Inertia::render('Legal');
+})->name('legal');
+
+Route::get('/privacy', function () {
+    return Inertia::render('Privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('Terms');
+})->name('terms');
+
+Route::get('/delivery', function () {
+    return Inertia::render('Delivery');
+})->name('delivery');
+
+Route::get('/returns', function () {
+    return Inertia::render('Returns');
+})->name('returns');
+
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
+
+
+
+
 // Affiche le formulaire
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
