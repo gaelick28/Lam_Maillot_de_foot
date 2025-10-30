@@ -111,7 +111,7 @@ export default function Homepage({ maillots }) {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-red-800 to-blue-500 py-12 sm:py-16 md:py-20 w-full">
+      <section className="bg-gradient-to-r from-red-700 to-blue-400 py-12 sm:py-16 md:py-20 w-full">
         <div className="w-full px-4 sm:px-6 lg:px-8 text-center text-white">
           <div className="mx-auto max-w-7xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
