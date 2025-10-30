@@ -190,21 +190,25 @@ export default function Header() {
   
 
   // Recherche
-  function handleSearch() {
-    if (!searchValue.trim()) return;
-    fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.slug) {
-          setSearchError("");
-          router.get(`/clubs/${data.slug}/maillots`);
-          setSearchValue("");
-        } else {
-          setSearchError("Aucun club correspondant à votre recherche");
-        }
-      })
-      .catch(() => setSearchError("Erreur lors de la recherche"));
+  async function handleSearch() {
+  if (!searchValue.trim()) return false;
+  try {
+    const res = await fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`);
+    const data = await res.json();
+    if (data.slug) {
+      setSearchError("");
+      router.get(`/clubs/${data.slug}/maillots`);
+      setSearchValue("");
+      return true;   // ← succès
+    } else {
+      setSearchError("Aucun club correspondant à votre recherche");
+      return false;  // ← échec
+    }
+  } catch {
+    setSearchError("Erreur lors de la recherche");
+    return false;    // ← échec
   }
+}
 
   // Effets
   useEffect(() => {
@@ -418,10 +422,10 @@ export default function Header() {
 
           {/* Recherche mobile */}
          <form
-  onSubmit={(e) => {
+  onSubmit={async (e) => {
     e.preventDefault();
-    handleSearch();
-    setMobileMenuOpen(false);
+    const ok = await handleSearch();
+    if (ok) setMobileMenuOpen(false); // ← ne ferme que si succès
   }}
   className="mb-4"
 >
