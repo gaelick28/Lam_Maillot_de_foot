@@ -417,25 +417,68 @@ export default function Header() {
           </Link>
 
           {/* Recherche mobile */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch();
-              setMobileMenuOpen(false);
-            }}
-            className="mb-4"
-          >
-            <label htmlFor="m-search" className="sr-only">Rechercher un club</label>
-            <input
-              id="m-search"
-              type="search"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Rechercher un club…"
-              className="block w-full rounded bg-white/90 border border-blue-300 px-4 py-2 text-blue-900 placeholder-blue-500"
-            />
-            {searchError && <p className="mt-1 text-sm text-white/90">{searchError}</p>}
-          </form>
+         <form
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleSearch();
+    setMobileMenuOpen(false);
+  }}
+  className="mb-4"
+>
+  <label htmlFor="m-search" className="sr-only">Rechercher un club</label>
+
+  <div className="relative">
+    <input
+      id="m-search"
+      type="search"
+      value={searchError ? searchError : searchValue}
+      onChange={(e) => {
+        if (searchError) {
+          setSearchError(""); // efface l'erreur dès qu'on retape
+          setSearchValue(e.target.value);
+        } else {
+          setSearchValue(e.target.value);
+        }
+      }}
+      placeholder="Rechercher un club…"
+      className={
+        "block w-full h-12 rounded-lg px-5 pr-12 text-base " +
+        (searchError
+          ? "bg-red-100 text-red-600 placeholder-red-400 border border-red-400"
+          : "bg-white/90 text-blue-900 placeholder-blue-500 border border-blue-300")
+      }
+      autoComplete="off"
+    />
+
+    {/* Icônes à droite dans la bulle (croix + loupe) */}
+    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+      {(searchError || searchValue) && (
+        <button
+          type="button"
+          onClick={() => {
+            setSearchValue("");
+            setSearchError("");
+            document.getElementById("m-search")?.focus();
+          }}
+          aria-label="Effacer la recherche"
+          className="p-1"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+
+      <button type="submit" aria-label="Lancer la recherche" className="p-1">
+        <svg className="h-6 w-6 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</form>
+
 
           <Link href="/" className="block px-3 py-2 rounded hover:bg-white/10" onClick={() => setMobileMenuOpen(false)}>Accueil</Link>
 
