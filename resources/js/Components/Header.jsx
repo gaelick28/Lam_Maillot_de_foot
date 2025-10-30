@@ -357,8 +357,8 @@ export default function Header() {
 
           {leagues.map((league) => (
             <div
-              key={league.name}
-              className="relative"
+  key={league.name}
+  className="relative mx-1 first:ml-0 last:mr-0"
               onMouseEnter={() => {
                 if (hoverTimeoutId) { clearTimeout(hoverTimeoutId); setHoverTimeoutId(null); }
                 setActiveMenu(league.name);
