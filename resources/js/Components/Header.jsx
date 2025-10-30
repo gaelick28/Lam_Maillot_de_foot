@@ -37,7 +37,7 @@ export default function Header() {
   const [searchError, setSearchError] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  // --- Détection tactile (iPad / tablettes) ---
+  // Détection tactile (iPad / tablettes) ---
   useEffect(() => {
     const mq = window.matchMedia("(hover: none)");
     const update = () => setIsTouchDevice(mq.matches);
@@ -52,7 +52,7 @@ export default function Header() {
     []
   );
 
-  // ====== TES CATÉGORIES + CLUBS (inchangés, juste triés A→Z) ======
+  //  CLUBS ( triés A→Z)
   const leagues = useMemo(
     () =>
       [
@@ -187,7 +187,7 @@ export default function Header() {
       })),
     [collator]
   );
-  // ====== FIN DES DONNÉES ======
+  
 
   // Recherche
   function handleSearch() {
@@ -286,24 +286,34 @@ export default function Header() {
             <label htmlFor="search" className="sr-only">Rechercher un club</label>
             <div className="relative">
               <input
-                id="search"
-                type="search"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder="Rechercher un club…"
-               className="w-full lg:w-[500px] rounded-full bg-white/20 text-white placeholder-white/60 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white/70 text-lg"
+  id="search"
+  type="search"
+  value={searchError ? searchError : searchValue}
+  onChange={(e) => {
+    if (searchError) {
+      setSearchError(""); // efface l'erreur dès qu'on retape
+      setSearchValue(e.target.value);
+    } else {
+      setSearchValue(e.target.value);
+    }
+  }}
+  onFocus={() => setIsFocused(true)}
+  onBlur={() => setIsFocused(false)}
+  placeholder="Rechercher un club…"
+  className={
+    "w-full lg:w-[500px] h-10 rounded-full text-white px-5 text-base md:text-lg pr-12 focus:outline-none " +
+    (searchError
+      ? "bg-red-500/30 text-red-100 placeholder-red-200 focus:ring-2 focus:ring-red-300"
+      : "bg-white/20 placeholder-white/60 focus:ring-2 focus:ring-white/70")
+  }
   autoComplete="off"
-
-              />
+/>
               <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label="Lancer la recherche">
                 <svg className={`h-5 w-5 ${isFocused ? "text-white/80" : "text-white/70"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
             </div>
-            {searchError && <p className="mt-1 text-sm text-white/90">{searchError}</p>}
           </form>
 
           {/* Actions droites */}
