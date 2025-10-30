@@ -37,7 +37,7 @@ export default function Header() {
   const [searchError, setSearchError] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  // Détection tactile (iPad / tablettes) ---
+  // Détection tactile (iPad / tablettes) 
   useEffect(() => {
     const mq = window.matchMedia("(hover: none)");
     const update = () => setIsTouchDevice(mq.matches);
