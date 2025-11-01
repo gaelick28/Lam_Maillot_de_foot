@@ -62,6 +62,8 @@ class MaillotSeeder extends Seeder
            
             // Angers
             59 => 'images/maillot/images_maillot/angers-dom.jfif',
+
+            
         ];
 
         foreach ($updates as $id => $image) {
