@@ -63,7 +63,31 @@ class MaillotSeeder extends Seeder
             // Angers
             59 => 'images/maillot/images_maillot/angers-dom.jfif',
 
-            
+            //Lens
+            55 => 'images/maillot/images_maillot/rc-lens-dom.webp',
+            56 => 'images/maillot/images_maillot/rc-lens-ext.webp',
+
+            //Mexique
+            33 => 'images/maillot/images_maillot/mexique2026-domicile.webp',
+            34 => 'images/maillot/images_maillot/mexique-2024-exterieur.webp',
+
+            //Danemark
+            25 => 'images/maillot/images_maillot/danemark-dom.webp',
+            26 => 'images/maillot/images_maillot/danemark-ext.webp',
+
+            // Celta Vigo
+             133 => 'images/maillot/images_maillot/celta-de-vigo-2025-2026-domicile.webp',
+             134 => 'images/maillot/images_maillot/celta-de-vigo-2025-2026-exterieur.webp', 
+
+            // RCD Espanyol
+             135 => 'images/maillot/images_maillot/rcd-espanyol-2024-2025-domicile.webp',
+             136 => 'images/maillot/images_maillot/rcd-espanyol-2025-2026-exterieur.webp',  
+
+             //Atalanta
+             149 => 'images/maillot/images_maillot/atalanta-2025-2026-domicile.webp',
+             150 => 'images/maillot/images_maillot/atalanta-2025-2026-exterieur.webp',  
+
+
         ];
 
         foreach ($updates as $id => $image) {
