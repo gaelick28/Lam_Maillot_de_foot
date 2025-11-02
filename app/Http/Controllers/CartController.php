@@ -26,7 +26,7 @@ class CartController extends Controller
                 return response()->json(['count' => 0]);
             }
 
-            $count = $cart->items()->count();
+            $count = $cart->items()->sum('quantity');
             return response()->json(['count' => $count]);
 
         } catch (\Exception $e) {
@@ -116,7 +116,11 @@ $user = \App\Models\User::with(['addresses' => function ($query) {
             ]);
         }
 
-        return redirect()->route('cart.show')->with('success', 'Article ajouté au panier');
+         return back()->with('success', 'Article ajouté au panier');
+
+        //  Si redirection vers la page du panier, utiliser cette ligne à la place de la précédente :
+        //  return redirect()->route('cart.show')->with('success', 'Article ajouté au panier');
+         
     }
 
     public function update(Request $request, CartItem $item)

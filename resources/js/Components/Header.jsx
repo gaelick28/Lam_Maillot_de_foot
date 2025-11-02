@@ -379,20 +379,27 @@ export default function Header() {
               </button>
 
               {activeMenu === league.name && (
-                <div
-                  className="absolute left-1/2 z-50 mt-2 w-56 -translate-x-1/2 rounded-lg bg-white p-2 text-gray-800 shadow-xl ring-1 ring-black/5"
-                  role="menu"
-                  onMouseEnter={() => {
-                    if (hoverTimeoutId) { clearTimeout(hoverTimeoutId); setHoverTimeoutId(null); }
-                  }}
-                >
-                  {league.clubs.map((club) => (
-                    <Link key={club.name} href={club.href} className="block rounded-md px-3 py-2 text-sm hover:bg-blue-50" role="menuitem">
-                      {club.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+  <div
+  className="absolute left-1/2 z-50 mt-2 w-64 -translate-x-1/2 rounded-lg bg-white text-gray-800 shadow-xl ring-1 ring-black/5 max-h-96 overflow-y-auto"
+  role="menu"
+    onMouseEnter={() => {
+      if (hoverTimeoutId) { clearTimeout(hoverTimeoutId); setHoverTimeoutId(null); }
+    }}
+  >
+    <div className="p-2">
+      {league.clubs.map((club) => (
+        <Link 
+          key={club.name} 
+          href={club.href} 
+          className="block rounded-md px-3 py-2 text-sm hover:bg-blue-50 transition-colors" 
+          role="menuitem"
+        >
+          {club.name}
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
             </div>
           ))}
         </nav>
