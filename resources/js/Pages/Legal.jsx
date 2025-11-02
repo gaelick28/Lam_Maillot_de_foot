@@ -21,7 +21,7 @@ export default function Legal() {
                 <p>Société par actions simplifiée au capital de 10 000 €</p>
                 <p>RCS Paris 123 456 789</p>
                 <p>Siège social : 123 Avenue du Football, 69002 Lyon</p>
-                <p>Téléphone : 04 78 46 67 89</p>
+                <p>Téléphone : 06 13 06 27 30</p>
                 <p>Email : contact@fou2foot.com</p>
               </section>
 
