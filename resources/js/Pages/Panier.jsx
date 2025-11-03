@@ -238,16 +238,31 @@ function goToCheckout() {
       <td className="p-4">
 <input
   type="number"
+  min="1"
+  max="99"
   value={item.numero || ""}
   onChange={(e) => {
     const val = e.target.value;
-    if (validateNumero(val)) {
+    if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
       handleEdit(item.id, "numero", val);
+    }
+  }}
+  onKeyDown={(e) => {
+    // Bloquer "e", "+", "-", ".", etc.
+    if (
+      e.key === "e" ||
+      e.key === "E" ||
+      e.key === "+" ||
+      e.key === "-" ||
+      e.key === "."
+    ) {
+      e.preventDefault();
     }
   }}
   placeholder="Numéro (1-99)"
   className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
 />
+
 
       </td>
       {/* Prix, supplément, total */}
