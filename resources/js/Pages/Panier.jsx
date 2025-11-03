@@ -262,9 +262,8 @@ function goToCheckout() {
   placeholder="Numéro (1-99)"
   className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
 />
-
-
-      </td>
+</td>
+      
       {/* Prix, supplément, total */}
       <td className="p-4">{Number(item.priceNum).toFixed(0)} €</td>
       <td className="p-4">
@@ -272,10 +271,11 @@ function goToCheckout() {
           ? <span className="text-orange-600">{Number(item.supplement).toFixed(2)} €</span>
           : "-"}
       </td>
+      
+       {/* Actions */}
       <td className="p-4 font-bold text-blue-600">{Number(item.total).toFixed(2)} €</td>
-      {/* Actions */}
       <td className="p-4 flex flex-col md:flex-row space-x-0 md:space-x-2 space-y-2 md:space-y-0">
-        <button onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">
+      <button onClick={() => handleRemove(item.id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">
           Supprimer
         </button>
         {dirtyMap[item.id] && (
@@ -291,9 +291,9 @@ function goToCheckout() {
     </tr>
   ))}
 </tbody>
-
-                </table>
+             </table>
               </div>
+             
               {/* Total & autres actions */}
               <div className="p-6 bg-gray-50 border-t">
                 <div className="flex justify-between items-center mb-6">
@@ -337,8 +337,8 @@ function goToCheckout() {
     </div>
   )}
 </div>
-                <Link
-  href={address && address.street && cartItems.length ? "/checkout" : "#"}
+              
+  <Link href={address && address.street && cartItems.length ? "/checkout" : "#"}
   className="w-full block bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-lg transition-colors text-center"
   as="button"
   onClick={e => {
