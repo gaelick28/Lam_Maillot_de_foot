@@ -41,6 +41,16 @@ const defaultShippingAddress = auth.defaultShippingAddress;
   )
 }, [])
 
+const validateNom = (val) => /^[A-Z\s-]*$/.test(val);
+
+const validateNumero = (val) => {
+  if (val === "") return true;
+  if (/^\d+$/.test(val)) {
+    const num = parseInt(val, 10);
+    return num >= 1 && num <= 99;
+  }
+  return false;
+};
 
 
   // Total global du panier (somme des totaux lignes)
@@ -76,31 +86,33 @@ const defaultShippingAddress = auth.defaultShippingAddress;
   }
 
   // Edition dynamique des champs + recalcul du supplément et total
-  function handleEdit(itemId, field, value) {
+ const handleEdit = (id, field, value) => {
   setCartItems(prev =>
-    prev.map(i => {
-      if (i.id !== itemId) return i;
-      // Nouvelle logique calculs
-      let updatedNom = field === "nom" ? value : (i.nom || "");
-      let updatedNumero = field === "numero" ? value : (i.numero || "");
+    prev.map(item => {
+      if (item.id !== id) return item;
+
+      if (field === "nom" && !validateNom(value)) return item;
+      if (field === "numero" && !validateNumero(value)) return item;
+
+      // Mise à jour avec calculs existants...
+      let updatedItem = {...item, [field]: value};
+
       let supplement = 0;
-      if (updatedNom) supplement += nomPrix;
-      if (updatedNumero) supplement += numeroPrix;
-      let quantity = field === "quantity" ? value : i.quantity || 1;
-      // Prix principal
-      let prixMaillot = i.priceNum || parseFloat(i.price) || 0;
-      let total = (prixMaillot + supplement) * quantity;
-      return {
-        ...i,
-        [field]: value,
-        supplement,
-        total,
-        priceNum: prixMaillot
-      };
+      if (updatedItem.nom && updatedItem.nom !== "") supplement += nomPrix;
+      if (updatedItem.numero && updatedItem.numero !== "") supplement += numeroPrix;
+
+      const priceBase = parseFloat(updatedItem.price) || 0;
+      const quantity = parseInt(updatedItem.quantity) || 1;
+
+      updatedItem.supplement = supplement;
+      updatedItem.total = (priceBase + supplement) * quantity;
+
+      return updatedItem;
     })
   );
-  setDirtyMap(prev => ({ ...prev, [itemId]: true }));
-}
+  setDirtyMap(prev => ({ ...prev, [id]: true }));
+};
+
 
 // sauvegarde côté serveur)
 function handleSave(item) {
@@ -204,24 +216,39 @@ function goToCheckout() {
           onChange={e => handleEdit(item.id, "quantity", Number(e.target.value))}
         />
       </td>
+     
       {/* Nom */}
       <td className="p-4">
-        <input
-          type="text"
-          className="border-none w-24 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
-          value={item.nom || ''}
-          onChange={e => handleEdit(item.id, "nom", e.target.value)}
-        />
-      </td>
+     
+<input
+  type="text"
+  value={item.nom || ""}
+  onChange={(e) => {
+    const val = e.target.value.toUpperCase();
+    if (validateNom(val)) {
+      handleEdit(item.id, "nom", val);
+    }
+  }}
+  placeholder="Nom (MAJUSCULES, espaces, -)"
+  className="ml-2 border rounded px-2 py-1 w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
+/>
+ </td>
+      
       {/* Numéro */}
       <td className="p-4">
-        <input
-          type="number"
-          min={0} max={99}
-          className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
-          value={item.numero || ''}
-          onChange={e => handleEdit(item.id, "numero", e.target.value)}
-        />
+<input
+  type="number"
+  value={item.numero || ""}
+  onChange={(e) => {
+    const val = e.target.value;
+    if (validateNumero(val)) {
+      handleEdit(item.id, "numero", val);
+    }
+  }}
+  placeholder="Numéro (1-99)"
+  className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
+/>
+
       </td>
       {/* Prix, supplément, total */}
       <td className="p-4">{Number(item.priceNum).toFixed(0)} €</td>
