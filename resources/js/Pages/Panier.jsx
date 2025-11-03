@@ -118,7 +118,7 @@ function handleSave(item) {
       onSuccess: () => {
         setDirtyMap(prev => ({ ...prev, [item.id]: false })) // <-- reset après succès
         setLoadingId(null)
-        alert("Modifications enregistrées ✅") // <-- ou toast custom
+        alert("Modifications enregistrées ") // <-- ou toast custom
       },
       onError: () => setLoadingId(null),
       
