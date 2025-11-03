@@ -10,6 +10,27 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [nom, setNom] = useState("");
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
 
+
+  
+ // Validation numéro : entre 1 et 99 uniquement
+  const handleNumeroChange = (e) => {
+    const val = e.target.value;
+    if (/^\d*$/.test(val)) {
+      const num = parseInt(val, 10);
+      if (val === "" || (num >= 1 && num <= 99)) {
+        setNumero(val);
+      }
+    }
+  };
+
+  // Validation nom : lettres majuscules uniquement
+  const handleNomChange = (e) => {
+    const val = e.target.value;
+    if (/^[A-Z]*$/.test(val)) {
+      setNom(val);
+    }
+  };
+
   // Calcul du supplément pour personnalisation
   const supplement =
     (personnalisation.numero && numero ? prix_numero : 0) +
@@ -69,16 +90,16 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                   onChange={e => setPersonnalisation(p => ({ ...p, numero: e.target.checked }))}
                   className="mr-2"
                 />
-                Ajouter un numéro (+{prix_numero} €)
-              </label>
-              {personnalisation.numero && (
-                <input
-                  type="text"
-                  value={numero}
-                  onChange={e => setNumero(e.target.value)}
-                  placeholder="Numéro"
-                  className="ml-2 border rounded px-2 py-1 w-20"
-                />
+                Ajouter un numéro (+{prix_numero} €)
+          </label>
+          {personnalisation.numero && (
+            <input
+              type="text"
+              value={numero}
+              onChange={handleNumeroChange}
+              placeholder="Numéro (1-99)"
+              className="ml-2 border rounded px-2 py-1 w-20"
+            />
               )}
             </div>
             <div className="mb-2">
@@ -89,16 +110,16 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                   onChange={e => setPersonnalisation(p => ({ ...p, nom: e.target.checked }))}
                   className="mr-2"
                 />
-                Ajouter un nom (+{prix_nom} €)
-              </label>
-              {personnalisation.nom && (
-                <input
-                  type="text"
-                  value={nom}
-                  onChange={e => setNom(e.target.value)}
-                  placeholder="Nom"
-                  className="ml-2 border rounded px-2 py-1 w-32"
-                />
+                Ajouter un nom (+{prix_nom} €)
+          </label>
+          {personnalisation.nom && (
+            <input
+              type="text"
+              value={nom}
+              onChange={handleNomChange}
+              placeholder="Nom (MAJUSCULES)"
+              className="ml-2 border rounded px-2 py-1 w-32"
+            />
               )}
             </div>
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
