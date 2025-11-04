@@ -94,7 +94,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           </label>
           {personnalisation.numero && (
             <input
-              type="text"
+              type="number"
               value={numero}
               onChange={handleNumeroChange}
               placeholder="Numéro (1-99)"
@@ -114,12 +114,13 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           </label>
           {personnalisation.nom && (
             <input
-              type="text"
-              value={nom}
-              onChange={handleNomChange}
-              placeholder="Nom (MAJUSCULES)"
-              className="ml-2 border rounded px-2 py-1 w-32"
-            />
+                type="text"
+                value={nom}
+                onChange={(e) => setNom(e.target.value.toUpperCase())}
+                placeholder="Nom (MAJUSCULES)"
+                className="ml-2 border rounded px-2 py-1 w-32"
+              />
+
               )}
             </div>
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
