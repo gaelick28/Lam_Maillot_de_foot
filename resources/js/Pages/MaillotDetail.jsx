@@ -10,7 +10,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [nom, setNom] = useState("");
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
 
-
+  
   
  // Validation numéro : entre 1 et 99 uniquement
   const handleNumeroChange = (e) => {
@@ -23,10 +23,13 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
     }
   };
 
-  // Validation nom : lettres majuscules uniquement
+    // Validation identique à Panier.jsx
+    const validateNom = (val) => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val);
+  
+    // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
-    const val = e.target.value;
-    if (/^[A-Z]*$/.test(val)) {
+    const val = e.target.value.toUpperCase();
+    if (validateNom(val)) {
       setNom(val);
     }
   };
@@ -114,12 +117,12 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           </label>
           {personnalisation.nom && (
             <input
-                type="text"
-                value={nom}
-                onChange={(e) => setNom(e.target.value.toUpperCase())}
-                placeholder="Nom (MAJUSCULES)"
-                className="ml-2 border rounded px-2 py-1 w-32"
-              />
+                  type="text"
+                  value={nom}
+                  onChange={handleNomChange}
+                  placeholder="Nom (MAJUSCULES, espaces, -)"
+                  className="ml-2 border rounded px-2 py-1 w-32"
+                />
 
               )}
             </div>
