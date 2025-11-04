@@ -10,7 +10,15 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [nom, setNom] = useState("");
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
 
-  
+  // Validation identique à Panier.jsx pour le numéro
+  const validateNumero = (val) => {
+    if (val === "") return true;
+    if (/^\d+$/.test(val)) {
+      const num = parseInt(val, 10);
+      return num >= 1 && num <= 99;
+    }
+    return false;
+  };
   
  // Validation numéro : entre 1 et 99 uniquement
   const handleNumeroChange = (e) => {
@@ -97,12 +105,24 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           </label>
           {personnalisation.numero && (
             <input
-              type="number"
-              value={numero}
-              onChange={handleNumeroChange}
-              placeholder="Numéro (1-99)"
-              className="ml-2 border rounded px-2 py-1 w-20"
-            />
+                  type="number"
+                  value={numero}
+                  onChange={handleNumeroChange}
+                  onKeyDown={(e) => {
+                    // Bloquer "e", "+", "-", ".", etc. - Identique à Panier.jsx
+                    if (
+                      e.key === "e" ||
+                      e.key === "E" ||
+                      e.key === "+" ||
+                      e.key === "-" ||
+                      e.key === "."
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="Numéro (1-99)"
+                  className="ml-2 border rounded px-2 py-1 w-20"
+                />
               )}
             </div>
             <div className="mb-2">
