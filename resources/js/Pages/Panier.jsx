@@ -41,7 +41,7 @@ const defaultShippingAddress = auth.defaultShippingAddress;
   )
 }, [])
 
-const validateNom = (val) => /^[A-ZÇÉÈÊË\s-]*$/.test(val);
+const validateNom = (val) => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val);
 
 const validateNumero = (val) => {
   if (val === "") return true;
