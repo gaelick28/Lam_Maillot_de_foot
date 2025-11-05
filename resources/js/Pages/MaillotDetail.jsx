@@ -105,21 +105,25 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           </label>
           {personnalisation.numero && (
             <input
-                  type="number"
+                  type="text"
+  inputMode="numeric"
+  pattern="[0-9]*"
                   value={numero}
                   onChange={handleNumeroChange}
-                  onKeyDown={(e) => {
-                    // Bloquer "e", "+", "-", ".", etc. - Identique à Panier.jsx
-                    if (
-                      e.key === "e" ||
-                      e.key === "E" ||
-                      e.key === "+" ||
-                      e.key === "-" ||
-                      e.key === "."
-                    ) {
-                      e.preventDefault();
-                    }
-                  }}
+                 
+                 
+                  // onKeyDown={(e) => {
+                  //   // Bloquer "e", "+", "-", ".", etc. - Identique à Panier.jsx
+                  //   // if (
+                  //   //   e.key === "e" ||
+                  //   //   e.key === "E" ||
+                  //   //   e.key === "+" ||
+                  //   //   e.key === "-" ||
+                  //   //   e.key === "."
+                  //   // ) {
+                  //   //   e.preventDefault();
+                  //   // }
+                  // }}
                   placeholder="Numéro (1-99)"
                   className="ml-2 border rounded px-2 py-1 w-20"
                 />
@@ -140,7 +144,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                   type="text"
                   value={nom}
                   onChange={handleNomChange}
-                  placeholder="Nom (MAJUSCULES, espaces, -)"
+                  placeholder="NOM " //(nom en MAJUSCULES; espaces, - et ' autorisés)
                   className="ml-2 border rounded px-2 py-1 w-32"
                 />
 
