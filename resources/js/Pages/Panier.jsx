@@ -1,119 +1,109 @@
-"use client"
+"use client";
 
-import { usePage, router, Link } from "@inertiajs/react"
-import React, { useState, useEffect } from "react"
-import Header from "../Components/Header"
-import Footer from "../Components/Footer"
+import { usePage, router, Link } from "@inertiajs/react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
 
 export default function Panier() {
-  const { auth, cartItems: initialCartItems = [] } = usePage().props
-  const user = auth?.user
-  const address = user?.billingAddress || user?.adresse || {}
-  const defaultShippingAddress = auth.defaultShippingAddress
-  // Prix fixes pour le supplément :
-  const nomPrix = 3
-  const numeroPrix = 2
+  const { auth, cartItems: initialCartItems = [] } = usePage().props;
+  const user = auth?.user;
+  const address = user?.billingAddress || user?.adresse || {};
+  const nomPrix = 3;
+  const numeroPrix = 2;
 
-  // État local modifiable
-  const [cartItems, setCartItems] = useState(initialCartItems)
-  const [loadingId, setLoadingId] = useState(null)
+  const [cartItems, setCartItems] = useState(initialCartItems);
+  const [loadingId, setLoadingId] = useState(null);
+  const [dirtyMap, setDirtyMap] = useState({});
 
-  const [dirtyMap, setDirtyMap] = useState({})
-
-  // A l'initialisation, on recalcule tous les suppléments et totaux
-  useEffect(() => {
-    setCartItems(items =>
-      items.map(item => {
-        let supplement = 0
-        if (item.nom) supplement += nomPrix
-        if (item.numero) supplement += numeroPrix
-        const prixMaillot = parseFloat(item.price) || 0 // <--- ICI
-        const quantity = parseInt(item.quantity) || 1
-        const total = (prixMaillot + supplement) * quantity
-        return {
-          ...item,
-          priceNum: prixMaillot, // << stocke la version numérique !
-          supplement,
-          total,
-        }
-      }),
-    )
-  }, [])
-
-  const validateNom = val => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val)
-
-  const validateNumero = val => {
-    if (val === "") return true
+  //   Validation utilitaires
+   
+  const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val), []);
+  const validateNumero = useCallback((val) => {
+    if (val === "") return true;
     if (/^\d+$/.test(val)) {
-      const num = parseInt(val, 10)
-      return num >= 1 && num <= 99
+      const num = parseInt(val, 10);
+      return num >= 1 && num <= 99;
     }
-    return false
-  }
+    return false;
+  }, []);
 
-  // Total global du panier (somme des totaux lignes)
-  const prixTotal = cartItems.reduce((sum, item) => sum + (item.total || 0), 0)
 
-  // Gestion commande :
-  function handleOrder() {
-    router.post(
-      "/api/commande",
-      {
-        items: cartItems,
-        user_id: user.id,
-        adresse_id: address?.id,
-      },
-      {
-        onSuccess: () => {
-          alert("Commande passée ! 🎉")
-          router.visit("/order")
-        },
-      },
-    )
-  }
+  //   Calcul du total par item
 
-  // Suppression d'un article :
-  function handleRemove(itemId) {
+  const computeItemTotals = useCallback(
+    (item) => {
+      const base = parseFloat(item.price) || 0;
+      const qte = parseInt(item.quantity) || 1;
+      let supplement = 0;
+      if (item.nom) supplement += nomPrix;
+      if (item.numero) supplement += numeroPrix;
+      return {
+        ...item,
+        priceNum: base,
+        supplement,
+        total: (base + supplement) * qte,
+      };
+    },
+    [nomPrix, numeroPrix]
+  );
+
+
+  //   Initialisation
+
+  useEffect(() => {
+    setCartItems((items) => items.map(computeItemTotals));
+  }, [computeItemTotals]);
+
+  
+  //   Total global & format monétaire
+
+  const prixTotal = useMemo(
+    () => cartItems.reduce((sum, item) => sum + (item.total || 0), 0),
+    [cartItems]
+  );
+
+  const formatPrice = useMemo(
+    () =>
+      new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "EUR",
+      }),
+    []
+  );
+
+ 
+  //   Handlers principaux
+
+  const handleEdit = useCallback(
+    (id, field, value) => {
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? computeItemTotals({
+                ...item,
+                [field]: value,
+              })
+            : item
+        )
+      );
+      setDirtyMap((prev) => ({ ...prev, [id]: true }));
+    },
+    [computeItemTotals]
+  );
+
+  const handleRemove = useCallback((itemId) => {
     if (confirm("Êtes-vous sûr de vouloir supprimer cet article du panier ?")) {
       router.delete(`/panier/item/${itemId}`, {
         onSuccess: () => {
-          setCartItems(items => items.filter(i => i.id !== itemId))
+          setCartItems((items) => items.filter((i) => i.id !== itemId));
         },
-      })
+      });
     }
-  }
+  }, []);
 
-  // Edition dynamique des champs + recalcul du supplément et total
-  const handleEdit = (id, field, value) => {
-    setCartItems(prev =>
-      prev.map(item => {
-        if (item.id !== id) return item
-
-        if (field === "nom" && !validateNom(value)) return item
-        if (field === "numero" && !validateNumero(value)) return item
-
-        // Mise à jour avec calculs existants...
-        let updatedItem = { ...item, [field]: value }
-
-        let supplement = 0
-        if (updatedItem.nom && updatedItem.nom !== "") supplement += nomPrix
-        if (updatedItem.numero && updatedItem.numero !== "") supplement += numeroPrix
-
-        const priceBase = parseFloat(updatedItem.price) || 0
-        const quantity = parseInt(updatedItem.quantity) || 1
-
-        updatedItem.supplement = supplement
-        updatedItem.total = (priceBase + supplement) * quantity
-
-        return updatedItem
-      }),
-    )
-    setDirtyMap(prev => ({ ...prev, [id]: true }))
-  }
-
-  // sauvegarde côté serveur
-  function handleSave(item) {
-    setLoadingId(item.id)
+  const handleSave = useCallback((item) => {
+    setLoadingId(item.id);
     router.put(
       `/panier/item/${item.id}`,
       {
@@ -125,39 +115,58 @@ export default function Panier() {
       {
         preserveScroll: true,
         onSuccess: () => {
-          setDirtyMap(prev => ({ ...prev, [item.id]: false })) // <-- reset après succès
-          setLoadingId(null)
-          alert("Modifications enregistrées ") // <-- ou toast custom
+          setDirtyMap((prev) => ({ ...prev, [item.id]: false }));
+          setLoadingId(null);
+          alert("Modifications enregistrées !");
         },
         onError: () => setLoadingId(null),
-      },
-    )
-  }
-  function goToCheckout() {
+      }
+    );
+  }, []);
+
+  const handleClearCart = useCallback(() => {
+    if (confirm("Êtes-vous sûr de vouloir vider complètement votre panier ?")) {
+      router.post("/panier/clear");
+      setCartItems([]);
+    }
+  }, []);
+
+  const goToCheckout = useCallback(() => {
     if (!address || !address.street) {
-      alert("Veuillez d'abord renseigner votre adresse de livraison.")
-      return
+      alert("Veuillez d'abord renseigner votre adresse de livraison.");
+      return;
     }
     if (cartItems.length === 0) {
-      alert("Votre panier est vide !")
-      return
+      alert("Votre panier est vide !");
+      return;
     }
-    router.visit("/checkout") // juste une redirection, pas de POST ici!
-  }
+    router.visit("/checkout");
+  }, [address, cartItems]);
+
+
+  //    Rendu principal
 
   return (
     <>
       <Header />
-      <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-4 sm:p-6 lg:p-8 xl:p-10\">
+      <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-4 sm:p-6 lg:p-8 xl:p-10">
         <div className="container max-w-7xl mx-auto py-6 sm:py-8 px-2 sm:px-4">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 sm:mb-6\">Mon panier</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 sm:mb-6">
+            Mon panier
+          </h1>
+
           {cartItems.length === 0 ? (
-            <div className="text-center text-gray-600 bg-white rounded-lg p-6 sm:p-8 shadow-md">
+            <div
+              className="text-center text-gray-600 bg-white rounded-lg p-6 sm:p-8 shadow-md"
+              role="status"
+              aria-live="polite"
+            >
               <svg
                 className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mb-3 sm:mb-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -167,21 +176,29 @@ export default function Panier() {
                 />
               </svg>
               <p className="text-base sm:text-lg mb-3 sm:mb-4">Votre panier est vide</p>
-              <Link href="/" className="text-blue-700 underline hover:text-blue-900">
+              <Link
+                href="/"
+                className="text-blue-700 underline hover:text-blue-900 focus:ring-2 focus:ring-blue-500 rounded"
+              >
                 Retour à la boutique
               </Link>
             </div>
           ) : (
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               {/* --- Vue mobile en cartes --- */}
-              <div className="lg:hidden p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4\">
-                {cartItems.map(item => (
-                  <div key={item.id} className="border rounded-lg p-4 md:p-5 shadow-sm mb-4\">
+              <div className="lg:hidden p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border rounded-lg p-4 md:p-5 shadow-sm mb-4"
+                    role="group"
+                    aria-label={`Article ${item.maillot_name}`}
+                  >
                     <div className="flex items-center gap-3">
                       {item.image && (
                         <img
                           src={item.image}
-                          alt=""
+                          alt={`${item.club_name}, ${item.maillot_name}`}
                           className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                         />
                       )}
@@ -189,19 +206,24 @@ export default function Panier() {
                         <p className="font-medium text-sm sm:text-base truncate">
                           {item.club_name}, {item.maillot_name}
                         </p>
-                        <p className="text-xs text-gray-500">{Number(item.priceNum).toFixed(0)} €</p>
+                        <p className="text-xs text-gray-500">
+                          {formatPrice.format(item.priceNum)}
+                        </p>
                       </div>
                     </div>
 
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       {/* Taille */}
-                      <label className="text-xs font-medium text-gray-600 col-span-1">Taille</label>
+                      <label htmlFor={`size-${item.id}`} className="text-xs font-medium text-gray-600">
+                        Taille
+                      </label>
                       <select
+                        id={`size-${item.id}`}
                         value={item.size}
-                        onChange={e => handleEdit(item.id, "size", e.target.value)}
+                        onChange={(e) => handleEdit(item.id, "size", e.target.value)}
                         className="col-span-1 border rounded-md px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                       >
-                        {["S", "M", "L", "XL"].map(sz => (
+                        {["S", "M", "L", "XL"].map((sz) => (
                           <option key={sz} value={sz}>
                             {sz}
                           </option>
@@ -209,24 +231,30 @@ export default function Panier() {
                       </select>
 
                       {/* Quantité */}
-                      <label className="text-xs font-medium text-gray-600 col-span-1">Quantité</label>
+                      <label htmlFor={`quantity-${item.id}`} className="text-xs font-medium text-gray-600">
+                        Quantité
+                      </label>
                       <input
+                        id={`quantity-${item.id}`}
                         type="number"
                         min={1}
                         className="col-span-1 border w-full px-2 py-1 bg-blue-50 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                         value={item.quantity}
-                        onChange={e => handleEdit(item.id, "quantity", Number(e.target.value))}
+                        onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
                       />
 
                       {/* Nom */}
-                      <label className="text-xs font-medium text-gray-600 col-span-1">Nom</label>
+                      <label htmlFor={`nom-${item.id}`} className="text-xs font-medium text-gray-600">
+                        Nom
+                      </label>
                       <input
+                        id={`nom-${item.id}`}
                         type="text"
                         value={item.nom || ""}
-                        onChange={e => {
-                          const val = e.target.value.toUpperCase()
+                        onChange={(e) => {
+                          const val = e.target.value.toUpperCase();
                           if (validateNom(val)) {
-                            handleEdit(item.id, "nom", val)
+                            handleEdit(item.id, "nom", val);
                           }
                         }}
                         placeholder="MAJUSCULES, espaces, -"
@@ -234,25 +262,23 @@ export default function Panier() {
                       />
 
                       {/* Numéro */}
-                      <label className="text-xs font-medium text-gray-600 col-span-1">Numéro</label>
+                      <label htmlFor={`numero-${item.id}`} className="text-xs font-medium text-gray-600">
+                        Numéro
+                      </label>
                       <input
+                        id={`numero-${item.id}`}
                         type="text"
-  inputMode="numeric"
-  pattern="[0-9]*"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         min="1"
                         max="99"
                         value={item.numero || ""}
-                        onChange={e => {
-                          const val = e.target.value
+                        onChange={(e) => {
+                          const val = e.target.value;
                           if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
-                            handleEdit(item.id, "numero", val)
+                            handleEdit(item.id, "numero", val);
                           }
                         }}
-                        // onKeyDown={e => {
-                        //   if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-" || e.key === ".") {
-                        //     e.preventDefault()
-                        //   }
-                        // }}
                         placeholder="1-99"
                         className="col-span-1 border px-2 py-1 bg-green-50 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
                       />
@@ -261,17 +287,17 @@ export default function Panier() {
                     {/* Prix & totaux */}
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
                       <div>
-                        Suppléments :{" "}
+                        Suppléments :{" "}
                         {item.supplement > 0 ? (
                           <span className="text-orange-600 font-medium">
-                            {Number(item.supplement).toFixed(2)} €
+                            {formatPrice.format(item.supplement)}
                           </span>
                         ) : (
                           <span>-</span>
                         )}
                       </div>
                       <div className="font-bold text-blue-600">
-                        Total : {Number(item.total).toFixed(2)} €
+                        Total : {formatPrice.format(item.total)}
                       </div>
                     </div>
 
@@ -279,7 +305,7 @@ export default function Panier() {
                     <div className="mt-4 flex flex-col sm:flex-row gap-2">
                       <button
                         onClick={() => handleRemove(item.id)}
-                        className="w-full sm:w-auto bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 active:scale-[.99]"
+                        className="w-full sm:w-auto bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 active:scale-[.99] focus:ring-2 focus:ring-red-300"
                       >
                         Supprimer
                       </button>
@@ -300,8 +326,8 @@ export default function Panier() {
               </div>
 
               {/* --- Vue desktop en tableau --- */}
-              <div className="hidden lg:block overflow-x-auto\">
-                <table className="w-full min-w-\[980px\] lg:min-w-\[1100px\]\">
+               <div className="hidden lg:block">
+                <table className="w-full table-auto">
                   <thead>
                     <tr className="bg-gray-100 border-b border-gray-300">
                       <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Maillot</th>
@@ -316,9 +342,9 @@ export default function Panier() {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map(item => (
+                    {cartItems.map((item) => (
                       <tr key={item.id} className="border-b border-gray-200 hover:bg-gray-50">
-                        {/* NOM, image */}
+                        {/* Maillot + image */}
                         <td className="p-3 lg:p-4">
                           <div className="flex items-center gap-3">
                             <div>
@@ -329,98 +355,114 @@ export default function Panier() {
                             {item.image && (
                               <img
                                 src={item.image}
-                                alt=""
+                                alt={`${item.club_name}, ${item.maillot_name}`}
                                 className="w-14 h-14 lg:w-16 lg:h-16 object-cover rounded-md"
                               />
                             )}
                           </div>
                         </td>
+
                         {/* Taille */}
                         <td className="p-3 lg:p-4">
+                          <label htmlFor={`size-d-${item.id}`} className="sr-only">
+                            Taille
+                          </label>
                           <select
+                            id={`size-d-${item.id}`}
                             value={item.size}
-                            onChange={e => handleEdit(item.id, "size", e.target.value)}
+                            onChange={(e) => handleEdit(item.id, "size", e.target.value)}
                             className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           >
-                            {["S", "M", "L", "XL"].map(sz => (
+                            {["S", "M", "L", "XL"].map((sz) => (
                               <option key={sz} value={sz}>
                                 {sz}
                               </option>
                             ))}
                           </select>
                         </td>
+
                         {/* Quantité */}
                         <td className="p-3 lg:p-4">
+                          <label htmlFor={`qty-d-${item.id}`} className="sr-only">
+                            Quantité
+                          </label>
                           <input
+                            id={`qty-d-${item.id}`}
                             type="number"
                             min={1}
                             className="border-none w-16 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                             value={item.quantity}
-                            onChange={e => handleEdit(item.id, "quantity", Number(e.target.value))}
+                            onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
                           />
                         </td>
 
                         {/* Nom */}
                         <td className="p-3 lg:p-4">
+                          <label htmlFor={`nom-d-${item.id}`} className="sr-only">
+                            Nom
+                          </label>
                           <input
+                            id={`nom-d-${item.id}`}
                             type="text"
                             value={item.nom || ""}
-                            onChange={e => {
-                              const val = e.target.value.toUpperCase()
+                            onChange={(e) => {
+                              const val = e.target.value.toUpperCase();
                               if (validateNom(val)) {
-                                handleEdit(item.id, "nom", val)
+                                handleEdit(item.id, "nom", val);
                               }
                             }}
-                            placeholder="NOM "   //(en MAJUSCULES; espaces, - et ' autorisés)
+                            placeholder="NOM"
                             className="ml-0 lg:ml-2 border rounded px-2 py-1 w-28 lg:w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           />
                         </td>
 
                         {/* Numéro */}
                         <td className="p-3 lg:p-4">
+                          <label htmlFor={`num-d-${item.id}`} className="sr-only">
+                            Numéro
+                          </label>
                           <input
+                            id={`num-d-${item.id}`}
                             type="text"
-  inputMode="numeric"
-  pattern="[0-9]*"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             min="1"
                             max="99"
                             value={item.numero || ""}
-                            onChange={e => {
-                              const val = e.target.value
+                            onChange={(e) => {
+                              const val = e.target.value;
                               if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
-                                handleEdit(item.id, "numero", val)
+                                handleEdit(item.id, "numero", val);
                               }
                             }}
-                            // onKeyDown={e => {
-                            //   // Bloquer "e", "+", "-", ".", etc.
-                            //   if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-" || e.key === ".") {
-                            //     e.preventDefault()
-                            //   }
-                            // }}
-                            placeholder="Numéro (1-99)"
+                            placeholder="Numéro"
                             className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
                           />
                         </td>
 
                         {/* Prix, supplément, total */}
-                        <td className="p-3 lg:p-4 text-sm lg:text-base">{Number(item.priceNum).toFixed(0)} €</td>
+                        <td className="p-3 lg:p-4 text-sm lg:text-base">
+                          {formatPrice.format(item.priceNum)}
+                        </td>
                         <td className="p-3 lg:p-4 text-sm lg:text-base">
                           {item.supplement > 0 ? (
-                            <span className="text-orange-600">{Number(item.supplement).toFixed(2)} €</span>
+                            <span className="text-orange-600">
+                              {formatPrice.format(item.supplement)}
+                            </span>
                           ) : (
                             "-"
                           )}
                         </td>
-
-                        {/* Total */}
                         <td className="p-3 lg:p-4 font-bold text-blue-600 text-sm lg:text-base">
-                          {Number(item.total).toFixed(2)} €
+                          {formatPrice.format(item.total)}
                         </td>
+
+                        {/* Actions */}
                         <td className="p-3 lg:p-4">
                           <div className="flex flex-col xl:flex-row gap-2">
                             <button
                               onClick={() => handleRemove(item.id)}
-                              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
+                              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 focus:ring-2 focus:ring-red-300"
                             >
                               Supprimer
                             </button>
@@ -447,16 +489,11 @@ export default function Panier() {
               <div className="p-4 sm:p-5 lg:p-6 bg-gray-50 border-t">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6 mb-4 md:mb-6">
                   <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                    Total panier : {Number(prixTotal).toFixed(2)} €
+                    Total panier : {formatPrice.format(prixTotal)}
                   </div>
                   <button
-                    onClick={() => {
-                      if (confirm("Êtes-vous sûr de vouloir vider complètement votre panier ?")) {
-                        router.post("/panier/clear")
-                        setCartItems([])
-                      }
-                    }}
-                    className="self-start md:self-auto text-red-600 hover:text-red-800 underline"
+                    onClick={handleClearCart}
+                    className="self-start md:self-auto text-red-600 hover:text-red-800 underline focus:ring-2 focus:ring-red-400 rounded"
                   >
                     Vider le panier
                   </button>
@@ -464,18 +501,18 @@ export default function Panier() {
 
                 <div className="mb-5 md:mb-6">
                   <h2 className="font-semibold mb-2 md:mb-3 text-base md:text-lg">Adresse de livraison</h2>
-                  {user?.addresses?.find(addr => addr.type === "shipping" && addr.is_default) ? (
-                    <div className="bg-white p-3 md:p-4 rounded-md border">
+                  {user?.addresses?.find((addr) => addr.type === "shipping" && addr.is_default) ? (
+                    <div className="bg-white p-3 md:p-4 rounded-md border" role="region" aria-label="Adresse par défaut">
                       <div className="font-medium">
-                        {user.addresses.find(addr => addr.type === "shipping" && addr.is_default).first_name}{" "}
-                        {user.addresses.find(addr => addr.type === "shipping" && addr.is_default).last_name}
+                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).first_name}{" "}
+                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).last_name}
                       </div>
                       <div className="text-sm md:text-base">
-                        {user.addresses.find(addr => addr.type === "shipping" && addr.is_default).street}
+                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).street}
                       </div>
                       <div className="text-sm md:text-base">
-                        {user.addresses.find(addr => addr.type === "shipping" && addr.is_default).postal_code}{" "}
-                        {user.addresses.find(addr => addr.type === "shipping" && addr.is_default).city}
+                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).postal_code}{" "}
+                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).city}
                       </div>
                       <Link
                         href="/addresses"
@@ -494,23 +531,12 @@ export default function Panier() {
                   )}
                 </div>
 
-                <Link
-                  href={address && address.street && cartItems.length ? "/checkout" : "#"}
-                  className="w-full block bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-4 sm:px-6 rounded-md hover:opacity-95 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold text-base sm:text-lg transition-colors text-center"
-                  as="button"
-                  onClick={e => {
-                    if (!address || !address.street) {
-                      e.preventDefault()
-                      alert("Veuillez d'abord renseigner votre adresse de livraison.")
-                    }
-                    if (cartItems.length === 0) {
-                      e.preventDefault()
-                      alert("Votre panier est vide !")
-                    }
-                  }}
+                <button
+                  onClick={goToCheckout}
+                  className="w-full block bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-4 sm:px-6 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300 font-semibold text-base sm:text-lg transition-colors"
                 >
-                  Confirmer ma commande ({Number(prixTotal).toFixed(2)} €)
-                </Link>
+                  Confirmer ma commande ({formatPrice.format(prixTotal)})
+                </button>
               </div>
             </div>
           )}
@@ -518,5 +544,5 @@ export default function Panier() {
       </main>
       <Footer />
     </>
-  )
+  );
 }
