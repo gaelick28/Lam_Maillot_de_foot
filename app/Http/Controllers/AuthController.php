@@ -63,19 +63,27 @@ class AuthController extends Controller
     /**
      * Connexion
      */
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'login'    => 'required|string',
-            'password' => 'required|string',
-        ]);
+   public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'login' => 'required|string',
+        'password' => 'required|string',
+        
+    ]);
 
-        $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt([$loginField => $credentials['login'], 'password' => $credentials['password'], 'is_active' => true])) {
-            $request->session()->regenerate();
-            return redirect()->route('dashboard')->with('success', 'Connexion réussie');
-        }
+    // Vérifie la case "remember"
+    $remember = $request->boolean('remember');
+
+    if (Auth::attempt(
+            [$loginField => $credentials['login'], 'password' => $credentials['password'], 'is_active' => true],
+            $remember
+        )) {
+        $request->session()->regenerate();
+        return redirect()->route('dashboard')->with('success', 'Connexion réussie');
+    }
+
 
         throw ValidationException::withMessages([
             'login' => ['Identifiants incorrects ou compte inactif.'],

@@ -15,6 +15,7 @@ export default function LoginRegister() {
     email: "",
     password: "",
     password_confirmation: "",
+     remember: false,
   })
 
   const handleChange = (e) => {
@@ -161,7 +162,19 @@ export default function LoginRegister() {
                 {errors.password_confirmation && <p className="text-sm text-red-600">{errors.password_confirmation}</p>}
               </div>
             )}
-
+<div className="flex items-center">
+  <input
+    id="remember"
+    name="remember"
+    type="checkbox"
+    checked={data.remember}
+    onChange={e => setData('remember', e.target.checked)}
+    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+  />
+  <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
+    Se souvenir de moi
+  </label>
+</div>
             <button
               type="submit"
               disabled={processing}
