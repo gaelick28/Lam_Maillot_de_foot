@@ -502,7 +502,8 @@ export default function Panier() {
                 <div className="mb-5 md:mb-6">
                   <h2 className="font-semibold mb-2 md:mb-3 text-base md:text-lg">Adresse de livraison</h2>
                   {user?.addresses?.find((addr) => addr.type === "shipping" && addr.is_default) ? (
-                    <div className="bg-white p-3 md:p-4 rounded-md border" role="region" aria-label="Adresse par défaut">
+                    <div className="bg-yellow-50 border border-yellow-200 p-3 md:p-4 rounded-md" role="region" aria-label="Adresse par défaut">
+
                       <div className="font-medium">
                         {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).first_name}{" "}
                         {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).last_name}
