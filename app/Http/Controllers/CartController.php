@@ -96,13 +96,15 @@ $user = \App\Models\User::with(['addresses' => function ($query) {
     public function add(Request $request)
     {
         $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-        
+        $nom = $request->filled('nom') ? $request->nom : null;
+        $numero = $request->filled('numero') ? $request->numero : null;
         $item = $cart->items()
-            ->where('maillot_id', $request->maillot_id)
-            ->where('size', $request->size)
-            ->where('numero', $request->numero ?? '')
-            ->where('nom', $request->nom ?? '')
-            ->first();
+        ->where('maillot_id', $request->maillot_id)
+        ->where('size', $request->size)
+        ->where('numero', $numero)
+        ->where('nom', $nom)
+        ->first();
+
 
         if ($item) {
             $item->increment('quantity', $request->quantity);
