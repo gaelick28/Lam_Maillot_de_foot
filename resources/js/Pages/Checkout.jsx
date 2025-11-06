@@ -1,124 +1,167 @@
-// import { usePage, router } from "@inertiajs/react";
-// import Header from "@/Components/Header";
-// import Footer from "@/Components/Footer";
-// import { useState } from "react";
+"use client";
 
-// export default function Checkout({ user, address, cartItems: initialItems }) {
-//   const [items, setItems] = useState(initialItems);
-
-//   function removeItem(index) {
-//     setItems(prev => prev.filter((_, i) => i !== index));
-//     // Optionnel : sync avec le backend/localStorage ici
-//   }
-
-//   function handleCheckout() {
-//     // Appel API/Laravel, ex:
-//     router.post('/api/orders', { items }); // Ou tout autre endpoint
-//   }
-
-//   function handleCancel() {
-//     setItems([]);
-//     // Optionnel : vider panier côté backend/localStorage aussi
-//   }
-
-//   return (
-//     <>
-//       <Header />
-//       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
-//         <div className="container mx-auto py-8 px-4">
-//         <h1 className="text-2xl mb-4">Finaliser votre commande</h1>
-//         <section>
-//           <h2 className="font-bold">Votre panier</h2>
-//           {items.length === 0 ? (
-//             <p>Panier vide.</p>
-//           ) : (
-//             items.map((item, idx) => (
-//               <div key={idx} className="flex gap-4">
-//                 <div>{item.name} (Taille {item.size}) x{item.quantity}</div>
-//                 <button className="text-red-500" onClick={() => removeItem(idx)}>Retirer</button>
-//               </div>
-//             ))
-//           )}
-//         </section>
-//         <section className="mt-8">
-//           <h2 className="font-bold">Adresse de livraison</h2>
-//           {/* Tu pré-remplis avec infos user / accountdetails */}
-//           <div>{address?.line1} - {address?.city}</div>
-//         </section>
-//         <div className="mt-8 flex gap-4">
-//           <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={handleCheckout} disabled={items.length === 0}>Valider la commande</button>
-//           <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={handleCancel} disabled={items.length === 0}>Annuler</button>
-//         </div></div>
-//       </main>
-//       <Footer />
-//     </>
-//   );
-// }
-
-import { router, usePage } from "@inertiajs/react"
-import React, { useState } from "react"
-import Header from "../Components/Header"
-import Footer from "../Components/Footer"
+import { usePage, router, Link } from "@inertiajs/react";
+import React, { useMemo } from "react";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
 
 export default function Checkout() {
-  const { cartItems = [], auth } = usePage().props
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const address = auth.user?.billingAddress || auth.user?.adresse || {}
+  const {
+    items = [],
+    subtotal = 0,
+    supplements = 0,
+    total = 0,
+    shippingAddress = null,
+  } = usePage().props;
 
-  function handleValidate() {
-    if (loading) return;
-    setLoading(true)
-    router.post('/panier/checkout', {}, {
-      onSuccess: () => {
-        setSuccess(true)
-        setLoading(false)
-      },
-      onError: () => setLoading(false)
-    })
-  }
+  const fmt = useMemo(
+    () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }),
+    []
+  );
 
-  if(success) {
-    return (
-      <>
-        <Header />
-        <main className="min-h-[60vh] flex flex-col justify-center items-center bg-blue-50">
-          <h1 className="text-3xl font-bold mb-4">Merci pour votre commande 🎉</h1>
-          <p className="mb-4">Votre commande a bien été prise en compte.<br />Vous recevrez bientôt un email de confirmation.</p>
-          <a href="/" className="mt-4 text-blue-600 underline">Retour à la boutique</a>
-        </main>
-        <Footer />
-      </>
-    )
-  }
+  // Fallbacks côté client si jamais le back renvoie 0
+  const calcSubtotal = useMemo(
+    () => items.reduce((s, it) => s + (Number(it.price || 0) * Number(it.quantity || 1)), 0),
+    [items]
+  );
+  const calcSupplements = useMemo(
+    () => items.reduce((s, it) => s + (Number(it.supplement_line ?? ((it.supplement_unit || 0) * (it.quantity || 1)))), 0),
+    [items]
+  );
+  const showSubtotal    = subtotal    > 0 ? subtotal    : calcSubtotal;
+  const showSupplements = supplements > 0 ? supplements : calcSupplements;
+  const showTotal       = total       > 0 ? total       : (showSubtotal + showSupplements);
+
+  const handleConfirm = () => {
+    if (!shippingAddress) {
+      alert("Veuillez d'abord renseigner votre adresse de livraison.");
+      return;
+    }
+    if (!items.length) {
+      alert("Votre panier est vide.");
+      return;
+    }
+    router.post("/checkout/confirm");
+  };
 
   return (
     <>
       <Header />
-      <main className="bg-gray-50 min-h-[60vh] flex flex-col items-center justify-center py-10">
-        <div className="bg-white shadow rounded-lg p-8 max-w-xl w-full">
-          <h2 className="text-2xl font-bold mb-6">Récapitulatif de la commande</h2>
-          <ul className="mb-6">
-            {cartItems.map(item => (
-              <li key={item.id} className="flex justify-between mb-2">
-                <span>{item.maillot_name} (x{item.quantity})</span>
-                <span>{Number(item.total).toFixed(2)} €</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mb-8">
-            <strong>Adresse de livraison :</strong><br/>
-            {address.first_name} {address.last_name}<br/>
-            {address.street}<br/>
-            {address.postal_code} {address.city}<br/>
+      <main className="bg-gradient-to-r from-purple-200 to-blue-100 min-h-screen">
+        <div className="container max-w-7xl mx-auto px-4 py-6 md:py-10">
+          <h1 className="text-2xl md:text-3xl font-bold mb-6">Validation de la commande</h1>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Récap produits */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="px-4 py-3 border-b font-semibold">Récapitulatif des articles</div>
+                <table className="w-full table-auto">
+                  <thead>
+                    <tr className="bg-gray-100 text-sm">
+                      <th className="text-left p-3">Article</th>
+                      <th className="text-left p-3">Taille</th>
+                      <th className="text-left p-3">Quantité</th>
+                      <th className="text-left p-3">Nom</th>
+                      <th className="text-left p-3">Numéro</th>
+                      <th className="text-left p-3">Prix</th>
+                      <th className="text-left p-3">Supplément</th>
+                      <th className="text-left p-3">Total ligne</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((it) => {
+                      const qty   = Number(it.quantity || 1);
+                      const unit  = Number(it.price || 0);
+                      const suppU = Number(it.supplement_unit || 0);
+                      const suppL = Number(it.supplement_line ?? (suppU * qty));
+                      const line  = (unit * qty) + suppL;
+
+                      return (
+                        <tr key={it.id} className="border-b">
+                          <td className="p-3">
+  <div className="flex items-center gap-3">
+    {it.image && (
+      <img
+        src={it.image}
+        alt={it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
+        className="w-12 h-12 object-cover rounded"
+      />
+    )}
+    <div className="text-sm">
+      <div className="font-medium">
+        {it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
+      </div>
+    </div>
+  </div>
+</td>
+
+                          <td className="p-3">{it.size}</td>
+                          <td className="p-3">{qty}</td>
+                          <td className="p-3">{it.nom || "-"}</td>
+                          <td className="p-3">{it.numero || "-"}</td>
+                          <td className="p-3">{fmt.format(unit)}</td>
+                          <td className="p-3">{suppU ? fmt.format(suppU) : "-"}</td>
+                          <td className="p-3 font-semibold text-blue-700">{fmt.format(line)}</td>
+                        </tr>
+                      );
+                    })}
+                    {!items.length && (
+                      <tr><td className="p-4 text-gray-500" colSpan={8}>Aucun article.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Adresse + Totaux */}
+            <div className="space-y-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="font-semibold mb-2">Adresse de livraison</div>
+                {shippingAddress ? (
+                  <>
+                    <div className="font-medium">
+                      {shippingAddress.first_name} {shippingAddress.last_name}
+                    </div>
+                    <div>{shippingAddress.street}</div>
+                    <div>{shippingAddress.postal_code} {shippingAddress.city}</div>
+                    <Link href="/addresses" className="text-blue-600 underline mt-2 inline-block">
+                      Modifier l’adresse
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-yellow-800">Aucune adresse de livraison configurée.</div>
+                    <Link href="/addresses" className="text-blue-600 underline mt-2 inline-block">
+                      Ajouter une adresse
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              <div className="bg-white rounded-lg shadow-md p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-600">Sous-total</span>
+                  <span>{fmt.format(showSubtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-600">Suppléments</span>
+                  <span>{fmt.format(showSupplements)}</span>
+                </div>
+                <div className="border-top mt-3 pt-3 font-bold flex items-center justify-between">
+                  <span>Total à payer</span>
+                  <span className="text-blue-700">{fmt.format(showTotal)}</span>
+                </div>
+
+                <button
+                  onClick={handleConfirm}
+                  className="w-full mt-4 bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300"
+                >
+                  Confirmer ma commande ({fmt.format(showTotal)})
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={handleValidate}
-            className={"bg-green-600 text-white px-6 py-3 rounded font-semibold text-lg w-full hover:bg-green-800 " + (loading && "opacity-60 cursor-wait")}
-            disabled={loading}
-          >
-            {loading ? "Validation..." : "Valider la commande"}
-          </button>
         </div>
       </main>
       <Footer />

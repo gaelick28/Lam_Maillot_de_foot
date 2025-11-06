@@ -10,6 +10,7 @@ use App\Http\Controllers\MaillotController;
 use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -129,7 +130,11 @@ Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots
     Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
 
-
+    //pages checkout 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
+});
     
 });
 
