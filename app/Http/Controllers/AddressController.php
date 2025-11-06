@@ -4,36 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class AddressController extends Controller
 {
-    /**
-     * Afficher la liste des adresses
-     */
+    // Afficher la liste des adresses
     public function index(Request $request)
     {
-        $userId = \Illuminate\Support\Facades\Auth::user()->id; // sécurisé
+        $userId = Auth::user()->id; // sécurisé
 
-    $addresses = UserAddress::where('user_id', $userId)
-        ->orderBy('type', 'asc')
-        ->orderBy('is_default', 'desc')
-        ->orderBy('created_at', 'desc')
-        ->get();
+        $addresses = UserAddress::where('user_id', $userId)
+            ->orderBy('type', 'asc')
+            ->orderBy('is_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return Inertia::render('Addresses', [
-        'addresses' => $addresses,
+        return Inertia::render('Addresses', [
+            'addresses' => $addresses,
         ]);
     }
 
-    /**
-     * Enregistrer une nouvelle adresse
-     */
+    // Enregistrer une nouvelle adresse
     public function store(Request $request)
     {
-        // DEBUG: Voir ce qui est reçu
         Log::info('Données reçues pour création:', $request->all());
 
         $validated = $request->validate([
@@ -48,10 +43,9 @@ class AddressController extends Controller
             'is_default' => 'boolean',
         ]);
 
-        // DEBUG: Voir ce qui est validé
         Log::info('Données validées:', $validated);
 
-        $userId = \Illuminate\Support\Facades\Auth::user()->id;
+        $userId = Auth::user()->id;
 
         // Si cette adresse est par défaut, désactiver les autres du même type
         if ($validated['is_default'] ?? false) {
@@ -73,18 +67,12 @@ class AddressController extends Controller
             'is_default' => $validated['is_default'] ?? false,
         ]);
 
-        // DEBUG: Voir ce qui est créé
-        Log::info('Adresse créée:', $address->toArray());
-
         return redirect()->back()->with('success', 'Adresse ajoutée.');
     }
 
-    /**
-     * Mettre à jour une adresse
-     */
+    // Mettre à jour une adresse
     public function update(Request $request, UserAddress $address)
     {
-        // DEBUG: Voir ce qui est reçu
         Log::info('Données de mise à jour reçues:', $request->all());
 
         $validated = $request->validate([
@@ -99,7 +87,7 @@ class AddressController extends Controller
             'is_default' => 'boolean',
         ]);
 
-        $userId = \Illuminate\Support\Facades\Auth::user()->id;
+        $userId = Auth::user()->id;
 
         // Vérifier que l'adresse appartient à l'utilisateur
         if ($address->user_id !== $userId) {
@@ -107,46 +95,28 @@ class AddressController extends Controller
         }
 
         // Si cette adresse est par défaut, désactiver les autres du même type
-        if ($address->type === 'billing' && $address->is_default) {
-    $user = $address->user;
-    $user->update([
-        'first_name' => $address->first_name,
-        'last_name'  => $address->last_name,
-        'phone'      => $address->phone,
-    ]);
-}
+        if ($address->type === 'billing' && $validated['is_default'] ?? false) {
+            UserAddress::where('user_id', $userId)
+                ->where('type', 'billing')
+                ->where('id', '<>', $address->id)
+                ->update(['is_default' => false]);
+        }
 
         $address->update($validated);
+
+        // Synchronisation vers le compte utilisateur si adresse de facturation par défaut
+        if ($address->type === 'billing' && ($address->is_default || $this->isOnlyBilling($address))) {
+            $this->syncBillingAddressToUser($address);
+        }
 
         return redirect()->route('addresses.index')->with('success', 'Adresse mise à jour.');
-        $address->update($validated);
-
-// Synchronisation vers le compte utilisateur si adresse de facturation par défaut
-$this->syncBillingAddressToUser($address);
-if ($address->type === 'billing' && $address->user_id) {
-    // si c’est la seule ou la première adresse de facturation, on peut forcer
-    $isOnlyBilling = $address->user->addresses()
-        ->where('type', 'billing')
-        ->count() === 1;
-
-    if ($address->is_default || $isOnlyBilling) {
-        $address->user->update([
-            'first_name' => $address->first_name,
-            'last_name'  => $address->last_name,
-            'phone'      => $address->phone,
-        ]);
-    }
-}
     }
 
-    /**
-     * Supprimer une adresse
-     */
+    // Supprimer une adresse
     public function destroy(Request $request, UserAddress $address)
     {
-        $userId = \Illuminate\Support\Facades\Auth::user()->id;
+        $userId = Auth::user()->id;
 
-        // Vérifier que l'adresse appartient à l'utilisateur
         if ($address->user_id !== $userId) {
             return redirect()->route('addresses.index')->with('error', 'Accès non autorisé.');
         }
@@ -155,14 +125,24 @@ if ($address->type === 'billing' && $address->user_id) {
 
         return redirect()->route('addresses.index')->with('success', 'Adresse supprimée avec succès !');
     }
+
+    // Synchroniser l'adresse de facturation dans le compte utilisateur
     private function syncBillingAddressToUser(UserAddress $address)
-{
-    if ($address->type === 'billing' && $address->is_default && $address->user) {
-        $address->user->update([
-            'first_name' => $address->first_name,
-            'last_name'  => $address->last_name,
-            'phone'      => $address->phone,
-        ]);
+    {
+        if ($address->type === 'billing' && $address->is_default && $address->user) {
+            $address->user->update([
+                'first_name' => $address->first_name,
+                'last_name' => $address->last_name,
+                'phone' => $address->phone,
+            ]);
+        }
     }
-}
+
+    // Vérifier si c'est la seule adresse de facturation
+    private function isOnlyBilling(UserAddress $address)
+    {
+        return $address->user->addresses()
+            ->where('type', 'billing')
+            ->count() === 1;
+    }
 }
