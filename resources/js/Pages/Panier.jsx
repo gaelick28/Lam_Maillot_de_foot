@@ -8,16 +8,23 @@ import Footer from "../Components/Footer";
 export default function Panier() {
   const { auth, cartItems: initialCartItems = [] } = usePage().props;
   const user = auth?.user;
-  const address = user?.billingAddress || user?.adresse || {};
+
+  // Prix fixes pour les suppléments
   const nomPrix = 3;
   const numeroPrix = 2;
 
+  // Etat local
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [loadingId, setLoadingId] = useState(null);
   const [dirtyMap, setDirtyMap] = useState({});
 
-  //   Validation utilitaires
-   
+  // --- Adresse de livraison par défaut (UNE source de vérité) ---
+  const shippingAddress = useMemo(
+    () => user?.addresses?.find(a => a.type === "shipping" && a.is_default) || null,
+    [user]
+  );
+
+  // --- Validation utilitaires ---
   const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val), []);
   const validateNumero = useCallback((val) => {
     if (val === "") return true;
@@ -28,9 +35,7 @@ export default function Panier() {
     return false;
   }, []);
 
-
-  //   Calcul du total par item
-
+  // --- Calcul des totaux d'une ligne ---
   const computeItemTotals = useCallback(
     (item) => {
       const base = parseFloat(item.price) || 0;
@@ -48,16 +53,12 @@ export default function Panier() {
     [nomPrix, numeroPrix]
   );
 
-
-  //   Initialisation
-
+  // --- Initialisation : normaliser les items ---
   useEffect(() => {
     setCartItems((items) => items.map(computeItemTotals));
   }, [computeItemTotals]);
 
-  
-  //   Total global & format monétaire
-
+  // --- Total panier + format monétaire ---
   const prixTotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + (item.total || 0), 0),
     [cartItems]
@@ -72,19 +73,12 @@ export default function Panier() {
     []
   );
 
- 
-  //   Handlers principaux
-
+  // --- Handlers ---
   const handleEdit = useCallback(
     (id, field, value) => {
       setCartItems((prev) =>
         prev.map((item) =>
-          item.id === id
-            ? computeItemTotals({
-                ...item,
-                [field]: value,
-              })
-            : item
+          item.id === id ? computeItemTotals({ ...item, [field]: value }) : item
         )
       );
       setDirtyMap((prev) => ({ ...prev, [id]: true }));
@@ -132,7 +126,7 @@ export default function Panier() {
   }, []);
 
   const goToCheckout = useCallback(() => {
-    if (!address || !address.street) {
+    if (!shippingAddress) {
       alert("Veuillez d'abord renseigner votre adresse de livraison.");
       return;
     }
@@ -141,11 +135,9 @@ export default function Panier() {
       return;
     }
     router.visit("/checkout");
-  }, [address, cartItems]);
+  }, [shippingAddress, cartItems]);
 
-
-  //    Rendu principal
-
+  // --- Rendu ---
   return (
     <>
       <Header />
@@ -326,7 +318,7 @@ export default function Panier() {
               </div>
 
               {/* --- Vue desktop en tableau --- */}
-               <div className="hidden lg:block">
+              <div className="hidden lg:block">
                 <table className="w-full table-auto">
                   <thead>
                     <tr className="bg-gray-100 border-b border-gray-300">
@@ -364,9 +356,7 @@ export default function Panier() {
 
                         {/* Taille */}
                         <td className="p-3 lg:p-4">
-                          <label htmlFor={`size-d-${item.id}`} className="sr-only">
-                            Taille
-                          </label>
+                          <label htmlFor={`size-d-${item.id}`} className="sr-only">Taille</label>
                           <select
                             id={`size-d-${item.id}`}
                             value={item.size}
@@ -374,18 +364,14 @@ export default function Panier() {
                             className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           >
                             {["S", "M", "L", "XL"].map((sz) => (
-                              <option key={sz} value={sz}>
-                                {sz}
-                              </option>
+                              <option key={sz} value={sz}>{sz}</option>
                             ))}
                           </select>
                         </td>
 
                         {/* Quantité */}
                         <td className="p-3 lg:p-4">
-                          <label htmlFor={`qty-d-${item.id}`} className="sr-only">
-                            Quantité
-                          </label>
+                          <label htmlFor={`qty-d-${item.id}`} className="sr-only">Quantité</label>
                           <input
                             id={`qty-d-${item.id}`}
                             type="number"
@@ -398,18 +384,14 @@ export default function Panier() {
 
                         {/* Nom */}
                         <td className="p-3 lg:p-4">
-                          <label htmlFor={`nom-d-${item.id}`} className="sr-only">
-                            Nom
-                          </label>
+                          <label htmlFor={`nom-d-${item.id}`} className="sr-only">Nom</label>
                           <input
                             id={`nom-d-${item.id}`}
                             type="text"
                             value={item.nom || ""}
                             onChange={(e) => {
                               const val = e.target.value.toUpperCase();
-                              if (validateNom(val)) {
-                                handleEdit(item.id, "nom", val);
-                              }
+                              if (validateNom(val)) handleEdit(item.id, "nom", val);
                             }}
                             placeholder="NOM"
                             className="ml-0 lg:ml-2 border rounded px-2 py-1 w-28 lg:w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
@@ -418,9 +400,7 @@ export default function Panier() {
 
                         {/* Numéro */}
                         <td className="p-3 lg:p-4">
-                          <label htmlFor={`num-d-${item.id}`} className="sr-only">
-                            Numéro
-                          </label>
+                          <label htmlFor={`num-d-${item.id}`} className="sr-only">Numéro</label>
                           <input
                             id={`num-d-${item.id}`}
                             type="text"
@@ -446,12 +426,8 @@ export default function Panier() {
                         </td>
                         <td className="p-3 lg:p-4 text-sm lg:text-base">
                           {item.supplement > 0 ? (
-                            <span className="text-orange-600">
-                              {formatPrice.format(item.supplement)}
-                            </span>
-                          ) : (
-                            "-"
-                          )}
+                            <span className="text-orange-600">{formatPrice.format(item.supplement)}</span>
+                          ) : ("-")}
                         </td>
                         <td className="p-3 lg:p-4 font-bold text-blue-600 text-sm lg:text-base">
                           {formatPrice.format(item.total)}
@@ -485,7 +461,7 @@ export default function Panier() {
                 </table>
               </div>
 
-              {/* Total & autres actions */}
+              {/* Total & adresse */}
               <div className="p-4 sm:p-5 lg:p-6 bg-gray-50 border-t">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6 mb-4 md:mb-6">
                   <div className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -501,19 +477,19 @@ export default function Panier() {
 
                 <div className="mb-5 md:mb-6">
                   <h2 className="font-semibold mb-2 md:mb-3 text-base md:text-lg">Adresse de livraison</h2>
-                  {user?.addresses?.find((addr) => addr.type === "shipping" && addr.is_default) ? (
-                    <div className="bg-yellow-50 border border-yellow-200 p-3 md:p-4 rounded-md" role="region" aria-label="Adresse par défaut">
 
+                  {shippingAddress ? (
+                    <div
+                      className="bg-yellow-50 border border-yellow-200 p-3 md:p-4 rounded-md"
+                      role="region"
+                      aria-label="Adresse par défaut"
+                    >
                       <div className="font-medium">
-                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).first_name}{" "}
-                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).last_name}
+                        {shippingAddress.first_name} {shippingAddress.last_name}
                       </div>
+                      <div className="text-sm md:text-base">{shippingAddress.street}</div>
                       <div className="text-sm md:text-base">
-                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).street}
-                      </div>
-                      <div className="text-sm md:text-base">
-                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).postal_code}{" "}
-                        {user.addresses.find((addr) => addr.type === "shipping" && addr.is_default).city}
+                        {shippingAddress.postal_code} {shippingAddress.city}
                       </div>
                       <Link
                         href="/addresses"
@@ -524,7 +500,9 @@ export default function Panier() {
                     </div>
                   ) : (
                     <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 md:p-4">
-                      <p className="text-yellow-800 mb-2 text-sm md:text-base">Aucune adresse de livraison configurée</p>
+                      <p className="text-yellow-800 mb-2 text-sm md:text-base">
+                        Aucune adresse de livraison configurée
+                      </p>
                       <Link href="/addresses" className="text-blue-600 underline hover:text-blue-800">
                         Ajouter une adresse
                       </Link>
