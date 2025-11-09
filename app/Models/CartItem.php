@@ -27,6 +27,6 @@ class CartItem extends Model
 
     public function maillot()
     {
-        return $this->belongsTo(Maillot::class); // remplace 'Product' par le vrai nom de ton modèle produit
+        return $this->belongsTo(Maillot::class);
     }
 }
