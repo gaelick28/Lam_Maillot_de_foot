@@ -40,8 +40,8 @@ export default function Contact() {
                     <span className="text-blue-600 mr-3">🏢</span>
                     <div>
                       <p className="font-semibold">Adresse</p>
-                      <p className="text-gray-600">123 Avenue du Football</p>
-                      <p className="text-gray-600">75000 Paris, France</p>
+                      <p className="text-gray-600">101 Avenue du Football,</p>
+                      <p className="text-gray-600"> 69002 Lyon France</p>
                     </div>
                   </div>
                 </div>
