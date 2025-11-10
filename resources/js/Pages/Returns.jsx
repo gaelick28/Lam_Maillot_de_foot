@@ -22,7 +22,7 @@ export default function Returns() {
 
               <section>
                 <h2 className="text-xl font-semibold text-gray-800 mb-3">Conditions de retour</h2>
-                <div className="bg-yellow-50 p-4 rounded-lg">
+                <div className="bg-yellow-100 p-4 rounded-lg">
                   <p className="font-semibold mb-2">Pour être accepté, votre retour doit respecter les conditions suivantes :</p>
                   <ul className="list-disc list-inside space-y-1">
                     <li>L'article doit être dans son état d'origine</li>
@@ -35,7 +35,7 @@ export default function Returns() {
 
               <section>
                 <h2 className="text-xl font-semibold text-gray-800 mb-3">Procédure de retour</h2>
-                <ol className="list-decimal list-inside space-y-2 bg-blue-50 p-4 rounded-lg">
+                <ol className="list-decimal list-inside space-y-2 bg-blue-100 p-4 rounded-lg">
                   <li>Connectez-vous à votre compte client</li>
                   <li>Accédez à l'historique de vos commandes</li>
                   <li>Sélectionnez la commande concernée</li>
