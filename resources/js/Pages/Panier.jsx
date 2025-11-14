@@ -54,9 +54,9 @@ export default function Panier() {
   );
 
   // --- Initialisation : normaliser les items ---
-  useEffect(() => {
-    setCartItems((items) => items.map(computeItemTotals));
-  }, [computeItemTotals]);
+ useEffect(() => {
+  setCartItems(initialCartItems.map(computeItemTotals));
+}, [initialCartItems, computeItemTotals]);
 
   // --- Total panier + format monétaire ---
   const prixTotal = useMemo(

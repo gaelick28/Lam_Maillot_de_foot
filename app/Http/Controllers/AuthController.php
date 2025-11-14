@@ -11,25 +11,22 @@ use Inertia\Inertia;
 
 class AuthController extends Controller
 {
-    /**
-     * Affiche la vue d'inscription
-     */
+   
+    //  * Affiche la vue d'inscription
     public function showRegister()
     {
         return Inertia::render('Auth/Register');
     }
 
-    /**
-     * Affiche la vue de connexion
-     */
-    public function showLogin()
+ 
+    //  * Affiche la vue de connexion
+     public function showLogin()
     {
         return Inertia::render('Auth/Login');
     }
 
-    /**
-     * Inscription de l'utilisateur
-     */
+ 
+    //  * Inscription de l'utilisateur
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -61,9 +58,9 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('success', 'Inscription réussie');
     }
 
-    /**
-     * Connexion
-     */
+   
+    //  Connexion
+   
    public function login(Request $request)
 {
     $credentials = $request->validate([

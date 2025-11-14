@@ -125,10 +125,13 @@ $user = \App\Models\User::with(['addresses' => function ($query) {
          
     }
 
-    public function update(Request $request, CartItem $item)
+   public function update(Request $request, CartItem $item)
 {
-    if ($item->cart->user_id !== Auth::id()) abort(403);
-    
+    if ($item->cart->user_id !== Auth::id()) {
+        abort(403);
+    }
+
+    // Validation de base
     $data = $request->validate([
         'size'     => 'required|string|max:10',
         'quantity' => 'required|integer|min:1',
@@ -136,44 +139,34 @@ $user = \App\Models\User::with(['addresses' => function ($query) {
         'numero'   => 'nullable|string|max:3',
     ]);
 
-    $item->update($data);
+    //  Normaliser comme dans add()
+    $data['nom']    = $request->filled('nom')    ? $request->nom    : null;
+    $data['numero'] = $request->filled('numero') ? $request->numero : null;
 
-    // Retourner vers la page panier avec les données fraîches
+    $cart = $item->cart;
+
+    // Chercher une AUTRE ligne identique dans le même panier
+    $duplicate = $cart->items()
+        ->where('id', '!=', $item->id)
+        ->where('maillot_id', $item->maillot_id)
+        ->where('size', $data['size'])
+        ->where('nom', $data['nom'])
+        ->where('numero', $data['numero'])
+        ->first();
+
+    if ($duplicate) {
+        //  Fusion : on regroupe les quantités et on supprime l'item édité
+        $duplicate->quantity += $data['quantity'];
+        $duplicate->save();
+
+        $item->delete();
+    } else {
+        // Pas de doublon → simple mise à jour
+        $item->update($data);
+    }
+
     return redirect()->route('cart.show')->with('success', 'Article sauvegardé avec succès');
 }
-    // Méthode utilitaire pour récupérer les items du panier
-    private function getCartItems()
-    {
-        $cart = Cart::where('user_id', Auth::id())->first();
-        if (!$cart) return [];
-        
-        $cart->load('items.maillot.club');
-        
-        return $cart->items->map(function($item) {
-            $maillot = $item->maillot;
-            $price = $maillot ? $maillot->price : 0;
-            $suppNom = $item->nom ? 3 : 0;
-            $suppNumero = $item->numero ? 2 : 0;
-            $supplement = $suppNom + $suppNumero;
-            $total = ($price + $supplement) * $item->quantity;
-            
-            return [
-                'id'          => $item->id,
-                'club_name'   => $maillot->club->name ?? 'Club inconnu',
-                'maillot_name'=> $maillot->nom ?? $maillot->name ?? 'Maillot',
-                'maillot_id'  => $item->maillot_id,
-                'name'        => $maillot->name ?? '???',
-                'image'       => $maillot->image ?? null,
-                'size'        => $item->size,
-                'quantity'    => $item->quantity,
-                'price'       => $price,
-                'nom'         => $item->nom,
-                'numero'      => $item->numero,
-                'supplement'  => $supplement,
-                'total'       => $total,
-            ];
-        });
-    }
 
     public function remove(CartItem $item)
     {
