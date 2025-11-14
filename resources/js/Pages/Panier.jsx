@@ -53,12 +53,12 @@ export default function Panier() {
     [nomPrix, numeroPrix]
   );
 
-  // --- Initialisation : normaliser les items ---
+  // Initialisation : normaliser les items 
  useEffect(() => {
   setCartItems(initialCartItems.map(computeItemTotals));
 }, [initialCartItems, computeItemTotals]);
 
-  // --- Total panier + format monétaire ---
+  //  Total panier + format monétaire 
   const prixTotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + (item.total || 0), 0),
     [cartItems]
@@ -73,7 +73,7 @@ export default function Panier() {
     []
   );
 
-  // --- Handlers ---
+  //  Handlers 
   const handleEdit = useCallback(
     (id, field, value) => {
       setCartItems((prev) =>
@@ -111,6 +111,11 @@ export default function Panier() {
         onSuccess: () => {
           setDirtyMap((prev) => ({ ...prev, [item.id]: false }));
           setLoadingId(null);
+         
+           // Retirer le focus du champ actif (enlève le curseur des champs après sauvegarde)
+          if (document.activeElement) {
+          document.activeElement.blur();
+        }
           alert("Modifications enregistrées !");
         },
         onError: () => setLoadingId(null),
