@@ -275,6 +275,10 @@ useEffect(() => {
                         min={1}
                         className="col-span-1 border w-full px-2 py-1 bg-blue-50 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                         value={item.quantity}
+                          onInput={(e) => {
+    // parseInt retire automatiquement les 0 initiaux
+    e.target.value = e.target.value.replace(/^0+/, '') || '1';
+  }}
                         onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
                         onKeyDown={(e) => handleKeyDown(e, item)}
                       />
@@ -426,6 +430,10 @@ useEffect(() => {
                             min={1}
                             className="border-none w-16 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                             value={item.quantity}
+                              onInput={(e) => {
+    // parseInt retire automatiquement les 0 initiaux
+    e.target.value = e.target.value.replace(/^0+/, '') || '1';
+  }}
                             onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
                               onKeyDown={(e) => handleKeyDown(e, item)}
                           />
