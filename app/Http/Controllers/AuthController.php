@@ -60,8 +60,7 @@ class AuthController extends Controller
 
    
     //  Connexion
-   
-   public function login(Request $request)
+    public function login(Request $request)
 {
     $credentials = $request->validate([
         'login' => 'required|string',
@@ -88,9 +87,8 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Déconnexion
-     */
+    
+    //  * Déconnexion
     public function logout(Request $request)
     {
         Auth::logout();
