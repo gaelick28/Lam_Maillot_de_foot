@@ -149,6 +149,35 @@ const handleKeyDown = useCallback((e, item) => {
     router.visit("/checkout");
   }, [shippingAddress, cartItems]);
 
+  // Ajouter après les autres useEffect pour retirer curseur des champs après sauvegarde
+useEffect(() => {
+  const handleGlobalKeyDown = (e) => {
+    if (e.key === "Enter") {
+      // Trouver le premier item avec des modifications non sauvegardées
+      const dirtyItemId = Object.keys(dirtyMap).find(id => dirtyMap[id]);
+      
+      if (dirtyItemId) {
+        e.preventDefault();
+        
+        // Trouver l'item correspondant dans cartItems
+        const itemToSave = cartItems.find(item => item.id === parseInt(dirtyItemId));
+        
+        if (itemToSave) {
+          handleSave(itemToSave);
+        }
+      }
+    }
+  };
+
+  // Ajouter l'écouteur
+  document.addEventListener('keydown', handleGlobalKeyDown);
+
+  // Nettoyer à la destruction du composant
+  return () => {
+    document.removeEventListener('keydown', handleGlobalKeyDown);
+  };
+}, [dirtyMap, cartItems, handleSave]);
+
   // --- Rendu ---
   return (
     <>
