@@ -25,7 +25,7 @@ export default function Panier() {
   );
 
   // --- Validation utilitaires ---
-  const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊË\s-]*$/.test(val), []);
+  const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊËÏ\s-]*$/.test(val), []);
   const validateNumero = useCallback((val) => {
     if (val === "") return true;
     if (/^\d+$/.test(val)) {
