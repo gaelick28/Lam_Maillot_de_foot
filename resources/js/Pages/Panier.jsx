@@ -118,6 +118,13 @@ export default function Panier() {
     );
   }, []);
 
+const handleKeyDown = useCallback((e, item) => {
+  if (e.key === "Enter" && dirtyMap[item.id]) {
+    e.preventDefault(); // Empêche le comportement par défaut
+    handleSave(item);
+  }
+}, [dirtyMap, handleSave]);
+
   const handleClearCart = useCallback(() => {
     if (confirm("Êtes-vous sûr de vouloir vider complètement votre panier ?")) {
       router.post("/panier/clear");
@@ -295,15 +302,16 @@ export default function Panier() {
 
                     {/* Actions */}
                     <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                      <button
+                 {!dirtyMap[item.id] ? (     <button
                         onClick={() => handleRemove(item.id)}
                         className="w-full sm:w-auto bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 active:scale-[.99] focus:ring-2 focus:ring-red-300"
                       >
                         Supprimer
                       </button>
-                      {dirtyMap[item.id] && (
+                       ) : (
                         <button
                           onClick={() => handleSave(item)}
+                          
                           className={`w-full sm:w-auto bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition ${
                             loadingId === item.id ? "opacity-50" : ""
                           }`}
@@ -361,6 +369,7 @@ export default function Panier() {
                             id={`size-d-${item.id}`}
                             value={item.size}
                             onChange={(e) => handleEdit(item.id, "size", e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(e, item)}
                             className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           >
                             {["S", "M", "L", "XL"].map((sz) => (
@@ -379,6 +388,7 @@ export default function Panier() {
                             className="border-none w-16 px-2 py-1 bg-blue-100 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                             value={item.quantity}
                             onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
+                              onKeyDown={(e) => handleKeyDown(e, item)}
                           />
                         </td>
 
@@ -392,7 +402,8 @@ export default function Panier() {
                             onChange={(e) => {
                               const val = e.target.value.toUpperCase();
                               if (validateNom(val)) handleEdit(item.id, "nom", val);
-                            }}
+                            }}  
+                            onKeyDown={(e) => handleKeyDown(e, item)}
                             placeholder="NOM"
                             className="ml-0 lg:ml-2 border rounded px-2 py-1 w-28 lg:w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           />
@@ -414,7 +425,8 @@ export default function Panier() {
                               if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
                                 handleEdit(item.id, "numero", val);
                               }
-                            }}
+                            }} 
+                             onKeyDown={(e) => handleKeyDown(e, item)}
                             placeholder="Numéro"
                             className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
                           />
@@ -436,15 +448,17 @@ export default function Panier() {
                         {/* Actions */}
                         <td className="p-3 lg:p-4">
                           <div className="flex flex-col xl:flex-row gap-2">
-                            <button
+                {!dirtyMap[item.id] ? ( 
+                              <button
                               onClick={() => handleRemove(item.id)}
                               className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 focus:ring-2 focus:ring-red-300"
                             >
                               Supprimer
                             </button>
-                            {dirtyMap[item.id] && (
+                             ) : (
                               <button
                                 onClick={() => handleSave(item)}
+                                  onKeyDown={(e) => handleKeyDown(e, item)}
                                 className={`bg-green-600 text-white px-3 py-1 rounded hover:bg-green-800 transition ${
                                   loadingId === item.id ? "opacity-50" : ""
                                 }`}
