@@ -36,6 +36,7 @@ class AuthController extends Controller
             'username'     => 'required|string|max:50|unique:users',
             'email'        => 'required|email|unique:users',
             'password'     => 'required|string|min:6|confirmed',
+                                                            // 'regex:/[a-z]/','regex:/[A-Z]/', 'regex:/[0-9]/','regex:/[@$!%*#?&]/',
             'first_name'   => 'nullable|string|max:100',
             'last_name'    => 'nullable|string|max:100',
             'phone'        => 'nullable|string|max:20',
