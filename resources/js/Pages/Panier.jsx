@@ -149,6 +149,7 @@ const handleKeyDown = useCallback((e, item) => {
     router.visit("/checkout");
   }, [shippingAddress, cartItems]);
 
+  
   // Ajouter après les autres useEffect pour retirer curseur des champs après sauvegarde
 useEffect(() => {
   const handleGlobalKeyDown = (e) => {
@@ -254,6 +255,7 @@ useEffect(() => {
                         id={`size-${item.id}`}
                         value={item.size}
                         onChange={(e) => handleEdit(item.id, "size", e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
                         className="col-span-1 border rounded-md px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                       >
                         {["S", "M", "L", "XL"].map((sz) => (
@@ -274,6 +276,7 @@ useEffect(() => {
                         className="col-span-1 border w-full px-2 py-1 bg-blue-50 text-blue-800 rounded-md font-semibold focus:ring-2 focus:ring-blue-300"
                         value={item.quantity}
                         onChange={(e) => handleEdit(item.id, "quantity", Number(e.target.value))}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
                       />
 
                       {/* Nom */}
@@ -290,6 +293,7 @@ useEffect(() => {
                             handleEdit(item.id, "nom", val);
                           }
                         }}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
                         placeholder="MAJUSCULES, espaces, -"
                         className="col-span-1 border rounded px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                       />
@@ -312,6 +316,7 @@ useEffect(() => {
                             handleEdit(item.id, "numero", val);
                           }
                         }}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
                         placeholder="1-99"
                         className="col-span-1 border px-2 py-1 bg-green-50 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
                       />
