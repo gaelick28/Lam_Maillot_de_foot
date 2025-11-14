@@ -74,7 +74,7 @@ return Inertia::render('AccountDetails', [
 
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|confirmed|min:8',
+            'password' => 'required|confirmed|min:6',
         ]);
 
         if (!Hash::check($request->current_password, $user->password)) {
