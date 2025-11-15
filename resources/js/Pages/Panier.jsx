@@ -315,10 +315,15 @@ useEffect(() => {
                         max="99"
                         value={item.numero || ""}
                         onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
-                            handleEdit(item.id, "numero", val);
-                          }
+                         let val = e.target.value;
+    
+    // Retirer les zéros initiaux
+    val = val.replace(/^0+/, '');
+    
+    // Validation 1-99
+    if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
+      handleEdit(item.id, "numero", val);
+    }
                         }}
                         onKeyDown={(e) => handleKeyDown(e, item)}
                         placeholder="1-99"
@@ -468,10 +473,15 @@ useEffect(() => {
                             max="99"
                             value={item.numero || ""}
                             onChange={(e) => {
-                              const val = e.target.value;
-                              if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
-                                handleEdit(item.id, "numero", val);
-                              }
+                              let val = e.target.value;
+    
+    // Retirer les zéros initiaux
+    val = val.replace(/^0+/, '');
+    
+    // Validation 1-99
+    if (val === "" || (Number(val) >= 1 && Number(val) <= 99)) {
+      handleEdit(item.id, "numero", val);
+    }
                             }} 
                              onKeyDown={(e) => handleKeyDown(e, item)}
                             placeholder="Numéro"
@@ -495,7 +505,7 @@ useEffect(() => {
                         {/* Actions */}
                         <td className="p-3 lg:p-4">
                           <div className="flex flex-col xl:flex-row gap-2">
-                {!dirtyMap[item.id] ? ( 
+                            {!dirtyMap[item.id] ? ( 
                               <button
                               onClick={() => handleRemove(item.id)}
                               className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 focus:ring-2 focus:ring-red-300"
