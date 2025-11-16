@@ -11,6 +11,8 @@ use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CategoryController;
+
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -105,16 +107,26 @@ Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name(
 Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');
 
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-    
-// Route::get('/panier', function () {
-    //     return Inertia::render('Panier');
-    // })->name('panier');
+// Routes pour toutes les catégories (utilise la méthode générique)
+Route::get('/category/{categorySlug}', [CategoryController::class, 'show'])
+    ->name('category.show')
+    ->where('categorySlug', 'selections-nationales|ligue-1|premier-league|bundesliga|liga|serie-a|autres-clubs');
 
-    // API commande  :
-    // Route::post('/api/commande', [App\Http\Controllers\OrderController::class, 'store']);
-
-    // });
+// Routes spécifiques (optionnel, pour des URLs plus jolies)
+Route::get('/selections-nationales', [CategoryController::class, 'selectionsNationales'])
+    ->name('category.selections');
+Route::get('/ligue-1', [CategoryController::class, 'ligue1'])
+    ->name('category.ligue1');
+Route::get('/premier-league', [CategoryController::class, 'premierLeague'])
+    ->name('category.premier-league');
+Route::get('/bundesliga', [CategoryController::class, 'bundesliga'])
+    ->name('category.bundesliga');
+Route::get('/liga', [CategoryController::class, 'liga'])
+    ->name('category.liga');
+Route::get('/serie-a', [CategoryController::class, 'serieA'])
+    ->name('category.serie-a');
+Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
+    ->name('category.autres');
 
     
     Route::middleware(['auth'])->group(function() {
