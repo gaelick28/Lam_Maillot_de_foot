@@ -105,7 +105,7 @@ class CategoryController extends Controller
             ->with(['maillots' => function($query) {
                 $query->orderBy('id', 'asc')->limit(1);
             }])
-            ->limit(12)
+            ->limit(20)
             ->get()
             ->map(function($club) {
                 $maillot = $club->maillots->first();
