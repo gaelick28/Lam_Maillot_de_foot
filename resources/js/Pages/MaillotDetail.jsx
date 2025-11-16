@@ -89,6 +89,10 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                 min="1"
                 max={quantite}
                 value={qte}
+                 onInput={(e) => {
+    // parseInt retire automatiquement les 0 initiaux
+    e.target.value = e.target.value.replace(/^0+/, '') || '1';
+  }}
                 onChange={e => setQte(e.target.value)}
                 className="ml-2 border rounded px-2 py-1 w-16"
               />
