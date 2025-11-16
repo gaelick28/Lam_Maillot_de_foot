@@ -100,7 +100,7 @@ class CategoryController extends Controller
 
         $category = $config[$categorySlug];
 
-        // Récupérer UN maillot représentatif par club (12 premiers)
+        // Récupérer UN maillot représentatif par club (20 premiers)
         $featuredMaillots = Club::whereIn('slug', $category['slugs'])
             ->with(['maillots' => function($query) {
                 $query->orderBy('id', 'asc')->limit(1);
