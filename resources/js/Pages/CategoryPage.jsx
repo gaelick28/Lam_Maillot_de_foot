@@ -41,7 +41,7 @@ export default function CategoryPage({ featuredMaillots, title, description, cat
               {description}
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              {featuredMaillots.length} club{featuredMaillots.length > 1 ? 's' : ''} disponible{featuredMaillots.length > 1 ? 's' : ''}
+              {featuredMaillots.length} équipe{featuredMaillots.length > 1 ? 's' : ''} disponible{featuredMaillots.length > 1 ? 's' : ''}
             </p>
           </div>
 
