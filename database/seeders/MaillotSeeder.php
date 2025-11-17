@@ -52,6 +52,7 @@ class MaillotSeeder extends Seeder
             76 => 'images/maillot/images_maillot/aston-villa-2025-2026-dragon-noir.webp',
     
             // Brentford
+            87 => 'images/maillot/images_maillot/brentford-25-dom.webp',
             88 => 'images/maillot/images_maillot/brentford-2024-2025-exterieur.webp',
             // Brighton
             83 => 'images/maillot/images_maillot/brighton-2025-2026-domicile.webp',
@@ -62,6 +63,7 @@ class MaillotSeeder extends Seeder
            
             // Angers
             59 => 'images/maillot/images_maillot/angers-dom.jfif',
+            60=> 'images/maillot/images_maillot/angers-25-ext.webp',
 
             //Lens
             55 => 'images/maillot/images_maillot/rc-lens-dom.webp',
@@ -86,6 +88,101 @@ class MaillotSeeder extends Seeder
              //Atalanta
              149 => 'images/maillot/images_maillot/atalanta-2025-2026-domicile.webp',
              150 => 'images/maillot/images_maillot/atalanta-2025-2026-exterieur.webp',  
+
+
+
+             // nouveaux maillots +brentford + angers 
+
+             //SELECTIONS
+
+             11 => 'images/maillot/images_maillot/senegal-2026-domicile.webp',
+             12 => 'images/maillot/images_maillot/senegal-2026-exterieur.webp',
+
+             17 => 'images/maillot/images_maillot/suisse-2026-domicile.webp',
+             18 => 'images/maillot/images_maillot/suisse-2026-exterieur.webp',
+
+             23 => 'images/maillot/images_maillot/suede.webp',
+             24 => 'images/maillot/images_maillot/suede-ext.webp',
+
+             27 => 'images/maillot/images_maillot/ukraine-2026-domicile.webp',
+             28 => 'images/maillot/images_maillot/ukraine-2025-ext.webp',
+
+             //LIGUE 1
+             61 => 'images/maillot/images_maillot/auxerre-25-dom.webp',
+             62 => 'images/maillot/images_maillot/auxerre-25-ext.webp',
+
+             41 => 'images/maillot/images_maillot/monaco-25-dom.webp',
+             42 => 'images/maillot/images_maillot/monaco-25-ext.webp',
+
+             43 => 'images/maillot/images_maillot/nice-2025-2026-domicile.webp',
+             44 => 'images/maillot/images_maillot/nice-2025-2026-exterieur.webp',
+
+             51=> 'images/maillot/images_maillot/nantes-25-dom.webp',
+             52=> 'images/maillot/images_maillot/nantes-25-EXT.webp',
+
+             53 => 'images/maillot/images_maillot/monpellier-domicile-20252026.jpg',
+             54 => 'images/maillot/images_maillot/montpellier-exterieur-20252026.jpg',
+
+             57 => 'images/maillot/images_maillot/reims-25-dom.webp',
+             58 => 'images/maillot/images_maillot/reims-25-ext.webp',
+
+             45 => 'images/maillot/images_maillot/rennes-25-dom.webp',
+             46 => 'images/maillot/images_maillot/rennes-25-ext.webp',
+
+             47 => 'images/maillot/images_maillot/strasbourg-25-dom.webp',
+             48 => 'images/maillot/images_maillot/strasbourg-25-ext.webp',
+
+             49 => 'images/maillot/images_maillot/toulouse-2025-2026.jpg',
+             50 => 'images/maillot/images_maillot/toulouse-2025-2026-ext.jpg',
+
+
+            // PREMIER LEAGUE 
+
+             79 => 'images/maillot/images_maillot/everton-25-dom.webp',
+             80 => 'images/maillot/images_maillot/everton-25-ext.webp',
+
+             89 => 'images/maillot/images_maillot/fulham-25-dom.webp',
+             90 => 'images/maillot/images_maillot/fulham-25-ext.webp',
+
+             73 => 'images/maillot/images_maillot/leicester-2025-2026-domicile.webp',
+             74 => 'images/maillot/images_maillot/leicester-2025-2026-exterieur.webp',
+
+             77 => 'images/maillot/images_maillot/newcastle-2025-2026-domicile.webp',
+             78 => 'images/maillot/images_maillot/newcastle-2025-2026-exterieur.webp',
+
+             71 => 'images/maillot/images_maillot/tottenham-2025-2026-dom.webp',
+             72 => 'images/maillot/images_maillot/tottenham-2025-2026-exterieur.webp',
+
+             81 => 'images/maillot/images_maillot/wolverhampton-wanderers-25-dom.webp',
+             82 => 'images/maillot/images_maillot/wolverhampton-wanderers-25-ext.webp',
+
+
+             // BUNDESLIGA 
+                
+             99 => 'images/maillot/images_maillot/borussia-mönchengladbach-25-dom.webp',
+             100 => 'images/maillot/images_maillot/borussia-mönchengladbach-25-ext.webp',
+
+             111 => 'images/maillot/images_maillot/cologne-domicile-2025-2026.jpg',
+             112 => 'images/maillot/images_maillot/cologne-25-ext.webp',
+
+             103 => 'images/maillot/images_maillot/eintracht-25-dom.webp',
+             104 => 'images/maillot/images_maillot/eintracht-francfort-2025-2026-exterieur.jpeg',
+
+             107 => 'images/maillot/images_maillot/hertha-25-dom.webp',
+             108 => 'images/maillot/images_maillot/hertha-25-ext.webp',
+
+             105 => 'images/maillot/images_maillot/hoffenheim-25-dom.jfif',
+             106 => 'images/maillot/images_maillot/hoffenheim-25-ext.jfif',
+
+             95 => 'images/maillot/images_maillot/leipzig-25-dom.webp',
+             96 => 'images/maillot/images_maillot/leipzig-25-ext.webp',
+
+             109 => 'images/maillot/images_maillot/stuttgart-25-dom.webp',
+             110 => 'images/maillot/images_maillot/stuttgart-25-ext.webp',
+
+             101 => 'images/maillot/images_maillot/wolfsburg-25-dom.webp',
+             102 => 'images/maillot/images_maillot/wolfsburg-25-ext.webp',
+
 
 
         ];
