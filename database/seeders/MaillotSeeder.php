@@ -33,6 +33,36 @@ class MaillotSeeder extends Seeder
             }
         }
 
+// 1.5 Ajout de nouveaux maillots (Third, etc.)
+        $newMaillots = [
+            [
+                'club_slug' => 'valence-cf',
+                'nom' => 'Valence Third 2025-2026',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/valence-25-third.webp'
+            ],
+            // Pour ajouter d'autres maillots :
+            // [
+            //     'club_slug' => 'autre-club',
+            //     'nom' => 'Autre Club Third 2025-2026',
+            //     'price' => 20.00,
+            //     'image' => 'images/maillot/images_maillot/autre-club-25-third.webp'
+            // ],
+        ];
+
+        foreach ($newMaillots as $row) {
+            $club = Club::where('slug', $row['club_slug'])->first();
+            if ($club) {
+                Maillot::updateOrCreate(
+                    ['club_id' => $club->id, 'nom' => $row['nom']],
+                    ['price' => $row['price'], 'image' => $row['image']]
+                );
+                $this->command?->info("✓ Maillot '{$row['nom']}' créé/mis à jour");
+            } else {
+                $this->command?->warn("⚠ Club '{$row['club_slug']}' non trouvé");
+            }
+        }
+
         // 2. Mise à jour des images existantes avec id précis pour autres clubs
         $updates = [
             // Belgique
