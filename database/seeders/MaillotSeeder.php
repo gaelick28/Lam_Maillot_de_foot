@@ -91,10 +91,9 @@ class MaillotSeeder extends Seeder
 
 
 
-             // nouveaux maillots +brentford + angers 
+             // nouveaux maillots 
 
              //SELECTIONS
-
              11 => 'images/maillot/images_maillot/senegal-2026-domicile.webp',
              12 => 'images/maillot/images_maillot/senegal-2026-exterieur.webp',
 
@@ -137,7 +136,6 @@ class MaillotSeeder extends Seeder
 
 
             // PREMIER LEAGUE 
-
              79 => 'images/maillot/images_maillot/everton-25-dom.webp',
              80 => 'images/maillot/images_maillot/everton-25-ext.webp',
 
@@ -157,8 +155,7 @@ class MaillotSeeder extends Seeder
              82 => 'images/maillot/images_maillot/wolverhampton-wanderers-25-ext.webp',
 
 
-             // BUNDESLIGA 
-                
+             // BUNDESLIGA      
              99 => 'images/maillot/images_maillot/borussia-mönchengladbach-25-dom.webp',
              100 => 'images/maillot/images_maillot/borussia-mönchengladbach-25-ext.webp',
 
@@ -182,6 +179,48 @@ class MaillotSeeder extends Seeder
 
              101 => 'images/maillot/images_maillot/wolfsburg-25-dom.webp',
              102 => 'images/maillot/images_maillot/wolfsburg-25-ext.webp',
+
+             113 => 'images/maillot/images_maillot/shalke-25-dom.jfif',
+             114 => 'images/maillot/images_maillot/shalke-25-ext.jfif',
+
+            
+             // LIGA
+             131 => 'images/maillot/images_maillot/betis-25-dom.webp',
+             132 => 'images/maillot/images_maillot/betis-25-ext.webp',
+
+             127 => 'images/maillot/images_maillot/villareal-25-dom.webp',
+             128 => 'images/maillot/images_maillot/villareal-25-ext.webp',
+
+             125 => 'images/maillot/images_maillot/valence-25-dom.webp',
+             126 => 'images/maillot/images_maillot/valence-25-ext.webp',
+
+             129 => 'images/maillot/images_maillot/seville-25-dom.jfif',
+             130 => 'images/maillot/images_maillot/seville-25-ext.webp',
+
+             123 => 'images/maillot/images_maillot/sociedad-25-dom.webp',
+             124 => 'images/maillot/images_maillot/sociedad-25-ext.webp',
+
+
+             //SERIA A
+             155 => 'images/maillot/images_maillot/bologne-25-dom.webp',
+             156 => 'images/maillot/images_maillot/bologne-25-ext.webp',
+
+             151 => 'images/maillot/images_maillot/fiorentina-25-dom.webp',
+             152 => 'images/maillot/images_maillot/fiorentina-25-ext.webp',
+
+             147 => 'images/maillot/images_maillot/lazio-25-dom.webp',
+             148 => 'images/maillot/images_maillot/lazio-25-ext.webp',
+
+             153 => 'images/maillot/images_maillot/torino-25-dom.webp',
+             154 => 'images/maillot/images_maillot/torino-25-ext.webp',
+
+
+            //AUTRES
+             159 => 'images/maillot/images_maillot/benfica-25-dom.webp',
+             160 => 'images/maillot/images_maillot/benfica-25-ext.webp',
+
+             167 => 'images/maillot/images_maillot/celtic-25-dom.webp',
+             168 => 'images/maillot/images_maillot/celtic-25-ext.jfif',
 
 
 
