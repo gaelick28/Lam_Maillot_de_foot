@@ -222,6 +222,25 @@ class MaillotSeeder extends Seeder
              167 => 'images/maillot/images_maillot/celtic-25-dom.webp',
              168 => 'images/maillot/images_maillot/celtic-25-ext.jfif',
 
+             173 => 'images/maillot/images_maillot/eindhoven-25-dom.webp',
+             174 => 'images/maillot/images_maillot/eindhoven-25-ext.webp',
+
+             165 => 'images/maillot/images_maillot/fenerbahce-25-dom.webp',
+             166 => 'images/maillot/images_maillot/fenerbahce-25-ext.jfif',
+
+             157 => 'images/maillot/images_maillot/porto-25-dom.webp',
+             158 => 'images/maillot/images_maillot/porto-25-ext.webp',
+
+             169 => 'images/maillot/images_maillot/rangers-25-dom.webp',
+             170 => 'images/maillot/images_maillot/rangers-25-ext.webp',
+
+             163 => 'images/maillot/images_maillot/galatasaray-25-dom.webp',
+             164 => 'images/maillot/images_maillot/galatasaray-25-ext.webp',
+
+             161 => 'images/maillot/images_maillot/sporting-25-dom.jfif',
+             162 => 'images/maillot/images_maillot/sporting-25-ext.webp',
+
+        
 
 
         ];
