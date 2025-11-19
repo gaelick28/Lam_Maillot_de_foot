@@ -41,6 +41,35 @@ class MaillotSeeder extends Seeder
                 'price' => 20.00,
                 'image' => 'images/maillot/images_maillot/valence-25-third.webp'
             ],
+          
+            [
+                'club_slug' => 'girondins-de-bordeaux',
+                'nom' => 'Girondins de Bordeaux 1950',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/girondins-bordeaux-1950.jpg'
+            ],
+
+            [
+                'club_slug' => 'france',
+                'nom' => 'France 1984',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/france-84-dom.jpg'
+            ],
+
+            [
+                'club_slug' => 'olympique-lyonnais',
+                'nom' => 'Olympique Lyonnais 1964-1965',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/olympique-lyonnais-1964-1965.jpg'
+            ],
+
+            [
+                'club_slug' => 'olympique-lyonnais',
+                'nom' => 'Olympique Lyonnais 1966-1967',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/olympique-lyonnais-1966-1967.jpg'
+            ],
+
             // Pour ajouter d'autres maillots :
             // [
             //     'club_slug' => 'autre-club',
