@@ -13,10 +13,11 @@ export default function Footer() {
           
           {/* Colonne Logo */}
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-2 mb-3">
-              <BallonFootIcon className="w-8 h-8 text-black" />
-              <span className="text-lg font-bold text-black">Fou2Foot</span>
-            </div>
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 shrink-0 text-black" aria-label="Accueil de Fou2Foot">
+            <BallonFootIcon className="h-9 w-9" />
+            <span className="text-lg sm:text-xl font-bold">FOU2FOOT</span>
+          </Link>
             <p className="text-sm text-center md:text-left text-gray-200">
               La passion du football au cœur de vos équipements
             </p>
