@@ -17,7 +17,7 @@ export default function Footer() {
           <Link href="/" className="flex items-center gap-2 shrink-0 text-black" aria-label="Accueil de Fou2Foot">
             <BallonFootIcon className="h-9 w-9" />
             <span className="text-lg sm:text-xl font-bold">FOU2FOOT</span>
-          </Link>
+          </Link> <br/>
             <p className="text-sm text-center md:text-left text-gray-200">
               La passion du football au cœur de vos équipements
             </p>
