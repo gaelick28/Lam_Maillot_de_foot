@@ -80,7 +80,7 @@ class CategoryController extends Controller
                 'slugs' => [
                     'porto', 'benfica', 'sporting-cp', 'galatasaray', 
                     'fenerbahce', 'celtic-fc', 'rangers-fc', 
-                    'ajax-amsterdam', 'psv-eindhoven', 'gremio'
+                    'ajax-amsterdam', 'psv-eindhoven', 'gremio', 'flamengo'
                 ]
             ]
         ];

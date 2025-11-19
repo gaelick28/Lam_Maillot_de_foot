@@ -14,6 +14,7 @@ class ClubSeeder extends Seeder
             ['name' => 'AS Cannes', 'slug' => 'cannes'],
             ['name' => 'Inde', 'slug' => 'inde'],
             ['name' => 'Grêmio', 'slug' => 'gremio'],
+            ['name' => 'Flamengo', 'slug' => 'flamengo'],
         ];
 
         foreach ($clubs as $club) {

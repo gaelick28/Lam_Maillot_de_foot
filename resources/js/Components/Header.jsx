@@ -179,6 +179,7 @@ export default function Header() {
             { name: "Ajax Amsterdam", href: "/clubs/ajax-amsterdam/maillots" },
             { name: "PSV Eindhoven", href: "/clubs/psv-eindhoven/maillots" },
             { name: "Grêmio", href: "/clubs/gremio/maillots" },
+            { name: "Flamengo", href: "/clubs/flamengo/maillots" },
           ],
         },
       ].map((l) => ({

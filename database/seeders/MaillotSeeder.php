@@ -70,6 +70,27 @@ class MaillotSeeder extends Seeder
                 'image' => 'images/maillot/images_maillot/olympique-lyonnais-1966-1967.jpg'
             ],
 
+            [
+                'club_slug' => 'flamengo',
+                'nom' => 'Flamengo Domicile 2025-2026',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/flamengo-25-dom.webp'
+            ],
+
+            [
+                'club_slug' => 'flamengo',
+                'nom' => 'Flamengo Extérieur 2025-2026',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/flamengo-25-ext.webp'
+            ],
+
+            [
+                'club_slug' => 'flamengo',
+                'nom' => 'Flamengo Third 2025-2026',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/flamengo-25-third.webp'
+            ],
+
             // Pour ajouter d'autres maillots :
             // [
             //     'club_slug' => 'autre-club',
