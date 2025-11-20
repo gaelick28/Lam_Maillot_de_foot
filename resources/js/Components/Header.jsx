@@ -127,21 +127,9 @@ export default function Header() {
   const desktopNavClasses = !isTouchDevice ? "md:flex" : "xl:flex";
   const hideDesktopNavClasses = !isTouchDevice ? "md:hidden" : "xl:hidden";
 
-  // Mapping entre les noms affichés et les slugs d'URL
-const categoryMapping = {
-  "Sélections Nationales": "selections-nationales",
-  "Ligue 1": "ligue-1",
-  "Premier League": "premier-league",
-  "Bundesliga": "bundesliga",
-  "Liga": "liga",
-  "Série A": "serie-a",
-  "Autres": "autres-clubs"
-};
-
-const handleDoubleClick = (leagueName) => {
-  const slug = categoryMapping[leagueName];
-  if (slug) {
-    router.get(`/${slug}`);
+ const handleDoubleClick = (leagueSlug) => {
+    if (leagueSlug) {
+      router.get(`/${leagueSlug}`);
   }
 
 };
@@ -256,7 +244,7 @@ const handleDoubleClick = (leagueName) => {
                 aria-haspopup="true"
                 aria-expanded={activeMenu === league.name}
                 onClick={() => setActiveMenu((cur) => (cur === league.name ? null : league.name))}
-                 onDoubleClick={() => handleDoubleClick(league.name)}
+                 onDoubleClick={() => handleDoubleClick(league.slug)}
               >
                 {league.name}
               </button>
@@ -383,7 +371,7 @@ const handleDoubleClick = (leagueName) => {
                 className="w-full flex justify-between items-center px-3 py-2 font-medium rounded hover:bg-white/10"
                 onClick={() => setActiveMobileLeague((cur) => (cur === league.name ? null : league.name))}
                 onDoubleClick={() => {
-                                  handleDoubleClick(league.name);
+                                  handleDoubleClick(league.league.slug);
                                   setMobileMenuOpen(false);
                                     }}
                 aria-expanded={activeMobileLeague === league.name}
