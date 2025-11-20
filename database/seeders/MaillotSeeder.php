@@ -68,68 +68,41 @@ class MaillotSeeder extends Seeder
             ],
 
             [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 2026 Domicile',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-26-dom.webp'
+                'club_slug' => 'colombie', 'nom' => 'Colombie 2026 Domicile', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/colombie-26-dom.webp'
             ],
 
              [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 2026 Extérieur',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-26-ext.jfif'
+                'club_slug' => 'colombie', 'nom' => 'Colombie 2026 Extérieur', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/colombie-26-ext.jfif'
             ],
 
              [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 2025 Extérieur',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-25-ext.jfif'
+                'club_slug' => 'colombie', 'nom' => 'Colombie 2025 Extérieur', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/colombie-25-ext.jfif'
             ],
 
              [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 2023 Extérieur',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-23-24-ext.webp'
+                'club_slug' => 'colombie', 'nom' => 'Colombie 2023 Extérieur', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/colombie-23-24-ext.webp'
             ],
 
              [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 2026 Concept',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-26-concept.jfif'
+                'club_slug' => 'colombie','nom' => 'Colombie 2026 Concept','price' => 20.00,'image' => 'images/maillot/images_maillot/colombie-26-concept.jfif'
             ],
 
              [
-                'club_slug' => 'colombie',
-                'nom' => 'Colombie 100 ans',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/colombie-100 ans-.webp'
+                'club_slug' => 'colombie', 'nom' => 'Colombie 100 ans', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/colombie-100 ans-.webp'
             ],
 
 
 
              [
-                'club_slug' => 'uruguay',
-                'nom' => 'Uruguay 2026 Domicile',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/uruguay-26-dom.webp'
+                'club_slug' => 'uruguay', 'nom' => 'Uruguay 2026 Domicile', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/uruguay-26-dom.webp'
             ],
 
              [
-                'club_slug' => 'uruguay',
-                'nom' => 'Uruguay 2026 Extérieur',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/uruguay-26-ext.webp'
+                'club_slug' => 'uruguay', 'nom' => 'Uruguay 2026 Extérieur', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/uruguay-26-ext.webp'
             ],
 
              [
-                'club_slug' => 'tunisie',
-                'nom' => 'Tunisie 2025 Domicile',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/tunisie.jfif'
+                'club_slug' => 'tunisie', 'nom' => 'Tunisie 2025 Domicile', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/tunisie.jfif'
             ],
 
             [
