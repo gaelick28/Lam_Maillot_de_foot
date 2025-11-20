@@ -55,7 +55,7 @@ class AddressController extends Controller
                 ->update(['is_default' => false]);
         }
 
-      // 🔄 NOUVEAU : Synchroniser vers le compte utilisateur si c'est une adresse de facturation
+      //  NOUVEAU : Synchroniser vers le compte utilisateur si c'est une adresse de facturation
     if ($validated['type'] === 'billing') {
         User::find($userId)->update([
             'first_name' => $validated['first_name'],
