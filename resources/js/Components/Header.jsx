@@ -25,7 +25,7 @@ export default function Header() {
   const { auth, categories } = usePage().props;
   const user = auth?.user;
 
-  // ✨ Les catégories viennent maintenant directement des props Inertia
+  //  Les catégories viennent maintenant directement des props Inertia
   const leagues = categories || [];
 
   const [activeMenu, setActiveMenu] = useState(null);
