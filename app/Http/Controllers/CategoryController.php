@@ -12,8 +12,9 @@ class CategoryController extends Controller
 {
     /**
      * Configuration des catégories avec leurs clubs associés
+     * IMPORTANT : Cette méthode est maintenant publique pour être accessible depuis HandleInertiaRequests
      */
-    private function getCategoryConfig()
+    public function getCategoryConfig()
     {
         return [
             'selections-nationales' => [
@@ -23,7 +24,7 @@ class CategoryController extends Controller
                     'france', 'bresil', 'espagne', 'pays-bas', 'belgique', 
                     'senegal', 'cote-divoire', 'maroc', 'suisse', 'pologne', 
                     'croatie', 'suede', 'danemark', 'ukraine', 'japon', 
-                    'coree-du-sud', 'mexique', 'inde'
+                    'coree-du-sud', 'mexique', 'inde', 'colombie', 'uruguay', 'tunisie'
                 ]
             ],
             'ligue-1' => [
@@ -86,6 +87,7 @@ class CategoryController extends Controller
         ];
     }
 
+
     /**
      * Méthode générique pour afficher une catégorie
      */
@@ -100,12 +102,12 @@ class CategoryController extends Controller
 
         $category = $config[$categorySlug];
 
-        // Récupérer UN maillot représentatif par club (20 premiers)
+        // Récupérer UN maillot représentatif par club (30 premiers)
         $featuredMaillots = Club::whereIn('slug', $category['slugs'])
             ->with(['maillots' => function($query) {
                 $query->orderBy('id', 'asc')->limit(1);
             }])
-            ->limit(20)
+            ->limit(30)
             ->get()
             ->map(function($club) {
                 $maillot = $club->maillots->first();

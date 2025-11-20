@@ -36,59 +36,107 @@ class MaillotSeeder extends Seeder
 // 1.5 Ajout de nouveaux maillots (Third, etc.)
         $newMaillots = [
             [
-                'club_slug' => 'valence-cf',
-                'nom' => 'Valence Third 2025-2026',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/valence-25-third.webp'
+                'club_slug' => 'valence-cf','nom' => 'Valence Third 2025-2026','price' => 20.00, 'image' => 'images/maillot/images_maillot/valence-25-third.webp'
             ],
           
             [
-                'club_slug' => 'girondins-de-bordeaux',
-                'nom' => 'Girondins de Bordeaux 1950',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/girondins-bordeaux-1950.jpg'
+                'club_slug' => 'girondins-de-bordeaux', 'nom' => 'Girondins de Bordeaux 1950', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/girondins-bordeaux-1950.jpg'
             ],
 
             [
-                'club_slug' => 'france',
-                'nom' => 'France 1984',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/france-84-dom.jpg'
+                'club_slug' => 'france', 'nom' => 'France 1984', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/france-84-dom.jpg'
             ],
 
             [
-                'club_slug' => 'olympique-lyonnais',
-                'nom' => 'Olympique Lyonnais 1964-1965',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/olympique-lyonnais-1964-1965.jpg'
+                'club_slug' => 'olympique-lyonnais', 'nom' => 'Olympique Lyonnais 1964-1965', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/olympique-lyonnais-1964-1965.jpg'
             ],
 
             [
-                'club_slug' => 'olympique-lyonnais',
-                'nom' => 'Olympique Lyonnais 1966-1967',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/olympique-lyonnais-1966-1967.jpg'
+                'club_slug' => 'olympique-lyonnais', 'nom' => 'Olympique Lyonnais 1966-1967', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/olympique-lyonnais-1966-1967.jpg'
             ],
 
             [
-                'club_slug' => 'flamengo',
-                'nom' => 'Flamengo Domicile 2025-2026',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/flamengo-25-dom.webp'
+                'club_slug' => 'flamengo', 'nom' => 'Flamengo Domicile 2025-2026', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/flamengo-25-dom.webp'
             ],
 
             [
-                'club_slug' => 'flamengo',
-                'nom' => 'Flamengo Extérieur 2025-2026',
-                'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/flamengo-25-ext.webp'
+                'club_slug' => 'flamengo', 'nom' => 'Flamengo Extérieur 2025-2026', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/flamengo-25-ext.webp'
             ],
 
             [
-                'club_slug' => 'flamengo',
-                'nom' => 'Flamengo Third 2025-2026',
+                'club_slug' => 'flamengo',  'nom' => 'Flamengo Third 2025-2026', 'price' => 20.00, 'image' => 'images/maillot/images_maillot/flamengo-25-third.webp'
+            ],
+
+            [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 2026 Domicile',
                 'price' => 20.00,
-                'image' => 'images/maillot/images_maillot/flamengo-25-third.webp'
+                'image' => 'images/maillot/images_maillot/colombie-26-dom.webp'
+            ],
+
+             [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 2026 Extérieur',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/colombie-26-ext.jfif'
+            ],
+
+             [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 2025 Extérieur',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/colombie-25-ext.jfif'
+            ],
+
+             [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 2023 Extérieur',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/colombie-23-24-ext.webp'
+            ],
+
+             [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 2026 Concept',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/colombie-26-concept.jfif'
+            ],
+
+             [
+                'club_slug' => 'colombie',
+                'nom' => 'Colombie 100 ans',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/colombie-100 ans-.webp'
+            ],
+
+
+
+             [
+                'club_slug' => 'uruguay',
+                'nom' => 'Uruguay 2026 Domicile',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/uruguay-26-dom.webp'
+            ],
+
+             [
+                'club_slug' => 'uruguay',
+                'nom' => 'Uruguay 2026 Extérieur',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/uruguay-26-ext.webp'
+            ],
+
+             [
+                'club_slug' => 'tunisie',
+                'nom' => 'Tunisie 2025 Domicile',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/tunisie.jfif'
+            ],
+
+            [
+                'club_slug' => 'tunisie',
+                'nom' => 'Tunisie  2025 Extérieur',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/tunisie-25-ext.webp'
             ],
 
             // Pour ajouter d'autres maillots :

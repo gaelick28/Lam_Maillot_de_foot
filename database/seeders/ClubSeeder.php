@@ -9,12 +9,16 @@ class ClubSeeder extends Seeder
 {
     public function run(): void
     {
-        // Clubs ajoutés sans duplication
+        // Equipes ajoutés sans duplication
         $clubs = [
             ['name' => 'AS Cannes', 'slug' => 'cannes'],
             ['name' => 'Inde', 'slug' => 'inde'],
             ['name' => 'Grêmio', 'slug' => 'gremio'],
             ['name' => 'Flamengo', 'slug' => 'flamengo'],
+            ['name' => 'Colombie', 'slug' => 'colombie'],
+            ['name' => 'uruguay', 'slug' => 'uruguay'],
+            ['name' => 'tunisie', 'slug' => 'tunisie'],
+   
         ];
 
         foreach ($clubs as $club) {

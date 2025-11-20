@@ -22,8 +22,11 @@ function BallonFootIcon({ className }) {
 }
 
 export default function Header() {
-  const { auth } = usePage().props;
+  const { auth, categories } = usePage().props;
   const user = auth?.user;
+
+  // ✨ Les catégories viennent maintenant directement des props Inertia
+  const leagues = categories || [];
 
   const [activeMenu, setActiveMenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,148 +49,7 @@ export default function Header() {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
-  // Tri FR (accents/casse gérés)
-  const collator = useMemo(
-    () => new Intl.Collator("fr", { sensitivity: "base", numeric: true }),
-    []
-  );
-
-  //  CLUBS ( triés A→Z)
-  const leagues = useMemo(
-    () =>
-      [
-        {
-          name: "Sélections Nationales",
-          clubs: [
-            { name: "France", href: "/clubs/france/maillots" },
-            { name: "Brésil", href: "/clubs/bresil/maillots" },
-            { name: "Espagne", href: "/clubs/espagne/maillots" },
-            { name: "Pays-Bas", href: "/clubs/pays-bas/maillots" },
-            { name: "Belgique", href: "/clubs/belgique/maillots" },
-            { name: "Sénégal", href: "/clubs/senegal/maillots" },
-            { name: "Côte d'Ivoire", href: "/clubs/cote-divoire/maillots" },
-            { name: "Maroc", href: "/clubs/maroc/maillots" },
-            { name: "Suisse", href: "/clubs/suisse/maillots" },
-            { name: "Pologne", href: "/clubs/pologne/maillots" },
-            { name: "Croatie", href: "/clubs/croatie/maillots" },
-            { name: "Suède", href: "/clubs/suede/maillots" },
-            { name: "Danemark", href: "/clubs/danemark/maillots" },
-            { name: "Ukraine", href: "/clubs/ukraine/maillots" },
-            { name: "Japon", href: "/clubs/japon/maillots" },
-            { name: "Corée du Sud", href: "/clubs/corée-du-sud/maillots" },
-            { name: "Mexique", href: "/clubs/mexique/maillots" },
-            { name: "Inde", href: "/clubs/inde/maillots" },
-          ],
-        },
-        {
-          name: "Ligue 1",
-          clubs: [
-            { name: "Olympique Lyonnais", href: "/clubs/olympique-lyonnais/maillots" },
-            { name: "Girondins de Bordeaux", href: "/clubs/girondins-de-bordeaux/maillots" },
-            { name: "Lille", href: "/clubs/lille/maillots" },
-            { name: "Monaco", href: "/clubs/monaco/maillots" },
-            { name: "Nice", href: "/clubs/nice/maillots" },
-            { name: "Rennes", href: "/clubs/rennes/maillots" },
-            { name: "Strasbourg", href: "/clubs/strasbourg/maillots" },
-            { name: "Toulouse", href: "/clubs/toulouse/maillots" },
-            { name: "Nantes", href: "/clubs/nantes/maillots" },
-            { name: "Montpellier", href: "/clubs/montpellier/maillots" },
-            { name: "Lens", href: "/clubs/lens/maillots" },
-            { name: "Reims", href: "/clubs/reims/maillots" },
-            { name: "Angers", href: "/clubs/angers/maillots" },
-            { name: "Auxerre", href: "/clubs/auxerre/maillots" },
-            { name: "AS Cannes", href: "/clubs/cannes/maillots" },
-          ],
-        },
-        {
-          name: "Premier League",
-          clubs: [
-            { name: "Liverpool", href: "/clubs/liverpool/maillots" },
-            { name: "Manchester City", href: "/clubs/manchester-city/maillots" },
-            { name: "Arsenal", href: "/clubs/arsenal/maillots" },
-            { name: "Chelsea", href: "/clubs/chelsea/maillots" },
-            { name: "Tottenham Hotspur", href: "/clubs/tottenham-hotspur/maillots" },
-            { name: "Leicester City", href: "/clubs/leicester-city/maillots" },
-            { name: "Aston Villa", href: "/clubs/aston-villa/maillots" },
-            { name: "Newcastle United", href: "/clubs/newcastle-united/maillots" },
-            { name: "Everton", href: "/clubs/everton/maillots" },
-            { name: "Wolverhampton Wanderers", href: "/clubs/wolverhampton-wanderers/maillots" },
-            { name: "Brighton", href: "/clubs/brighton/maillots" },
-            { name: "Crystal Palace", href: "/clubs/crystal-palace/maillots" },
-            { name: "Brentford", href: "/clubs/brentford/maillots" },
-            { name: "Fulham", href: "/clubs/fulham/maillots" },
-          ],
-        },
-        {
-          name: "Bundesliga",
-          clubs: [
-            { name: "Bayern Munich", href: "/clubs/bayern-munich/maillots" },
-            { name: "Borussia Dortmund", href: "/clubs/borussia-dortmund/maillots" },
-            { name: "RB Leipzig", href: "/clubs/rb-leipzig/maillots" },
-            { name: "Bayer Leverkusen", href: "/clubs/bayer-leverkusen/maillots" },
-            { name: "Borussia Mönchengladbach", href: "/clubs/borussia-monchengladbach/maillots" },
-            { name: "Wolfsburg", href: "/clubs/wolfsburg/maillots" },
-            { name: "Eintracht Francfort", href: "/clubs/eintracht-francfort/maillots" },
-            { name: "Hoffenheim", href: "/clubs/hoffenheim/maillots" },
-            { name: "Hertha Berlin", href: "/clubs/hertha-berlin/maillots" },
-            { name: "Stuttgart", href: "/clubs/stuttgart/maillots" },
-            { name: "Cologne", href: "/clubs/cologne/maillots" },
-            { name: "Schalke", href: "/clubs/schalke/maillots" },
-          ],
-        },
-        {
-          name: "Liga",
-          clubs: [
-            { name: "Atletico Madrid", href: "/clubs/atletico-madrid/maillots" },
-            { name: "Athletic Bilbao", href: "/clubs/athletic-bilbao/maillots" },
-            { name: "Real Madrid", href: "/clubs/real-madrid/maillots" },
-            { name: "FC Barcelone", href: "/clubs/fc-barcelone/maillots" },
-            { name: "Real Sociedad", href: "/clubs/real-sociedad/maillots" },
-            { name: "Valence CF", href: "/clubs/valence-cf/maillots" },
-            { name: "Villarreal", href: "/clubs/villarreal/maillots" },
-            { name: "Sevilla FC", href: "/clubs/sevilla-fc/maillots" },
-            { name: "Real Betis", href: "/clubs/real-betis/maillots" },
-            { name: "Celta Vigo", href: "/clubs/celta-vigo/maillots" },
-            { name: "Espanyol", href: "/clubs/espanyol/maillots" },
-          ],
-        },
-        {
-          name: "Série A",
-          clubs: [
-            { name: "Inter Milan", href: "/clubs/inter-milan/maillots" },
-            { name: "Naples", href: "/clubs/naples/maillots" },
-            { name: "Juventus", href: "/clubs/juventus/maillots" },
-            { name: "AC Milan", href: "/clubs/ac-milan/maillots" },
-            { name: "AS Roma", href: "/clubs/as-roma/maillots" },
-            { name: "Lazio Rome", href: "/clubs/lazio-rome/maillots" },
-            { name: "Atalanta", href: "/clubs/atalanta/maillots" },
-            { name: "Fiorentina", href: "/clubs/fiorentina/maillots" },
-            { name: "Torino", href: "/clubs/torino/maillots" },
-            { name: "Bologne", href: "/clubs/bologne/maillots" },
-          ],
-        },
-        {
-          name: "Autres",
-          clubs: [
-            { name: "Porto", href: "/clubs/porto/maillots" },
-            { name: "Benfica", href: "/clubs/benfica/maillots" },
-            { name: "Sporting CP", href: "/clubs/sporting-cp/maillots" },
-            { name: "Galatasaray", href: "/clubs/galatasaray/maillots" },
-            { name: "Fenerbahçe", href: "/clubs/fenerbahce/maillots" },
-            { name: "Celtic FC", href: "/clubs/celtic-fc/maillots" },
-            { name: "Rangers FC", href: "/clubs/rangers-fc/maillots" },
-            { name: "Ajax Amsterdam", href: "/clubs/ajax-amsterdam/maillots" },
-            { name: "PSV Eindhoven", href: "/clubs/psv-eindhoven/maillots" },
-            { name: "Grêmio", href: "/clubs/gremio/maillots" },
-            { name: "Flamengo", href: "/clubs/flamengo/maillots" },
-          ],
-        },
-      ].map((l) => ({
-        ...l,
-        clubs: [...l.clubs].sort((a, b) => collator.compare(a.name, b.name)),
-      })),
-    [collator]
-  );
+  
   
 
   // Recherche
