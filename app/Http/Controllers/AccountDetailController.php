@@ -54,16 +54,16 @@ return Inertia::render('AccountDetails', [
 
     $user->update($validated);
 
-    // 🔄 Synchroniser les données avec l'adresse de facturation
-    $billingAddress = $user->addresses()->where('type', 'billing')->first();
+    // 🔄 Synchroniser avec TOUTES les adresses de facturation
+$billingAddresses = $user->addresses()->where('type', 'billing')->get();
 
-    if ($billingAddress) {
-        $billingAddress->update([
-            'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
-            'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
-            'phone'      => $validated['phone'] ?? $billingAddress->phone,
-        ]);
-    }
+foreach ($billingAddresses as $billingAddress) {
+    $billingAddress->update([
+        'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
+        'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
+        'phone'      => $validated['phone'] ?? $billingAddress->phone,
+    ]);
+}
 
     return back()->with('success', 'Informations mises à jour avec succès.');
 }

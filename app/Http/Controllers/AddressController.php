@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class AddressController extends Controller
 {
@@ -53,6 +54,17 @@ class AddressController extends Controller
                 ->where('type', $validated['type'])
                 ->update(['is_default' => false]);
         }
+
+      // 🔄 NOUVEAU : Synchroniser vers le compte utilisateur si c'est une adresse de facturation
+    if ($validated['type'] === 'billing') {
+        User::find($userId)->update([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'phone' => $validated['phone'],
+        ]);
+    }
+
+
 
         $address = UserAddress::create([
             'user_id' => $userId,
@@ -104,10 +116,10 @@ class AddressController extends Controller
 
         $address->update($validated);
 
-        // Synchronisation vers le compte utilisateur si adresse de facturation par défaut
-        if ($address->type === 'billing' && ($address->is_default || $this->isOnlyBilling($address))) {
-            $this->syncBillingAddressToUser($address);
-        }
+        // 🔄 Synchroniser vers le compte utilisateur pour toute adresse de facturation
+if ($address->type === 'billing') {
+    $this->syncBillingAddressToUser($address);
+}
 
         return redirect()->route('addresses.index')->with('success', 'Adresse mise à jour.');
     }
@@ -127,16 +139,17 @@ class AddressController extends Controller
     }
 
     // Synchroniser l'adresse de facturation dans le compte utilisateur
-    private function syncBillingAddressToUser(UserAddress $address)
-    {
-        if ($address->type === 'billing' && $address->is_default && $address->user) {
-            $address->user->update([
-                'first_name' => $address->first_name,
-                'last_name' => $address->last_name,
-                'phone' => $address->phone,
-            ]);
-        }
+   private function syncBillingAddressToUser(UserAddress $address)
+{
+    // 🔄 Synchroniser sans condition sur is_default
+    if ($address->type === 'billing' && $address->user) {
+        $address->user->update([
+            'first_name' => $address->first_name,
+            'last_name' => $address->last_name,
+            'phone' => $address->phone,
+        ]);
     }
+}
 
     // Vérifier si c'est la seule adresse de facturation
     private function isOnlyBilling(UserAddress $address)
