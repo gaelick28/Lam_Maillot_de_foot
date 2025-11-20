@@ -343,7 +343,6 @@ class MaillotSeeder extends Seeder
 
         
 
-
         ];
 
         foreach ($updates as $id => $image) {
