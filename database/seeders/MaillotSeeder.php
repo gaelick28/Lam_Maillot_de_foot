@@ -112,6 +112,13 @@ class MaillotSeeder extends Seeder
                 'image' => 'images/maillot/images_maillot/tunisie-25-ext.webp'
             ],
 
+                [
+                'club_slug' => 'naples',
+                'nom' => 'Naples  1986-87 Domicile',
+                'price' => 20.00,
+                'image' => 'images/maillot/images_maillot/naples-1986-dom.webp'
+            ],
+
             // Pour ajouter d'autres maillots :
             // [
             //     'club_slug' => 'autre-club',
