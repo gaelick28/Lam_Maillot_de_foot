@@ -68,7 +68,7 @@ return Inertia::render('AccountDetails', [
                 'last_name' => $validated['last_name'],
                 'phone' => $validated['phone'] ?? null,
                 // Champs obligatoires avec valeurs par défaut temporaires
-                'street' => '',
+                'street' => 'À compléter',
                 'city' => '',
                 'postal_code' => '',
                 'country' => 'FR',
