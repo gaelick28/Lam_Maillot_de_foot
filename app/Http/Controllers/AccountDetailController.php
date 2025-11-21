@@ -54,16 +54,37 @@ return Inertia::render('AccountDetails', [
 
     $user->update($validated);
 
-    // 🔄 Synchroniser avec TOUTES les adresses de facturation
-$billingAddresses = $user->addresses()->where('type', 'billing')->get();
+    // 🔄 Synchroniser avec les adresses de facturation
+    $billingAddresses = $user->addresses()->where('type', 'billing')->get();
 
-foreach ($billingAddresses as $billingAddress) {
-    $billingAddress->update([
-        'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
-        'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
-        'phone'      => $validated['phone'] ?? $billingAddress->phone,
-    ]);
-}
+    if ($billingAddresses->isEmpty()) {
+        // ✨ NOUVEAU : Si aucune adresse de facturation n'existe, en créer une automatiquement
+        // MAIS seulement si les champs minimum sont remplis
+        if (!empty($validated['first_name']) && !empty($validated['last_name'])) {
+            UserAddress::create([
+                'user_id' => $user->id,
+                'type' => 'billing',
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'] ?? null,
+                // Champs obligatoires avec valeurs par défaut temporaires
+                'street' => '',
+                'city' => '',
+                'postal_code' => '',
+                'country' => 'FR',
+                'is_default' => true,
+            ]);
+        }
+    } else {
+        // Mettre à jour les adresses existantes
+        foreach ($billingAddresses as $billingAddress) {
+            $billingAddress->update([
+                'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
+                'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
+                'phone'      => $validated['phone'] ?? $billingAddress->phone,
+            ]);
+        }
+    }
 
     return back()->with('success', 'Informations mises à jour avec succès.');
 }
