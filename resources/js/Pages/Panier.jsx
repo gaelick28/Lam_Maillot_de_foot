@@ -138,16 +138,24 @@ const handleKeyDown = useCallback((e, item) => {
   }, []);
 
   const goToCheckout = useCallback(() => {
-    if (!shippingAddress) {
-      alert("Veuillez d'abord renseigner votre adresse de livraison.");
-      return;
-    }
-    if (cartItems.length === 0) {
-      alert("Votre panier est vide !");
-      return;
-    }
-    router.visit("/checkout");
-  }, [shippingAddress, cartItems]);
+  // Si non connecté, rediriger vers login
+  if (!user) {
+    router.visit('/login');
+    return;
+  }
+
+  if (!shippingAddress) {
+    alert("Veuillez d'abord renseigner votre adresse de livraison.");
+    return;
+  }
+  
+  if (cartItems.length === 0) {
+    alert("Votre panier est vide !");
+    return;
+  }
+  
+  router.visit("/checkout");
+}, [user, shippingAddress, cartItems]);
 
   
   // Ajouter après les autres useEffect pour retirer curseur des champs après sauvegarde
@@ -178,6 +186,10 @@ useEffect(() => {
     document.removeEventListener('keydown', handleGlobalKeyDown);
   };
 }, [dirtyMap, cartItems, handleSave]);
+
+
+
+
 
   // --- Rendu ---
   return (

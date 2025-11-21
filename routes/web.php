@@ -129,7 +129,7 @@ Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
     ->name('category.autres');
 
     
-    Route::middleware(['auth'])->group(function() {
+   
         
     Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
@@ -146,8 +146,6 @@ Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
-});
-    
 });
 
 

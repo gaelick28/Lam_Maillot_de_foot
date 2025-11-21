@@ -13,11 +13,11 @@ export default function PanierLink() {
     try {
       setIsLoading(true)
 
-      // Vérifier si l'utilisateur est connecté
-      if (!auth?.user) {
-        setCartCount(0)
-        return
-      }
+      // Vérifier si l'utilisateur est connecté----- supprimé, car le panier est géré pour les utilisateurs non connectés aussi
+      // if (!auth?.user) {
+      //   setCartCount(0)
+      //   return
+      // }
 
       const response = await fetch("/panier/count", {
         method: "GET",
@@ -62,7 +62,7 @@ export default function PanierLink() {
       window.removeEventListener("cart-updated", handleCartUpdate)
       window.removeEventListener("focus", handleFocus)
     }
-  }, [auth?.user?.id])
+  }, [])
 
   return (
     <Link

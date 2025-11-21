@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Models\Club;
 
 class HandleInertiaRequests extends Middleware
@@ -30,16 +33,20 @@ class HandleInertiaRequests extends Middleware
      * @return array<string, mixed>
      */
     public function share(Request $request): array
-    {
-        return [
-            ...parent::share($request),
-            'auth' => [
-                'user' => $request->user(),
-            ],
-            // ✨ Nouvelles props partagées : catégories pour le Header
-            'categories' => $this->getCategoriesData(),
-        ];
+{
+    // Si l'utilisateur vient de se connecter, fusionner le panier
+    if (Auth::check() && Session::has('cart')) {
+        app(CartController::class)->mergeSessionCart();
     }
+
+    return [
+        ...parent::share($request),
+        'auth' => [
+            'user' => $request->user(),
+        ],
+        'categories' => $this->getCategoriesData(),
+    ];
+}
 
     /**
      * Génère les données des catégories pour le Header
