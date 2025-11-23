@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
 
 class AuthController extends Controller
 {
@@ -98,4 +102,25 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Déconnexion réussie');
     }
+    
+
+    //  * Mot de passe oublié
+    public function forgotPassword(Request $request) {
+    $request->validate(['email' => 'required|email|exists:users,email']);
+
+    $user = User::where('email', $request->email)->first();
+
+    $newPass = Str::random(10);
+$user->password = Hash::make($newPass); // ← AJOUTER cette ligne
+$user->save();
+
+    Log::info('Début forgotPassword controller : '.$request->email);
+    // Envoi mail basique
+    Mail::raw("Votre nouveau mot de passe est : $newPass", function($message) use ($user) {
+        $message->to($user->email)
+                ->subject("Votre nouveau mot de passe");
+    });
+    Log::info('Mail envoyé à : '.$user->email);
+    return back()->with('success', "Un nouveau mot de passe a été envoyé à votre email.");
+}
 }

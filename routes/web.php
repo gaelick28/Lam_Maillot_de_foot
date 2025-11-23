@@ -63,6 +63,11 @@ Route::post('/logout', function () {
     return redirect()->route('home');
 })->name('logout');
 
+//mot de passe oublié
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
+
+
+
 // Routes protégées
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');

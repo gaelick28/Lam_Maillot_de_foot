@@ -7,7 +7,7 @@ export default function LoginRegister() {
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
-  
+   const [showReset, setShowReset] = useState(false)
 
   const { data, setData, post, processing, errors } = useForm({
     login: "",
@@ -18,6 +18,17 @@ export default function LoginRegister() {
      remember: false,
   })
 
+const { 
+    data: resetData, 
+    setData: setResetData, 
+    post: postReset, 
+    processing: processingReset, 
+    errors: resetErrors,
+    reset: resetForm 
+  } = useForm({ 
+    email: "" 
+  })
+
   const handleChange = (e) => {
     setData(e.target.name, e.target.value)
   }
@@ -25,6 +36,17 @@ export default function LoginRegister() {
   const handleSubmit = (e) => {
     e.preventDefault()
     post(isLogin ? "/login" : "/register")
+  }
+
+const handleResetSubmit = (e) => {
+    e.preventDefault()
+    postReset("/forgot-password", { 
+      onSuccess: () => {
+        setShowReset(false)
+        resetForm()
+        alert("Un nouveau mot de passe a été envoyé à votre email.")
+      }
+    })
   }
 
   const EyeIcon = ({ show }) => (
@@ -43,29 +65,83 @@ export default function LoginRegister() {
   return (
     <>
       <Header />
-
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-200 to-blue-200 py-12 px-4 sm:px-6 lg:px-8">
+        <main className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-200 to-blue-200 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           {/* Tabs */}
           <div className="flex justify-center mb-6" role="tablist" aria-label="Navigation formulaire">
-            <button
-              onClick={() => setIsLogin(true)}
-              className={`px-4 py-2 font-medium text-lg ${isLogin ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
+           <button
+              onClick={() => {
+                setIsLogin(true)
+                setShowReset(false)
+              }}
+              className={`px-4 py-2 font-medium text-lg ${isLogin && !showReset ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
               role="tab"
-              aria-selected={isLogin}
+              aria-selected={isLogin && !showReset}
             >
               Connexion
             </button>
             <button
-              onClick={() => setIsLogin(false)}
-              className={`px-4 py-2 font-medium text-lg ${!isLogin ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
+              onClick={() => {
+                setIsLogin(false)
+                setShowReset(false)
+              }}
+              className={`px-4 py-2 font-medium text-lg ${!isLogin && !showReset ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
               role="tab"
-              aria-selected={!isLogin}
+              aria-selected={!isLogin && !showReset}
             >
               Inscription
             </button>
           </div>
 
+{/* Formulaire de réinitialisation */}
+          {showReset ? (
+            <div className="space-y-6 bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-bold text-center text-gray-900">Réinitialiser le mot de passe</h2>
+              <p className="text-sm text-gray-600 text-center">
+                Entrez votre email pour recevoir un nouveau mot de passe
+              </p>
+              
+              <form onSubmit={handleResetSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    id="reset-email"
+                    type="email"
+                    name="email"
+                    placeholder="votre@email.com"
+                    value={resetData.email}
+                    onChange={e => setResetData("email", e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
+                    required
+                  />
+                  {resetErrors.email && (
+                    <p className="text-sm text-red-600 mt-1">{resetErrors.email}</p>
+                  )}
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={processingReset}
+                    className="flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {processingReset ? "Envoi..." : "Réinitialiser"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowReset(false)}
+                    className="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+         
+            /* Formulaire de connexion/inscription */
           <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow" aria-label={isLogin ? "Formulaire de connexion" : "Formulaire d'inscription"}>
             {!isLogin && (
               <>
@@ -162,27 +238,42 @@ export default function LoginRegister() {
                 {errors.password_confirmation && <p className="text-sm text-red-600">{errors.password_confirmation}</p>}
               </div>
             )}
-<div className="flex items-center">
-  <input
-    id="remember"
-    name="remember"
-    type="checkbox"
-    checked={data.remember}
-    onChange={e => setData('remember', e.target.checked)}
-    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-  />
-  <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
-    Se souvenir de moi
-  </label>
-</div>
-            <button
-              type="submit"
-              disabled={processing}
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {isLogin ? "Se connecter" : "S'inscrire"}
-            </button>
-          </form>
+   
+              {isLogin && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      id="remember"
+                      name="remember"
+                      type="checkbox"
+                      checked={data.remember}
+                      onChange={e => setData('remember', e.target.checked)}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="remember" className="ml-2 block text-sm text-gray-900">
+                      Se souvenir de moi
+                    </label>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    onClick={() => setShowReset(true)} 
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Mot de passe oublié ?
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={processing}
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                {isLogin ? "Se connecter" : "S'inscrire"}
+              </button>
+            </form>
+          )}
         </div>
       </main>
 
