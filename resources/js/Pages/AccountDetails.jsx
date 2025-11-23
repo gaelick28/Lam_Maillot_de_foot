@@ -198,15 +198,29 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                           </p>
                         )}
                       </div>
+                       {/* Email */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                        <input
+                          type="email"
+                          required
+                          value={personalInfoForm.data.email}
+                          onChange={(e) => personalInfoForm.setData("email", e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {personalInfoForm.errors.email && (
+                          <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.email}</p>
+                        )}
+                      </div>
                       {/* Prénom */}
                       <div>
                         <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
-                          Prénom *
+                          Prénom 
                         </label>
                         <input
                           id="first_name"
                           type="text"
-                          required
+                          // required
                           value={personalInfoForm.data.first_name}
                           onChange={(e) => personalInfoForm.setData("first_name", e.target.value)}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -231,19 +245,7 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.last_name}</p>
                         )}
                       </div>
-                      {/* Email */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input
-                          type="email"
-                          value={personalInfoForm.data.email}
-                          onChange={(e) => personalInfoForm.setData("email", e.target.value)}
-                          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        />
-                        {personalInfoForm.errors.email && (
-                          <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.email}</p>
-                        )}
-                      </div>
+                     
                       {/* Téléphone */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>

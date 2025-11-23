@@ -54,18 +54,18 @@ return Inertia::render('AccountDetails', [
 
     $user->update($validated);
 
-    // 🔄 Synchroniser avec les adresses de facturation
+    //  Synchroniser avec les adresses de facturation
     $billingAddresses = $user->addresses()->where('type', 'billing')->get();
 
     if ($billingAddresses->isEmpty()) {
-        // ✨ NOUVEAU : Si aucune adresse de facturation n'existe, en créer une automatiquement
+        //  NOUVEAU : Si aucune adresse de facturation n'existe, en créer une automatiquement
         // MAIS seulement si les champs minimum sont remplis
-        if (!empty($validated['first_name']) && !empty($validated['last_name'])) {
+        if (!empty($validated['first_name']) ||  !empty($validated['last_name'] )) {
             UserAddress::create([
                 'user_id' => $user->id,
                 'type' => 'billing',
-                'first_name' => $validated['first_name'],
-                'last_name' => $validated['last_name'],
+                'first_name' => $validated['first_name'] ?? '', //  Valeur par défaut
+                'last_name' => $validated['last_name'] ?? '', //  Valeur par défaut
                 'phone' => $validated['phone'] ?? null,
                 // Champs obligatoires avec valeurs par défaut temporaires
                 'street' => 'À compléter',
@@ -77,17 +77,33 @@ return Inertia::render('AccountDetails', [
         }
     } else {
         // Mettre à jour les adresses existantes
-        foreach ($billingAddresses as $billingAddress) {
-            $billingAddress->update([
-                'first_name' => $validated['first_name'] ?? $billingAddress->first_name,
-                'last_name'  => $validated['last_name'] ?? $billingAddress->last_name,
-                'phone'      => $validated['phone'] ?? $billingAddress->phone,
-            ]);
+       // CORRECTION : Utiliser array_key_exists au lieu de ??
+            // Cela permet de mettre à jour même avec des valeurs vides/null
+            foreach ($billingAddresses as $billingAddress) {
+                $updateData = [];
+                
+                if (array_key_exists('first_name', $validated)) {
+                    $updateData['first_name'] = $validated['first_name'] ?: '';
+                }
+                
+                if (array_key_exists('last_name', $validated)) {
+                    // Forcer une chaîne vide si null pour respecter la contrainte DB
+                    $updateData['last_name'] = $validated['last_name'] ?: '';
+                }
+                
+                if (array_key_exists('phone', $validated)) {
+                    $updateData['phone'] = $validated['phone'];
+                }
+                
+                if (!empty($updateData)) {
+                    $billingAddress->update($updateData);
+                }
+            }
         }
+
+        return back()->with('success', 'Informations mises à jour avec succès.');
     }
 
-    return back()->with('success', 'Informations mises à jour avec succès.');
-}
 
     public function updatePassword(Request $request)
     {
