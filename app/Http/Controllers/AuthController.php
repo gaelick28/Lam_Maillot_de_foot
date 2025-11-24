@@ -114,13 +114,12 @@ class AuthController extends Controller
 $user->password = Hash::make($newPass); // ← AJOUTER cette ligne
 $user->save();
 
-    Log::info('Début forgotPassword controller : '.$request->email);
     // Envoi mail basique
     Mail::raw("Votre nouveau mot de passe est : $newPass", function($message) use ($user) {
         $message->to($user->email)
                 ->subject("Votre nouveau mot de passe");
     });
-    Log::info('Mail envoyé à : '.$user->email);
+ 
     return back()->with('success', "Un nouveau mot de passe a été envoyé à votre email.");
 }
 }
