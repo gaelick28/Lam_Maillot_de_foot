@@ -148,9 +148,9 @@ class CartController extends Controller
                       ->orderBy('type', 'asc');
             }])->findOrFail(Auth::id());
 
-            $defaultShippingAddress = $user->addresses
-                ->where('type', 'shipping')
-                ->where('is_default', true)
+                $shippingAddress = $user->addresses
+            ->where('type', 'shipping')
+            ->sortByDesc('is_default')  //  Priorise par défaut mais accepte les autres
                 ->first();
 
             foreach ($cart->items as $item) {
@@ -182,9 +182,9 @@ class CartController extends Controller
         return inertia('Panier', [
             'cartItems' => $cartItems,
             'auth' => [
-                'user' => $user,
-                'defaultShippingAddress' => $defaultShippingAddress
-            ]
+            'user' => $user,
+            'shippingAddress' => $shippingAddress  // Nouveau nom plus clair
+        ]
         ]);
     }
 

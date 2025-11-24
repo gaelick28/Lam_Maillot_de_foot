@@ -19,10 +19,10 @@ export default function Panier() {
   const [dirtyMap, setDirtyMap] = useState({});
 
   // --- Adresse de livraison par défaut (UNE source de vérité) ---
-  const shippingAddress = useMemo(
-    () => user?.addresses?.find(a => a.type === "shipping" && a.is_default) || null,
-    [user]
-  );
+ const shippingAddress = useMemo(
+  () => auth?.shippingAddress || null,
+  [auth]
+);
 
   // --- Validation utilitaires ---
   const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊËÏÄÜÖÔ\s-]*$/.test(val), []);
