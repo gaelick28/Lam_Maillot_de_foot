@@ -102,7 +102,7 @@ class CartController extends Controller
     {
         $cartItems = collect();
         $user = null;
-        $defaultShippingAddress = null;
+        $shippingAddress = null;
 
         // Récupérer les items de la session
         $sessionCart = Session::get('cart', []);
