@@ -100,11 +100,13 @@ class CheckoutController extends Controller
     ];
 }
 
-        // Adresse de livraison par défaut (comme dans Panier.jsx)
-        $shippingAddress = $user->addresses()
-            ->where('type', 'shipping')
-            ->where('is_default', true)
-            ->first();
+        // Adresse de livraison  (comme dans Panier.jsx)
+       $userAddresses = $user->addresses()
+    ->where('type', 'shipping')
+    ->orderBy('is_default', 'desc')  //  Priorise par défaut mais accepte les autres
+    ->get();
+
+$shippingAddress = $userAddresses->first();
 
         return Inertia::render('Checkout', [
             'auth'            => ['user' => $user->only(['id','name','email'])],

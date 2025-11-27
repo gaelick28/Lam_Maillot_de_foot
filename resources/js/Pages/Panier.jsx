@@ -565,8 +565,13 @@ useEffect(() => {
                     <div
                       className="bg-yellow-50 border border-yellow-200 p-3 md:p-4 rounded-md"
                       role="region"
-                      aria-label="Adresse par défaut"
+                      aria-label="Adresse de livraison"
                     >
+                      {shippingAddress.is_default && (
+                        <div className="text-xs text-yellow-700 font-medium mb-1">
+                          ✓ Adresse par défaut
+                        </div>
+                      )}
                       <div className="font-medium">
                         {shippingAddress.first_name} {shippingAddress.last_name}
                       </div>
@@ -582,8 +587,8 @@ useEffect(() => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 md:p-4">
-                      <p className="text-yellow-800 mb-2 text-sm md:text-base">
+                    <div className="bg-green-100 border border-green-200 rounded-md p-3 md:p-4">
+                      <p className="text-green-800 mb-2 text-sm md:text-base">
                         Aucune adresse de livraison configurée
                       </p>
                       <Link href="/addresses" className="text-blue-600 underline hover:text-blue-800">
