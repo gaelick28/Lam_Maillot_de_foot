@@ -12,7 +12,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\SearchController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -66,6 +66,17 @@ Route::post('/logout', function () {
 //mot de passe oublié
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
 
+
+// Routes de recherche
+Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])
+    ->name('search.autocomplete');
+
+Route::get('/search', [SearchController::class, 'search'])
+    ->name('search.results');
+
+// Garder la compatibilité avec l'ancienne route
+Route::get('/club-slug', [SearchController::class, 'getClubSlug'])
+    ->name('club.slug');
 
 
 // Routes protégées

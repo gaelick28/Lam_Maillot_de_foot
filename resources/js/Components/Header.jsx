@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePage, Link, router } from "@inertiajs/react";
 import PanierLink from "@/Components/PanierLink";
+import SearchBar from "@/Components/SearchBar";
 
 /* Icône ballon foot (SVG inline) */
 function BallonFootIcon({ className }) {
@@ -22,7 +23,7 @@ function BallonFootIcon({ className }) {
 }
 
 export default function Header() {
-  const { auth, categories } = usePage().props;
+  const { auth, categories, url } = usePage().props;
   const user = auth?.user;
 
   //  Les catégories viennent maintenant directement des props Inertia
@@ -123,7 +124,7 @@ export default function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  // Helpers d’affichage : sur appareils tactiles, on force le mobile jusqu’à xl
+  // Helpers d'affichage : sur appareils tactiles, on force le mobile jusqu'à xl
   const desktopNavClasses = !isTouchDevice ? "md:flex" : "xl:flex";
   const hideDesktopNavClasses = !isTouchDevice ? "md:hidden" : "xl:hidden";
 
@@ -148,47 +149,14 @@ export default function Header() {
             <span className="text-lg sm:text-xl font-bold">FOU2FOOT</span>
           </Link>
 
+          
           {/* Recherche desktop/tablette (visible uniquement quand la nav desktop est active) */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch();
-            }}
-            className={`hidden ${desktopNavClasses} flex-1 max-w-xl`}
-            role="search"
-          >
-            <label htmlFor="search" className="sr-only">Rechercher un club</label>
-            <div className="relative">
-              <input
-  id="search"
-  type="search"
-  value={searchError ? searchError : searchValue}
-  onChange={(e) => {
-    if (searchError) {
-      setSearchError(""); // efface l'erreur dès qu'on retape
-      setSearchValue(e.target.value);
-    } else {
-      setSearchValue(e.target.value);
-    }
-  }}
-  onFocus={() => setIsFocused(true)}
-  onBlur={() => setIsFocused(false)}
-  placeholder="Rechercher un club…"
-  className={
-    "w-full lg:w-[500px] h-10 rounded-full text-white px-5 text-base md:text-lg pr-12 focus:outline-none " +
-    (searchError
-      ? "bg-red-500/30 text-red-100 placeholder-red-200 focus:ring-2 focus:ring-red-300"
-      : "bg-white/20 placeholder-white/60 focus:ring-2 focus:ring-white/70")
-  }
-  autoComplete="off"
+          {/* 🔥 Key basée sur l'URL pour forcer le remontage */}
+<SearchBar 
+  key={`search-desktop-${url}`}
+  className={`hidden ${desktopNavClasses} flex-1 max-w-xl`}
+  placeholder="Rechercher un club..."
 />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label="Lancer la recherche">
-                <svg className={`h-5 w-5 ${isFocused ? "text-white/80" : "text-white/70"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-          </form>
 
           {/* Actions droites */}
           <div className="flex items-center gap-4">
@@ -299,67 +267,12 @@ export default function Header() {
           </Link>
 
           {/* Recherche mobile */}
-         <form
-  onSubmit={async (e) => {
-    e.preventDefault();
-    const ok = await handleSearch();
-    if (ok) setMobileMenuOpen(false); // ← ne ferme que si succès
-  }}
+          {/* 🔥 Key basée sur l'URL pour forcer le remontage */}
+<SearchBar 
+  key={`search-mobile-${url}`}
   className="mb-4"
->
-  <label htmlFor="m-search" className="sr-only">Rechercher un club</label>
-
-  <div className="relative">
-    <input
-      id="m-search"
-      type="search"
-      value={searchError ? searchError : searchValue}
-      onChange={(e) => {
-        if (searchError) {
-          setSearchError(""); // efface l'erreur dès qu'on retape
-          setSearchValue(e.target.value);
-        } else {
-          setSearchValue(e.target.value);
-        }
-      }}
-      placeholder="Rechercher un club…"
-      className={
-        "block w-full h-12 rounded-lg px-5 pr-12 text-base " +
-        (searchError
-          ? "bg-red-100 text-red-600 placeholder-red-400 border border-red-400"
-          : "bg-white/90 text-blue-900 placeholder-blue-500 border border-blue-300")
-      }
-      autoComplete="off"
-    />
-
-    {/* Icônes à droite dans la bulle (croix + loupe) */}
-    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-      {(searchError || searchValue) && (
-        <button
-          type="button"
-          onClick={() => {
-            setSearchValue("");
-            setSearchError("");
-            document.getElementById("m-search")?.focus();
-          }}
-          aria-label="Effacer la recherche"
-          className="p-1"
-        >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      )}
-
-      <button type="submit" aria-label="Lancer la recherche" className="p-1">
-        <svg className="h-6 w-6 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </button>
-    </div>
-  </div>
-
-</form>
+  placeholder="Rechercher un club..."
+/>
 
 
           <Link href="/" className="block px-3 py-2 rounded hover:bg-white/10" onClick={() => setMobileMenuOpen(false)}>Accueil</Link>
