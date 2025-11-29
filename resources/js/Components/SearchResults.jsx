@@ -4,6 +4,19 @@ import Footer from '../Components/Footer';
 import { Link } from '@inertiajs/react';
 
 export default function SearchResults({ clubs, query }) {
+    // Fonction pour corriger les URLs d'images
+    const getImageUrl = (image) => {
+        if (!image) return null;
+        
+        // Si l'image commence déjà par http:// ou https:// ou /, la retourner telle quelle
+        if (image.startsWith('http://') || image.startsWith('https://') || image.startsWith('/')) {
+            return image;
+        }
+        
+        // Sinon, ajouter le / au début
+        return '/' + image;
+    };
+
     return (
         <>
             <Header />
@@ -15,35 +28,44 @@ export default function SearchResults({ clubs, query }) {
                     
                     {clubs.data.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {clubs.data.map(club => (
-                                <Link
-                                    key={club.id}
-                                    href={`/clubs/${club.slug}/maillots`}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                                >
-                                    {club.maillots && club.maillots[0] && club.maillots[0].image ? (
-                                        <img
-                                            src={club.maillots[0].image}
-                                            alt={club.name}
-                                            className="w-full h-48 object-cover bg-gray-50"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                            {clubs.data.map(club => {
+                                const firstMaillot = club.maillots && club.maillots[0];
+                                const imageUrl = firstMaillot ? getImageUrl(firstMaillot.image) : null;
+                                
+                                return (
+                                    <Link
+                                        key={club.id}
+                                        href={`/clubs/${club.slug}/maillots`}
+                                        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                                    >
+                                        {imageUrl ? (
+                                            <img
+                                                src={imageUrl}
+                                                alt={club.name}
+                                                className="w-full h-48 object-cover bg-gray-50"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextElementSibling.style.display = 'flex';
+                                                }}
+                                            />
+                                        ) : null}
+                                        <div 
+                                            className="w-full h-48 bg-gray-200 flex items-center justify-center"
+                                            style={{ display: imageUrl ? 'none' : 'flex' }}
+                                        >
                                             <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
                                         </div>
-                                    )}
-                                    <div className="p-4">
-                                        <h3 className="font-bold text-lg mb-2">{club.name}</h3>
-                                        {club.pays && <p className="text-gray-600 mb-1">{club.pays}</p>}
-                                        {club.ligue && <p className="text-gray-500 text-sm mb-2">{club.ligue}</p>}
-                                        <p className="text-sm text-blue-600">
-                                            {club.maillots?.length || 0} maillot(s) disponible(s)
-                                        </p>
-                                    </div>
-                                </Link>
-                            ))}
+                                        <div className="p-4">
+                                            <h3 className="font-bold text-lg mb-2">{club.name}</h3>
+                                            <p className="text-sm text-blue-600">
+                                                {club.maillots?.length || 0} maillot{(club.maillots?.length || 0) > 1 ? 's' : ''} disponible{(club.maillots?.length || 0) > 1 ? 's' : ''}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -54,7 +76,7 @@ export default function SearchResults({ clubs, query }) {
                             <p className="text-gray-500 mb-4">Essayez avec d'autres mots-clés comme :</p>
                             <div className="flex flex-wrap gap-2 justify-center">
                                 <Link href="/search?q=Lyon" className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200">Lyon</Link>
-                                <Link href="/search?q=Paris" className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200">Paris</Link>
+                                <Link href="/search?q=Paris" className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200">Bordeaux</Link>
                                 <Link href="/search?q=France" className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200">France</Link>
                                 <Link href="/search?q=Milan" className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200">Milan</Link>
                             </div>

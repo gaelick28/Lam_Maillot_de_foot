@@ -171,7 +171,7 @@ export default function SearchBar({ className = "", placeholder = "Rechercher un
 
       {/* Suggestions dropdown */}
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-xl max-h-96 overflow-y-auto">
+         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl max-h-96 overflow-y-auto z-[100]">
           {suggestions.map((club, index) => (
             <button
               key={club.id}
