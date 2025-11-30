@@ -150,13 +150,24 @@ export default function Header() {
           </Link>
 
           
-          {/* Recherche desktop/tablette (visible uniquement quand la nav desktop est active) */}
-          {/* 🔥 Key basée sur l'URL pour forcer le remontage */}
-<SearchBar 
+          {/* Recherche desktop/tablette - ÉLARGIE avec style inline */}
+          {/* BARRE DE RECHERCHE PLUS GRANDE MAIS SANS UTILISER CLASSES TAILWIND */}
+<div className={`hidden ${desktopNavClasses}`} style={{ width: '300px', maxWidth: '300px', minWidth: '400px' }}>
+  <SearchBar 
+    key={`search-desktop-${url}`}
+    className="w-full"
+    placeholder="Rechercher un club..."
+  />
+</div>
+
+{/* OU  ANCIEN CODE POUR TAILLE DE BARRE DE RECHERCHE PLUS PETITE  */}
+ {/* Recherche desktop/tablette (visible uniquement quand la nav desktop est active) */}
+          {/*  Key basée sur l'URL pour forcer le remontage */}         
+{/* <SearchBar 
   key={`search-desktop-${url}`}
   className={`hidden ${desktopNavClasses} flex-1 max-w-xl`}
   placeholder="Rechercher un club..."
-/>
+/> */}
 
           {/* Actions droites */}
           <div className="flex items-center gap-4">
