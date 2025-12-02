@@ -13,6 +13,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\WishlistController;
+
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -46,18 +48,16 @@ Route::get('/contact', function () {
 
 
 
-
 // Affiche le formulaire
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // inscription
-
 Route::post('/register', [AuthController::class, 'register'])->name('register'); // Ajoutez cette ligne
 Route::get('/register', [PageController::class, 'loginRegister'])->name('register.page'); // Affiche le formulaire d'inscription
 
+
 // Déconnexion
 // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 Route::post('/logout', function () {
     Auth::logout();
     return redirect()->route('home');
@@ -79,23 +79,35 @@ Route::get('/club-slug', [SearchController::class, 'getClubSlug'])
     ->name('club.slug');
 
 
+    // 🔥 Routes API pour la wishlist - HORS DU MIDDLEWARE AUTH
+// Ces routes doivent être accessibles même sans connexion
+Route::prefix('api/wishlist')->group(function () {
+    Route::get('/ids', [WishlistController::class, 'getIds'])->name('wishlist.ids');
+    Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/remove/{maillotId}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::post('/sync', [WishlistController::class, 'sync'])->name('wishlist.sync');
+});
+
+
 // Routes protégées
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/compte', [PageController::class, 'account'])->name('account');
     Route::get('/order', [PageController::class, 'order'])->name('order');
- 
     Route::get('/accountdetails', [PageController::class, 'accountDetails'])->name('account.details');
-    Route::get('/mywishlist', [PageController::class, 'wishlist'])->name('wishlist');
-
+   
+    // 🔥 Route wishlist - UTILISE WishlistController au lieu de PageController
+    Route::get('/mywishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
 });
 
+
 Route::fallback([PageController::class, 'page404']);
+
 
 // Routes pour la gestion des adresses
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
-
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
@@ -104,12 +116,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
     Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
-
-
 Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('account.details');
 Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
 Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
 });
+
 
 // Routes pour les clubs
 Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
@@ -145,7 +156,6 @@ Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
     ->name('category.autres');
 
     
-   
         
     Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
@@ -162,6 +172,9 @@ Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
+
+
+
 });
 
 

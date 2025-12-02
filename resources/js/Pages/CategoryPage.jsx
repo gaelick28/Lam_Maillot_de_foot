@@ -4,6 +4,7 @@ import React from "react";
 import { Head, Link } from "@inertiajs/react";
 import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
+import WishlistButton from "@/Components/WishlistButton";
 
 export default function CategoryPage({ featuredMaillots, title, description, categorySlug }) {
   const formatPrice = new Intl.NumberFormat("fr-FR", {
@@ -85,6 +86,11 @@ export default function CategoryPage({ featuredMaillots, title, description, cat
                           className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                           loading="lazy"
                         />
+                    
+                    {/* 🔥 Bouton Wishlist */}
+                        <div className="absolute top-2 right-2 z-10">
+                          <WishlistButton maillotId={maillot.id} />
+                        </div>
                       </div>
 
                       {/* Informations */}

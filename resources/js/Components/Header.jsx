@@ -37,9 +37,10 @@ export default function Header() {
 
   const drawerRef = useRef(null);
 
-  const [searchValue, setSearchValue] = useState("");
-  const [searchError, setSearchError] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
+  // code inutile supprimé
+  // const [searchValue, setSearchValue] = useState("");
+  // const [searchError, setSearchError] = useState("");
+  // const [isFocused, setIsFocused] = useState(false);
 
   // Détection tactile (iPad / tablettes) 
   useEffect(() => {
@@ -54,25 +55,25 @@ export default function Header() {
   
 
   // Recherche
-  async function handleSearch() {
-  if (!searchValue.trim()) return false;
-  try {
-    const res = await fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`);
-    const data = await res.json();
-    if (data.slug) {
-      setSearchError("");
-      router.get(`/clubs/${data.slug}/maillots`);
-      setSearchValue("");
-      return true;   // ← succès
-    } else {
-      setSearchError("Aucun club correspondant à votre recherche");
-      return false;  // ← échec
-    }
-  } catch {
-    setSearchError("Erreur lors de la recherche");
-    return false;    // ← échec
-  }
-}
+//   async function handleSearch() {
+//   if (!searchValue.trim()) return false;
+//   try {
+//     const res = await fetch(`/club-slug?name=${encodeURIComponent(searchValue)}`);
+//     const data = await res.json();
+//     if (data.slug) {
+//       setSearchError("");
+//       router.get(`/clubs/${data.slug}/maillots`);
+//       setSearchValue("");
+//       return true;   // ← succès
+//     } else {
+//       setSearchError("Aucun club correspondant à votre recherche");
+//       return false;  // ← échec
+//     }
+//   } catch {
+//     setSearchError("Erreur lors de la recherche");
+//     return false;    // ← échec
+//   }
+// }
 
   // Effets
   useEffect(() => {
@@ -170,8 +171,8 @@ export default function Header() {
 /> */}
 
           {/* Actions droites */}
-          <div className="flex items-center gap-4">
-            <div className={`hidden ${desktopNavClasses} items-center gap-4 text-black`}>
+          <div className="flex items-center gap-4 shrink-0">
+            <div className={`hidden ${desktopNavClasses} items-center gap-4 text-black whitespace-nowrap`}>
               {user ? (
                 <>
                   <Link href="/dashboard" className="hover:text-white transition-colors">Mon compte</Link>
@@ -318,11 +319,11 @@ export default function Header() {
             </div>
           ))}
 
-          {/* Panier */}
-          <Link href="/panier" className="mt-3 block px-3 py-2 rounded hover:bg-white/10 flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+          {/* Panier - 🔥 CORRECTION: PanierLink SANS être dans un Link */}
+          <div className="mt-3 px-3 py-2 rounded hover:bg-white/10 flex items-center gap-2">
             <PanierLink />
             <span>Panier</span>
-          </Link>
+          </div>
 
           {/* Compte */}
           {user ? (

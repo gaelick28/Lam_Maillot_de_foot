@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Head, Link } from "@inertiajs/react";
+import WishlistButton from "@/Components/WishlistButton";
 
 export default function MaillotsList({ club, maillots }) {
   return (
@@ -44,13 +45,18 @@ export default function MaillotsList({ club, maillots }) {
                     className="block group"
                     aria-label={`Voir les détails du maillot ${maillot.nom}`}
                   >
-                    <div className="aspect-square overflow-hidden">
+                    <div className="relative aspect-square overflow-hidden">
                       <img
                         src={`/${maillot.image}`}
                         alt={`Maillot ${maillot.nom} - ${club.name}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                       />
+                      
+                      {/* 🔥 Bouton Wishlist */}
+                      <div className="absolute top-2 right-2 z-10">
+                        <WishlistButton maillotId={maillot.id} />
+                      </div>
                     </div>
                     
                     <div className="p-4">

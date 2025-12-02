@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Head, useForm, usePage, Link } from "@inertiajs/react"
+import { Head, Link, router } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
@@ -18,17 +18,6 @@ const HeartIcon = ({ className, filled = false }) => (
   </svg>
 )
 
-const ShoppingCartIcon = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-    />
-  </svg>
-)
-
 const TrashIcon = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
@@ -40,35 +29,58 @@ const TrashIcon = ({ className }) => (
   </svg>
 )
 
-const StarIcon = ({ className, filled = false }) => (
-  <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-    />
-  </svg>
-)
-
-export default function Wishlist({ wishlistItems = [],user }) {
-  const { url } = usePage()
+export default function Wishlist({ wishlistItems = [], user }) {
   const [removingItem, setRemovingItem] = useState(null)
 
-  const { delete: destroy, processing } = useForm()
+  const handleRemoveFromWishlist = async (maillotId) => {
+    if (!confirm("Supprimer cet article de votre liste de souhaits ?")) return;
 
-  const handleRemoveFromWishlist = (itemId) => {
-    if (confirm("Supprimer cet article de votre liste de souhaits ?")) {
-      setRemovingItem(itemId)
-      destroy(`/wishlist/${itemId}`, {
-        onFinish: () => setRemovingItem(null),
-      })
+    setRemovingItem(maillotId);
+
+    try {
+      const response = await fetch(`/api/wishlist/remove/${maillotId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+      });
+
+      if (response.ok) {
+        // Recharger la page pour mettre à jour la liste
+        router.reload();
+      } else {
+        alert('Erreur lors de la suppression');
+        setRemovingItem(null);
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la suppression');
+      setRemovingItem(null);
     }
   }
 
-  const handleAddToCart = (itemId) => {
-    // Logique pour ajouter au panier
-    console.log("Ajouter au panier:", itemId)
+  const handleClearWishlist = async () => {
+    if (!confirm("Vider complètement votre liste de souhaits ?")) return;
+
+    try {
+      const response = await fetch('/wishlist/clear', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+      });
+
+      if (response.ok) {
+        router.reload();
+      } else {
+        alert('Erreur lors du vidage');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors du vidage');
+    }
   }
 
   return (
@@ -77,15 +89,17 @@ export default function Wishlist({ wishlistItems = [],user }) {
       <Header />
 
       <div className="min-h-screen bg-gray-300 flex">
-        <Sidebar currentRoute={url} />
+        <Sidebar currentRoute="/mywishlist" />
 
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
             {/* Message de bienvenue */}
-                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
-                </div>
+            {user && (
+              <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+                <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+                <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
+              </div>
+            )}
 
             {/* En-tête */}
             <div className="mb-8">
@@ -112,7 +126,6 @@ export default function Wishlist({ wishlistItems = [],user }) {
                   href="/"
                   className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
                 >
-                  <ShoppingCartIcon className="w-5 h-5" />
                   Découvrir nos produits
                 </Link>
               </div>
@@ -123,30 +136,23 @@ export default function Wishlist({ wishlistItems = [],user }) {
                   <div
                     key={item.id}
                     className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 ${
-                      removingItem === item.id ? "opacity-50 scale-95" : "hover:shadow-md"
+                      removingItem === item.maillot.id ? "opacity-50 scale-95" : "hover:shadow-md"
                     }`}
                   >
                     {/* Image du produit */}
                     <div className="relative">
                       <img
-                        src={item.product.image || "/placeholder.svg?height=200&width=200"}
-                        alt={item.product.name}
+                        src={`/${item.maillot.image}`}
+                        alt={item.maillot.nom}
                         className="w-full h-48 object-cover"
                       />
 
-                      {/* Badge de réduction */}
-                      {item.product.discount && (
-                        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                          -{item.product.discount}%
-                        </span>
-                      )}
-
                       {/* Bouton supprimer */}
                       <button
-                        onClick={() => handleRemoveFromWishlist(item.id)}
-                        disabled={processing}
+                        onClick={() => handleRemoveFromWishlist(item.maillot.id)}
+                        disabled={removingItem === item.maillot.id}
                         className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
-                        aria-label={`Supprimer ${item.product.name} de la liste de souhaits`}
+                        aria-label={`Supprimer ${item.maillot.nom} de la liste de souhaits`}
                       >
                         <TrashIcon className="w-4 h-4 text-red-500" aria-hidden="true" />
                       </button>
@@ -156,61 +162,30 @@ export default function Wishlist({ wishlistItems = [],user }) {
                     <div className="p-4">
                       {/* Nom du produit */}
                       <Link
-                        href={`/products/${item.product.slug}`}
+                        href={`/maillots/${item.maillot.id}`}
                         className="block font-semibold text-gray-900 hover:text-blue-600 transition-colors mb-2 line-clamp-2"
-                        aria-label={`Voir les détails de ${item.product.name}`}
+                        aria-label={`Voir les détails de ${item.maillot.nom}`}
                       >
-                        {item.product.name}
+                        {item.maillot.nom}
                       </Link>
 
-                      {/* Équipe/Ligue */}
-                      <p className="text-sm text-gray-500 mb-2">{item.product.team || item.product.league}</p>
-
-                      {/* Note */}
-                      {item.product.rating && (
-                        <div
-                          className="flex items-center gap-1 mb-2"
-                          role="img"
-                          aria-label={`Note: ${item.product.rating} sur 5 étoiles`}
-                        >
-                          {[...Array(5)].map((_, i) => (
-                            <StarIcon
-                              key={i}
-                              className="w-4 h-4 text-yellow-400"
-                              filled={i < Math.floor(item.product.rating)}
-                              aria-hidden="true"
-                            />
-                          ))}
-                          <span className="text-sm text-gray-500 ml-1">({item.product.reviews_count} avis)</span>
-                        </div>
-                      )}
+                      {/* Club */}
+                      <p className="text-sm text-gray-500 mb-2">{item.maillot.club_name}</p>
 
                       {/* Prix */}
                       <div className="flex items-center gap-2 mb-4">
                         <span className="text-lg font-bold text-gray-900">
-                          {item.product.sale_price ? item.product.sale_price : item.product.price}€
+                          {item.maillot.price}€
                         </span>
-                        {item.product.sale_price && (
-                          <span className="text-sm text-gray-500 line-through">{item.product.price}€</span>
-                        )}
                       </div>
 
                       {/* Actions */}
                       <div className="space-y-2">
-                        <button
-                          onClick={() => handleAddToCart(item.product.id)}
-                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                          aria-label={`Ajouter ${item.product.name} au panier`}
-                        >
-                          <ShoppingCartIcon className="w-4 h-4" aria-hidden="true" />
-                          Ajouter au panier
-                        </button>
-
                         <Link
-                          href={`/products/${item.product.slug}`}
-                          className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors text-center block"
-                          aria-label={`Voir les détails de ${item.product.name}`}
-                       >
+                          href={`/maillots/${item.maillot.id}`}
+                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center block"
+                          aria-label={`Voir les détails de ${item.maillot.nom}`}
+                        >
                           Voir le produit
                         </Link>
                       </div>
@@ -230,34 +205,17 @@ export default function Wishlist({ wishlistItems = [],user }) {
               <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
                   <div>
-                    <h3 className="font-semibold text-gray-900"
-                        aria-label="Actions rapides pour la liste de souhaits"
-                    >
-                      Actions rapides</h3>
-                    
-                    <p className="text-sm text-gray-600"
-                        aria-label="Gérez votre liste de souhaits"
-                    >Gérez votre liste de souhaits</p>
+                    <h3 className="font-semibold text-gray-900">Actions rapides</h3>
+                    <p className="text-sm text-gray-600">Gérez votre liste de souhaits</p>
                   </div>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => {
-                        if (confirm("Vider complètement votre liste de souhaits ?")) {
-                          destroy("/wishlist/clear")
-                        }
-                      }}
+                      onClick={handleClearWishlist}
                       className="bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors"
                       aria-label="Vider complètement la liste de souhaits"
                     >
                       Vider la liste
                     </button>
-                    <Link
-                      href="/wishlist/share"
-                      className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors"
-                      aria-label="Partager ma liste de souhaits"
-                    >
-                      Partager ma liste
-                    </Link>
                   </div>
                 </div>
               </div>

@@ -2,6 +2,8 @@ import { useForm } from "@inertiajs/react"
 import { useState } from "react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
+import { syncWishlistOnLogin } from '@/Components/WishlistButton';
+
 
 export default function LoginRegister() {
   const [isLogin, setIsLogin] = useState(true)
@@ -16,6 +18,7 @@ export default function LoginRegister() {
     password: "",
     password_confirmation: "",
      remember: false,
+      wishlist_ids: [], // 🔥 Ajouté pour la wishlist
   })
 
 const { 
@@ -32,10 +35,48 @@ const {
   const handleChange = (e) => {
     setData(e.target.name, e.target.value)
   }
+  
 
+   // 🔥 Fonction modifiée pour inclure la wishlist localStorage
   const handleSubmit = (e) => {
     e.preventDefault()
-    post(isLogin ? "/login" : "/register")
+    
+    if (isLogin) {
+      // Récupérer la wishlist du localStorage AVANT la connexion
+      const localWishlist = localStorage.getItem('wishlist');
+      const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
+      
+console.log('🔍 DEBUG:');
+    console.log('localStorage:', localWishlist);
+    console.log('wishlistIds:', wishlistIds);
+    console.log('data:', data);
+
+      console.log('📤 Envoi wishlist lors de la connexion:', wishlistIds);
+      
+      // Ajouter les IDs de wishlist aux données
+      setData('wishlist_ids', wishlistIds);
+      
+      // Envoyer la requête de connexion avec la wishlist
+      post('/login', {
+        data: {
+          ...data,
+          wishlist_ids: wishlistIds,
+        },
+        onSuccess: async () => {
+          console.log('✅ Connexion réussie, synchronisation...');
+          
+          // Vider le localStorage après synchronisation réussie
+          localStorage.removeItem('wishlist');
+          console.log('🗑️ localStorage vidé');
+        },
+        onError: (errors) => {
+          console.error('❌ Erreur de connexion:', errors);
+        }
+      });
+    } else {
+      // Inscription
+      post('/register');
+    }
   }
 
 const handleResetSubmit = (e) => {

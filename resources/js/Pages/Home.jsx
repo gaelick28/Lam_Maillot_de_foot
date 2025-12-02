@@ -2,6 +2,7 @@ import React from "react"
 import { Head, Link } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
+import WishlistButton from "@/Components/WishlistButton"
 
 const FEATURED_MAILLOTS = [
   {
@@ -184,27 +185,29 @@ export default function Homepage({ maillots }) {
 const MaillotCard = React.memo(function MaillotCard({ maillot }) {
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full">
-      <Link href={`/maillots/${maillot.id}`} className="block w-full">
-        <div className="relative w-full">
-          <img
-            src={maillot.image || "/placeholder.svg"}
-            alt={`Maillot ${maillot.team}`}
-            className="w-full h-48 sm:h-56 object-contain bg-white"
-            loading="lazy"
-          />
-          {maillot.badge && (
-            <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              {maillot.badge}
-            </span>
-          )}
+      <div className="relative w-full">
+        <img
+          src={maillot.image || "/placeholder.svg"}
+          alt={`Maillot ${maillot.team}`}
+          className="w-full h-48 sm:h-56 object-contain bg-white"
+          loading="lazy"
+        />
+        {maillot.badge && (
+          <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            {maillot.badge}
+          </span>
+        )}
+        {/* 🔥 Bouton Wishlist */}
+        <div className="absolute top-2 right-2 z-10">
+          <WishlistButton maillotId={maillot.id} />
         </div>
+      </div>
 
-        <div className="p-4 w-full">
-          <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">{maillot.team}</h3>
-          <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">{maillot.type}</p>
-          <div className="flex justify-between items-center w-full">
-            <span className="text-lg font-bold text-blue-800">{maillot.price.toFixed(2)}€</span>
-          </div>
+      <Link href={`/maillots/${maillot.id}`} className="block w-full p-4">
+        <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">{maillot.team}</h3>
+        <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">{maillot.type}</p>
+        <div className="flex justify-between items-center w-full">
+          <span className="text-lg font-bold text-blue-800">{maillot.price.toFixed(2)}€</span>
         </div>
       </Link>
     </div>
