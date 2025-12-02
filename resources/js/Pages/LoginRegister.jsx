@@ -58,7 +58,8 @@ const {
           console.log('✅ Connexion réussie');
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
-          console.log('🗑️ localStorage vidé');
+         // 🔥 Reload complet de la page pour rafraîchir le CSRF token
+  window.location.href = '/dashboard';
         },
         onError: (errors) => {
           console.error('❌ Erreur de connexion:', errors);
