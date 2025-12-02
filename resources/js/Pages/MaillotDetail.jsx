@@ -75,8 +75,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                 src={`/${maillot.image}`} 
                 alt={maillot.nom} 
                 className="w-full rounded shadow" 
-              />
-              
+              />   
               {/* Bouton Wishlist positionné en haut à droite de l'image */}
               <div className="absolute top-2 right-2 z-10">
                 <WishlistButton maillotId={maillot.id} />
@@ -84,9 +83,6 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
             </div>
           </div>
 
-
-
-         
           <div className="flex-1">  
             <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
             <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
