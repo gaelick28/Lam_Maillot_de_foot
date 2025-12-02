@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { router } from "@inertiajs/react";
+import WishlistButton from "@/Components/WishlistButton";
 
 export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_numero, prix_nom }) {
   const [taille, setTaille] = useState(tailles[0]);
@@ -67,9 +68,25 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
       <Header />
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8 flex flex-col md:flex-row gap-8">
-          <div className="flex-1">
-            <img src={`/${maillot.image}`} alt={maillot.nom} className="w-full max-w-md rounded shadow" />
+          {/* 🔥 Section image avec bouton wishlist - CORRECTION: wrapper qui épouse l'image */}
+          <div className="flex-1 flex justify-center md:justify-start">
+            <div className="relative w-full max-w-md">
+              <img 
+                src={`/${maillot.image}`} 
+                alt={maillot.nom} 
+                className="w-full rounded shadow" 
+              />
+              
+              {/* Bouton Wishlist positionné en haut à droite de l'image */}
+              <div className="absolute top-2 right-2 z-10">
+                <WishlistButton maillotId={maillot.id} />
+              </div>
+            </div>
           </div>
+
+
+
+         
           <div className="flex-1">  
             <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
             <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
