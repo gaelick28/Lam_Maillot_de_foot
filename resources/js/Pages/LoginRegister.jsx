@@ -46,26 +46,17 @@ const {
       const localWishlist = localStorage.getItem('wishlist');
       const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
       
-console.log('🔍 DEBUG:');
-    console.log('localStorage:', localWishlist);
-    console.log('wishlistIds:', wishlistIds);
-    console.log('data:', data);
-
-      console.log('📤 Envoi wishlist lors de la connexion:', wishlistIds);
       
-      // Ajouter les IDs de wishlist aux données
-      setData('wishlist_ids', wishlistIds);
+     // IMPORTANT : Mettre à jour data.wishlist_ids AVANT d'envoyer
+      data.wishlist_ids = wishlistIds;
       
-      // Envoyer la requête de connexion avec la wishlist
+      console.log('📤 Envoi des données:', data);
+      
+      // Envoyer avec post() - Inertia va envoyer TOUT le data
       post('/login', {
-        data: {
-          ...data,
-          wishlist_ids: wishlistIds,
-        },
-        onSuccess: async () => {
-          console.log('✅ Connexion réussie, synchronisation...');
-          
-          // Vider le localStorage après synchronisation réussie
+        onSuccess: () => {
+          console.log('✅ Connexion réussie');
+          // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
           console.log('🗑️ localStorage vidé');
         },
