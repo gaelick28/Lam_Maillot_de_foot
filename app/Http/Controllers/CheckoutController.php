@@ -120,6 +120,44 @@ $shippingAddress = $userAddresses->first();
         ]);
     }
 
+    /**
+     * 🔥 NOUVELLE MÉTHODE : Passer au paiement
+     * Valide les adresses et redirige vers /payment
+     */
+    public function proceedToPayment(Request $request)
+    {
+        $user = $request->user();
+
+        // Validation des adresses
+        $validated = $request->validate([
+            'shipping_address_id' => 'required|exists:user_addresses,id',
+            'billing_address_id' => 'required|exists:user_addresses,id',
+        ]);
+
+        // Vérifier que le panier n'est pas vide
+        $cart = Cart::with('items')->where('user_id', $user->id)->first();
+        
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.show')
+                ->with('error', 'Votre panier est vide.');
+        }
+
+        // Stocker les infos en session (temporaire jusqu'au paiement)
+        session([
+            'checkout_data' => [
+                'shipping_address_id' => $validated['shipping_address_id'],
+                'billing_address_id' => $validated['billing_address_id'],
+            ]
+        ]);
+
+        // Rediriger vers la page de paiement
+        return redirect()->route('payment.index');
+    }
+
+    /**
+     * ⚠️ ANCIENNE MÉTHODE (à supprimer ou garder pour référence)
+     * Ne sera plus utilisée, remplacée par PaymentController::process
+     */
     public function confirm(Request $request)
     {
         // TODO : créer la commande (Order + OrderItems) depuis le panier, vider le panier, rediriger vers une page "merci".

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePage, router, Link } from "@inertiajs/react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react"; // 🔥 AJOUT: useState
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
@@ -13,6 +13,9 @@ export default function Checkout() {
     total = 0,
     shippingAddress = null,
   } = usePage().props;
+
+  // 🔥 AJOUT: État pour gérer le processing
+  const [processing, setProcessing] = useState(false);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }),
@@ -32,7 +35,8 @@ export default function Checkout() {
   const showSupplements = supplements > 0 ? supplements : calcSupplements;
   const showTotal       = total       > 0 ? total       : (showSubtotal + showSupplements);
 
-  const handleConfirm = () => {
+  // 🔥 MODIFICATION: Remplacer handleConfirm par handleProceedToPayment
+  const handleProceedToPayment = () => {
     if (!shippingAddress) {
       alert("Veuillez d'abord renseigner votre adresse de livraison.");
       return;
@@ -41,7 +45,20 @@ export default function Checkout() {
       alert("Votre panier est vide.");
       return;
     }
-    router.post("/checkout/confirm");
+
+    setProcessing(true);
+
+    // 🔥 MODIFICATION: Changer la route et les données envoyées
+    router.post("/checkout/proceed", {
+      shipping_address_id: shippingAddress.id,
+      billing_address_id: shippingAddress.id, // Par défaut = même adresse
+    }, {
+      onFinish: () => setProcessing(false),
+      onError: (errors) => {
+        console.error('Erreur:', errors);
+        alert('Erreur lors de la validation');
+      }
+    });
   };
 
   return (
@@ -126,7 +143,7 @@ export default function Checkout() {
                     <div>{shippingAddress.street}</div>
                     <div>{shippingAddress.postal_code} {shippingAddress.city}</div>
                     <Link href="/addresses" className="text-blue-600 underline mt-2 inline-block">
-                      Modifier l’adresse
+                      Modifier l'adresse
                     </Link>
                   </>
                 ) : (
@@ -153,11 +170,13 @@ export default function Checkout() {
                   <span className="text-blue-700">{fmt.format(showTotal)}</span>
                 </div>
 
+                {/* 🔥 MODIFICATION: Bouton et onClick changés */}
                 <button
-                  onClick={handleConfirm}
-                  className="w-full mt-4 bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300"
+                  onClick={handleProceedToPayment}
+                  disabled={processing}
+                  className="w-full mt-4 bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Confirmer ma commande ({fmt.format(showTotal)})
+                  {processing ? 'Chargement...' : `Continuer vers le paiement →`}
                 </button>
               </div>
             </div>

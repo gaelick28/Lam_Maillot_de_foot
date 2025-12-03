@@ -7,13 +7,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AccountDetailController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\MaillotController;
-use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
+
 
 
 // Routes publiques
@@ -168,11 +170,24 @@ Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
     Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
 
-    //pages checkout 
+//     //pages checkout  ancienne version avant paiement 
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+//     Route::post('/checkout/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
+
+// Routes Checkout (existantes - à vérifier)
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/confirm', [CheckoutController::class, 'confirm'])->name('checkout.confirm');
-
+    Route::post('/checkout/proceed', [CheckoutController::class, 'proceedToPayment'])->name('checkout.proceed'); // 🔥 NOUVELLE
+    
+    // Routes Payment
+    Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index'); // 🔥 NOUVELLE
+    Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process'); // 🔥 NOUVELLE
+    
+    // Routes Order
+    Route::get('/order-confirmation/{orderId}', [OrderController::class, 'confirmation'])->name('order.confirmation'); // 🔥 NOUVELLE
+    Route::get('/orders', [OrderController::class, 'history'])->name('orders.index'); // 🔥 NOUVELLE (historique)
+    Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show'); // 🔥 NOUVELLE (détails)
 
 
 });
