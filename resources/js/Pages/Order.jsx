@@ -45,7 +45,7 @@ export default function OrderHistory({ user, orders = [] }) {
                 orders.map((order) => (
                   <div key={order.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
                     {/* En-tête de commande */}
-                    <div className="p-6 border-b border-gray-200 bg-gray-50">
+                    <div className="p-6 border-b border-gray-200 bg-red-100">
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900">Commande {order.id}</h3>
