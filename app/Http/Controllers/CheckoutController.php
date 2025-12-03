@@ -158,9 +158,9 @@ $shippingAddress = $userAddresses->first();
      * ⚠️ ANCIENNE MÉTHODE (à supprimer ou garder pour référence)
      * Ne sera plus utilisée, remplacée par PaymentController::process
      */
-    public function confirm(Request $request)
-    {
-        // TODO : créer la commande (Order + OrderItems) depuis le panier, vider le panier, rediriger vers une page "merci".
-        return redirect()->back()->with('success', 'Commande confirmée (démo).');
-    }
+    // public function confirm(Request $request)
+    // {
+    //     // TODO : créer la commande (Order + OrderItems) depuis le panier, vider le panier, rediriger vers une page "merci".
+    //     return redirect()->back()->with('success', 'Commande confirmée (démo).');
+    // }
 }

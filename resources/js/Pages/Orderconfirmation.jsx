@@ -75,10 +75,10 @@ export default function OrderConfirmation({ auth, order }) {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">
-                      {item.subtotal?.toFixed(2)}€
+                      {Number(item.subtotal || 0).toFixed(2)}€
                     </p>
                     <p className="text-xs text-gray-500">
-                      {item.unit_price?.toFixed(2)}€ × {item.quantity}
+                      {Number(item.unit_price || 0).toFixed(2)}€ × {item.quantity}
                     </p>
                   </div>
                 </div>
@@ -89,17 +89,17 @@ export default function OrderConfirmation({ auth, order }) {
             <div className="border-t pt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Sous-total</span>
-                <span>{order.subtotal?.toFixed(2)}€</span>
+                <span>{Number(order.subtotal || 0).toFixed(2)}€</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Livraison</span>
                 <span className="text-green-600">
-                  {order.shipping_cost === 0 ? 'Gratuite' : `${order.shipping_cost?.toFixed(2)}€`}
+                  {order.shipping_cost === 0 ? 'Gratuite' : `${Number(order.shipping_cost || 0).toFixed(2)}€`}
                 </span>
               </div>
               <div className="flex justify-between text-lg font-bold pt-2 border-t">
                 <span>Total payé</span>
-                <span className="text-blue-600">{order.total_amount?.toFixed(2)}€</span>
+                <span className="text-blue-600">{Number(order.total_amount || 0).toFixed(2)}€</span>
               </div>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function OrderConfirmation({ auth, order }) {
                 Retour à l'accueil
               </Link>
               <Link
-                href="/orders"
+                href="/order"
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
                 Mes commandes

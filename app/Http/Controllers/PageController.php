@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Club;
+use App\Models\Order;
 
 class PageController extends Controller
 {
@@ -28,10 +29,10 @@ public function dashboard()
     }
 
     
-    public function order() {
-        return Inertia::render('Order', [
-        'user' => request()->user(),]);
-    }    
+    // public function order() {
+    //     return Inertia::render('Order', [
+    //     'user' => request()->user(),]);
+    // }    
    
 
    public function addresses()
@@ -84,7 +85,50 @@ public function dashboard()
 //         'found' => false
 //     ]);
 // }
+/**
+ * Afficher l'historique des commandes de l'utilisateur
+ */
+public function order(Request $request)
+{
+    $user = $request->user();
 
+    // Récupérer toutes les commandes de l'utilisateur avec les relations
+    $orders = Order::with(['items.maillot', 'shippingAddress'])
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
+    // Formater les données pour le frontend
+    $ordersFormatted = $orders->map(function ($order) {
+        return [
+            'id' => $order->order_number, // Ex: CMD-2025-0001
+            'date' => $order->created_at->format('d F Y'),
+            'items' => $order->items->count(),
+            'total' => (float) $order->total_amount,
+            'status' => $order->status_label, // "En attente", "Livrée", etc.
+            'itemsDetails' => $order->items->map(function ($item) {
+                return [
+                    'name' => $item->maillot_name,
+                    'size' => $item->size,
+                    'quantity' => $item->quantity,
+                    'price' => (float) $item->subtotal,
+                    'image' => $item->maillot ? $item->maillot->image : null,
+                    'numero' => $item->numero,
+                    'nom' => $item->nom,
+                ];
+            })->toArray(),
+            'shippingAddress' => $order->shippingAddress 
+                ? "{$order->shippingAddress->street}, {$order->shippingAddress->postal_code} {$order->shippingAddress->city}"
+                : 'Adresse non disponible',
+            'trackingNumber' => null, // À implémenter plus tard si besoin
+        ];
+    })->toArray();
+
+    return Inertia::render('Order', [
+        'user' => $user->only(['id', 'username', 'email']),
+        'orders' => $ordersFormatted,
+    ]);
+
+}
 }
 
