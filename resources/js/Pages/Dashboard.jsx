@@ -1,10 +1,42 @@
 import { Head, Link } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
-import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart } from "react-icons/fa"
+import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart, FaBox, FaMap, FaSignInAlt } from "react-icons/fa"
 import Sidebar from "@/Components/Sidebar"
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, activities = [] }) {
+  // Icône selon le type d'activité
+  const getIcon = (type) => {
+    switch(type) {
+      case 'order':
+        return <FaBox className="text-blue-600 text-xl" />
+      case 'address':
+        return <FaMapMarkerAlt className="text-green-600 text-xl" />
+      case 'account':
+        return <FaUser className="text-purple-600 text-xl" />
+      case 'login':
+        return <FaSignInAlt className="text-gray-600 text-xl" />
+      default:
+        return <FaBox className="text-gray-600 text-xl" />
+    }
+  }
+
+  // Couleur de bordure selon le type
+  const getBorderColor = (type) => {
+    switch(type) {
+      case 'order':
+        return 'border-l-blue-600'
+      case 'address':
+        return 'border-l-green-600'
+      case 'account':
+        return 'border-l-purple-600'
+      case 'login':
+        return 'border-l-gray-600'
+      default:
+        return 'border-l-gray-600'
+    }
+  }
+
   return (
     <>
       <Head title="Dashboard" />
@@ -17,12 +49,13 @@ export default function Dashboard({ user }) {
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             {/* Message de bienvenue */}
-                <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-                  <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-                  <p className="text-sm text-gray-600"> Votre Email : {user.email}</p>
-                </div>
+            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
+            </div>
 
             <h1 className="text-3xl font-bold text-center mb-8">Mon Tableau de Bord</h1>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {/* Card: Commandes */}
               <Link
@@ -81,15 +114,41 @@ export default function Dashboard({ user }) {
               </Link>
             </div>
 
-            {/* Activité récente (placeholder) */}
+            {/* Activité récente - DYNAMIQUE */}
             <div className="mt-12">
               <h2 className="text-2xl font-semibold mb-4">Activité récente</h2>
-              <ul className="space-y-2">
-                <li className="bg-white p-4 rounded shadow text-sm text-gray-700">
-                  Vous avez passé une commande le 21 mai.
-                </li>
-                <li className="bg-white p-4 rounded shadow text-sm text-gray-700">Adresse modifiée le 18 mai.</li>
-              </ul>
+              
+              {activities.length > 0 ? (
+                <ul className="space-y-3">
+                  {activities.map((activity, index) => (
+                    <li 
+                      key={index} 
+                      className={`bg-white p-4 rounded shadow border-l-4 ${getBorderColor(activity.type)} flex items-start gap-4 hover:shadow-md transition-shadow`}
+                    >
+                      <div className="flex-shrink-0 mt-1">
+                        {getIcon(activity.type)}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-800">
+                          {activity.message}
+                          {activity.details && (
+                            <span className="ml-2 text-blue-600 font-semibold">
+                              {activity.details}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1" title={activity.full_date}>
+                          {activity.formatted_date}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="bg-white p-8 rounded shadow text-center">
+                  <p className="text-gray-500">Aucune activité récente</p>
+                </div>
+              )}
             </div>
           </div>
         </main>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Club;
 use App\Models\Order;
+use App\Models\UserAddress;
 
 class PageController extends Controller
 {
@@ -18,12 +19,78 @@ class PageController extends Controller
         return Inertia::render('LoginRegister');
     }
 
-public function dashboard()
-{
-    return Inertia::render('Dashboard', [
-        'user' => request()->user(), // corrected to use request()->user()
-    ]);
-}
+    public function dashboard()
+    {
+        $user = request()->user();
+        
+        // 📊 Récupération des activités récentes
+        $activities = [];
+
+        // 1️⃣ Dernières commandes (3 max)
+        $recentOrders = Order::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        foreach ($recentOrders as $order) {
+            $activities[] = [
+                'type' => 'order',
+                'icon' => 'box',
+                'message' => "Commande {$order->order_number} passée",
+                'date' => $order->created_at,
+                'details' => number_format($order->total_amount, 2, ',', ' ') . ' €',
+            ];
+        }
+
+        // 2️⃣ Dernière modification d'adresse
+        $lastAddressUpdate = UserAddress::where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        if ($lastAddressUpdate) {
+            // Afficher même si pas modifiée (juste créée)
+            $isModified = $lastAddressUpdate->updated_at->gt($lastAddressUpdate->created_at);
+            $activities[] = [
+                'type' => 'address',
+                'icon' => 'map',
+                'message' => $isModified ? 'Adresse de livraison modifiée' : 'Adresse de livraison ajoutée',
+                'date' => $isModified ? $lastAddressUpdate->updated_at : $lastAddressUpdate->created_at,
+                'details' => $lastAddressUpdate->city ?? null,
+            ];
+        }
+
+        // 3️⃣ Création/Modification du compte
+        $isAccountModified = $user->updated_at->gt($user->created_at);
+        $activities[] = [
+            'type' => 'account',
+            'icon' => 'user',
+            'message' => $isAccountModified ? 'Informations du compte modifiées' : 'Compte créé',
+            'date' => $isAccountModified ? $user->updated_at : $user->created_at,
+            'details' => null,
+        ];
+
+        // Trier par date décroissante et garder les 5 plus récentes
+        if (count($activities) > 0) {
+            usort($activities, function($a, $b) {
+                return $b['date'] <=> $a['date'];
+            });
+            
+            $activities = array_slice($activities, 0, 5);
+
+            // Formater les dates pour l'affichage
+            foreach ($activities as &$activity) {
+                $activity['formatted_date'] = $activity['date']->locale('fr')->diffForHumans();
+                $activity['full_date'] = $activity['date']->format('d/m/Y à H:i');
+                unset($activity['date']); // Retirer l'objet Carbon (non sérialisable pour Inertia)
+            }
+        }
+
+        return Inertia::render('Dashboard', [
+            'user' => $user,
+            'activities' => $activities,
+        ]);
+    }
+
     public function account() {
         return Inertia::render('Account');
     }
@@ -131,4 +198,3 @@ public function order(Request $request)
 
 }
 }
-
