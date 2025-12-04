@@ -14,7 +14,8 @@ class AddressController extends Controller
     // Afficher la liste des adresses
     public function index(Request $request)
     {
-        $userId = Auth::user()->id; // sécurisé
+        $user = Auth::user(); // Récupérer l'utilisateur
+    $userId = $user->id;
 
         $addresses = UserAddress::where('user_id', $userId)
             ->orderBy('type', 'asc')
@@ -23,7 +24,8 @@ class AddressController extends Controller
             ->get();
 
         return Inertia::render('Addresses', [
-            'addresses' => $addresses,
+            'user' => $user,  
+        'addresses' => $addresses,
         ]);
     }
 

@@ -6,14 +6,14 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
 
-export default function AddressPage({ addresses = [] }) {
+export default function AddressPage({user, addresses = [] }) {
   const { url } = usePage()
 
   // SÉPARER les états d'édition
   const [editingBilling, setEditingBilling] = useState(null)
   const [editingShipping, setEditingShipping] = useState(null)
 
-  // DEUX useForm SÉPARÉS avec les champs de votre table
+  // DEUX useForm SÉPARÉS avec les champs de ma table
   const billingForm = useForm({
     id: null,
     type: "billing", // ← TYPE FIXE
@@ -163,6 +163,13 @@ export default function AddressPage({ addresses = [] }) {
 
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
+
+ {/* Message de bienvenue */}
+            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
+              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
+              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
+            </div>
+
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Mes adresses</h1>
 
             {/* SECTION FACTURATION */}
