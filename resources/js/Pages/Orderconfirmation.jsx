@@ -153,13 +153,13 @@ export default function OrderConfirmation({ auth, order }) {
               </Link>
               <Link
                 href="/order"
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-red-300 text-gray-700 rounded-lg hover:bg-red-400 transition-colors"
               >
                 Mes commandes
               </Link>
               <button
                 onClick={() => window.print()}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-orange-200 text-gray-700 rounded-lg hover:bg-orange-300 transition-colors"
               >
                 <DownloadIcon className="w-5 h-5" />
                 Imprimer
