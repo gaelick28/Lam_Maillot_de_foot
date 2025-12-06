@@ -358,7 +358,7 @@ export default function AddressPage({user, addresses = [] }) {
                         Par défaut
                       </span>
                     )}
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-3 mt-4">
                       <p className="font-medium text-xl text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
@@ -557,7 +557,7 @@ export default function AddressPage({user, addresses = [] }) {
                         Par défaut
                       </span>
                     )}
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-3 mt-4">
                       <p className="font-medium text-xl text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
