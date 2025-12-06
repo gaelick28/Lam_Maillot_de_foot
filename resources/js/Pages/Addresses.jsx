@@ -153,6 +153,23 @@ export default function AddressPage({user, addresses = [] }) {
   const billingAddresses = addresses.filter((addr) => addr.type === "billing")
   const shippingAddresses = addresses.filter((addr) => addr.type === "shipping")
 
+  const getCountryName = (code) => {
+  const countries = {
+    FR: "France",
+    BE: "Belgique",
+    CH: "Suisse",
+    LU: "Luxembourg",
+    MC: "Monaco",
+    DE: "Allemagne",
+    ES: "Espagne",
+    IT: "Italie",
+    GB: "Royaume-Uni",
+    US: "États-Unis",
+    JP: "Japon"
+  }
+  return countries[code] || code
+}
+
   return (
     <>
       <Head title="Mes adresses" />
@@ -261,6 +278,31 @@ export default function AddressPage({user, addresses = [] }) {
                         )}
                       </div>
 
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+  <select
+    value={billingForm.data.country}
+    onChange={(e) => billingForm.setData("country", e.target.value)}
+    className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+    required
+  >
+    <option value="FR">France</option>
+    <option value="BE">Belgique</option>
+    <option value="CH">Suisse</option>
+    <option value="LU">Luxembourg</option>
+    <option value="MC">Monaco</option>
+    <option value="DE">Allemagne</option>
+    <option value="ES">Espagne</option>
+    <option value="IT">Italie</option>
+    <option value="GB">Royaume-Uni</option>
+    <option value="US">États-Unis</option>
+    <option value="JP">Japon</option>
+  </select>
+  {billingForm.errors.country && (
+    <p className="text-red-500 text-sm mt-1">{billingForm.errors.country}</p>
+  )}
+</div>
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                         <input
@@ -290,7 +332,7 @@ export default function AddressPage({user, addresses = [] }) {
                         disabled={billingForm.processing}
                         className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {billingForm.processing ? "Traitement..." : editingBilling !== "new" ? "Modifier" : "Ajouter"}
+                        {billingForm.processing ? "Traitement..." : editingBilling !== "new" ? "Enregistrer" : "Ajouter"}
                       </button>
                       <button
                         type="button"
@@ -305,38 +347,38 @@ export default function AddressPage({user, addresses = [] }) {
               )}
 
               {/* Liste adresses facturation */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 {billingAddresses.map((address) => (
-                  <div key={address.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2 inline-block">
+                  <div key={address.id} className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+                    <span className="bg-blue-100 text-blue-800 text-sm px-4 py-2 rounded mb-2 inline-block">
                       Facturation
                     </span>
                     {address.is_default && (
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mb-2 inline-block ml-2">
+                      <span className="bg-green-100 text-green-800 text-sm px-4 py-2 rounded mb-2 inline-block ml-2">
                         Par défaut
                       </span>
                     )}
-                    <div className="space-y-2">
-                      <p className="font-medium">
+                    <div className="space-y-4 mt-4">
+                      <p className="font-medium text-xl text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
-                      <p className="text-gray-600">{address.street}</p>
-                      <p className="text-gray-600">
+                      <p className="text-gray-800 text-lg">{address.street}</p>
+                      <p className="text-gray-800 text-lg">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-600">{address.country}</p>
-                      {address.phone && <p className="text-gray-600">{address.phone}</p>}
+                      <p className="text-gray-800 text-lg">{getCountryName(address.country)}</p>
+                      {address.phone && <p className="text-gray-800">{address.phone}</p>}
                     </div>
-                    <div className="mt-4 flex gap-3">
+                    <div className="mt-8 flex gap-6">
                       <button
                         onClick={() => handleBillingEdit(address)}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        className="text-blue-600 hover:text-blue-800 text-xl font-semibold"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleBillingDelete(address.id)}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                        className="text-red-600 hover:text-red-800 text-xl font-semibold"
                       >
                         Supprimer
                       </button>
@@ -435,6 +477,31 @@ export default function AddressPage({user, addresses = [] }) {
                         )}
                       </div>
 
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+  <select
+    value={shippingForm.data.country}
+    onChange={(e) => shippingForm.setData("country", e.target.value)}
+    className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+    required
+  >
+    <option value="FR">France</option>
+    <option value="BE">Belgique</option>
+    <option value="CH">Suisse</option>
+    <option value="LU">Luxembourg</option>
+    <option value="MC">Monaco</option>
+    <option value="DE">Allemagne</option>
+    <option value="ES">Espagne</option>
+    <option value="IT">Italie</option>
+    <option value="GB">Royaume-Uni</option>
+    <option value="US">États-Unis</option>
+    <option value="JP">Japon</option>
+  </select>
+  {shippingForm.errors.country && (
+    <p className="text-red-500 text-sm mt-1">{shippingForm.errors.country}</p>
+  )}
+</div>
+
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                         <input
@@ -464,7 +531,7 @@ export default function AddressPage({user, addresses = [] }) {
                         disabled={shippingForm.processing}
                         className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
                       >
-                        {shippingForm.processing ? "Traitement..." : editingShipping !== "new" ? "Modifier" : "Ajouter"}
+                        {shippingForm.processing ? "Traitement..." : editingShipping !== "new" ? "Enregistrer" : "Ajouter"}
                       </button>
                       <button
                         type="button"
@@ -479,38 +546,38 @@ export default function AddressPage({user, addresses = [] }) {
               )}
 
               {/* Liste adresses livraison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 {shippingAddresses.map((address) => (
-                  <div key={address.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mb-2 inline-block">
+                  <div key={address.id} className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+                    <span className="bg-green-100 text-green-800 text-sm px-4 py-2 rounded mb-2 inline-block">
                       Livraison
                     </span>
                     {address.is_default && (
-                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2 inline-block ml-2">
+                      <span className="bg-blue-100 text-blue-800 text-sm px-4 py-2 rounded mb-2 inline-block ml-2">
                         Par défaut
                       </span>
                     )}
-                    <div className="space-y-2">
-                      <p className="font-medium">
+                    <div className="space-y-4 mt-4">
+                      <p className="font-medium text-xl text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
-                      <p className="text-gray-600">{address.street}</p>
-                      <p className="text-gray-600">
+                      <p className="text-gray-800 text-lg">{address.street}</p>
+                      <p className="text-gray-800 text-lg">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-600">{address.country}</p>
-                      {address.phone && <p className="text-gray-600">{address.phone}</p>}
+                      <p className="text-gray-800 text-lg">{getCountryName(address.country)}</p>
+                      {address.phone && <p className="text-gray-800">{address.phone}</p>}
                     </div>
-                    <div className="mt-4 flex gap-3">
+                    <div className="mt-8 flex gap-6">
                       <button
                         onClick={() => handleShippingEdit(address)}
-                        className="text-green-600 hover:text-green-800 text-sm"
+                        className="text-green-600 hover:text-green-800 text-xl font-semibold"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleShippingDelete(address.id)}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                        className="text-red-600 hover:text-red-800 text-xl font-semibold"
                       >
                         Supprimer
                       </button>
