@@ -149,9 +149,14 @@ export default function AddressPage({user, addresses = [] }) {
     }
   }
 
-  // Séparer les adresses par type
-  const billingAddresses = addresses.filter((addr) => addr.type === "billing")
-  const shippingAddresses = addresses.filter((addr) => addr.type === "shipping")
+  /// Séparer les adresses par type
+const billingAddresses = addresses.filter((addr) => addr.type === "billing")
+
+// On ne garde que la DERNIÈRE adresse de livraison (la plus récente)
+const shippingAddresses = addresses
+  .filter((addr) => addr.type === "shipping")
+  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // la plus récente en premier
+  .slice(0, 1) // on ne garde que 1 adresse
 
   const getCountryName = (code) => {
   const countries = {

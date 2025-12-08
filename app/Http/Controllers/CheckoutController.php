@@ -103,7 +103,7 @@ class CheckoutController extends Controller
         // Adresse de livraison  (comme dans Panier.jsx)
        $userAddresses = $user->addresses()
     ->where('type', 'shipping')
-    ->orderBy('is_default', 'desc')  //  Priorise par défaut mais accepte les autres
+    ->orderBy('created_at', 'desc')
     ->get();
 
 $shippingAddress = $userAddresses->first();

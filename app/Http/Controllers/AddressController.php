@@ -8,24 +8,32 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\Order;
 
 class AddressController extends Controller
 {
     // Afficher la liste des adresses
     public function index(Request $request)
     {
-        $user = Auth::user(); // Récupérer l'utilisateur
-    $userId = $user->id;
+        $user = Auth::user();
+        $userId = $user->id;
 
         $addresses = UserAddress::where('user_id', $userId)
+            ->withCount(['ordersAsShipping', 'ordersAsBilling']) // 🔥 Compter les commandes liées
             ->orderBy('type', 'asc')
             ->orderBy('is_default', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($address) {
+                // 🔥 Marquer les adresses "verrouillées" (utilisées dans des commandes)
+                $address->is_locked = ($address->orders_as_shipping_count + $address->orders_as_billing_count) > 0;
+                $address->orders_count = $address->orders_as_shipping_count + $address->orders_as_billing_count;
+                return $address;
+            });
 
         return Inertia::render('Addresses', [
             'user' => $user,  
-        'addresses' => $addresses,
+            'addresses' => $addresses,
         ]);
     }
 
@@ -57,16 +65,14 @@ class AddressController extends Controller
                 ->update(['is_default' => false]);
         }
 
-      //  NOUVEAU : Synchroniser vers le compte utilisateur si c'est une adresse de facturation
-    if ($validated['type'] === 'billing') {
-        User::find($userId)->update([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'phone' => $validated['phone'],
-        ]);
-    }
-
-
+        // Synchroniser vers le compte utilisateur si c'est une adresse de facturation
+        if ($validated['type'] === 'billing') {
+            User::find($userId)->update([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'],
+            ]);
+        }
 
         $address = UserAddress::create([
             'user_id' => $userId,
@@ -81,7 +87,7 @@ class AddressController extends Controller
             'is_default' => $validated['is_default'] ?? false,
         ]);
 
-        return redirect()->back()->with('success', 'Adresse ajoutée.');
+        return redirect()->back()->with('success', 'Adresse ajoutée avec succès.');
     }
 
     // Mettre à jour une adresse
@@ -105,25 +111,71 @@ class AddressController extends Controller
 
         // Vérifier que l'adresse appartient à l'utilisateur
         if ($address->user_id !== $userId) {
-            return redirect()->route('addresses.index')->with('error', 'Accès non autorisé.');
+            return redirect()->route('addresses.index')
+                ->with('error', 'Accès non autorisé.');
         }
 
-        // Si cette adresse est par défaut, désactiver les autres du même type
-        if ($address->type === 'billing' && $validated['is_default'] ?? false) {
+        // 🔥 AMÉLIORATION : Vérifier si l'adresse est utilisée dans des commandes
+        $hasOrders = Order::where(function($query) use ($address) {
+            $query->where('shipping_address_id', $address->id)
+                  ->orWhere('billing_address_id', $address->id);
+        })->exists();
+
+        if ($hasOrders) {
+            // ⚠️ L'adresse est verrouillée : créer une nouvelle adresse
+            $isDefault = $validated['is_default'] ?? false;
+
+            if ($isDefault) {
+                UserAddress::where('user_id', $userId)
+                    ->where('type', $validated['type'])
+                    ->update(['is_default' => false]);
+            }
+
+            $newAddress = UserAddress::create([
+                'user_id' => $userId,
+                'type' => $validated['type'],
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'street' => $validated['street'],
+                'city' => $validated['city'],
+                'postal_code' => $validated['postal_code'],
+                'country' => $validated['country'],
+                'phone' => $validated['phone'],
+                'is_default' => $isDefault,
+            ]);
+
+            // Synchroniser vers le compte utilisateur si c'est une adresse de facturation
+            if ($newAddress->type === 'billing') {
+                $this->syncBillingAddressToUser($newAddress);
+            }
+
+            // 🔥 Marquer l'ancienne adresse comme "archivée" au lieu de la laisser active
+            $address->update(['is_default' => false]);
+
+            return redirect()
+                ->route('addresses.index')
+                ->with('success', 'Une nouvelle adresse a été créée. L\'ancienne est conservée pour vos commandes existantes.');
+        }
+
+        // 🟢 L'adresse n'est pas verrouillée : modification normale
+        $isDefault = $validated['is_default'] ?? false;
+
+        if ($isDefault) {
             UserAddress::where('user_id', $userId)
-                ->where('type', 'billing')
+                ->where('type', $validated['type'])
                 ->where('id', '<>', $address->id)
                 ->update(['is_default' => false]);
         }
 
         $address->update($validated);
 
-        // 🔄 Synchroniser vers le compte utilisateur pour toute adresse de facturation
-if ($address->type === 'billing') {
-    $this->syncBillingAddressToUser($address);
-}
+        // Synchroniser vers le compte utilisateur si c'est une adresse de facturation
+        if ($address->type === 'billing') {
+            $this->syncBillingAddressToUser($address);
+        }
 
-        return redirect()->route('addresses.index')->with('success', 'Adresse mise à jour.');
+        return redirect()->route('addresses.index')
+            ->with('success', 'Adresse mise à jour avec succès.');
     }
 
     // Supprimer une adresse
@@ -132,32 +184,35 @@ if ($address->type === 'billing') {
         $userId = Auth::user()->id;
 
         if ($address->user_id !== $userId) {
-            return redirect()->route('addresses.index')->with('error', 'Accès non autorisé.');
+            return redirect()->route('addresses.index')
+                ->with('error', 'Accès non autorisé.');
+        }
+
+        // ❌ Ne pas supprimer si l'adresse est utilisée dans une commande
+        $hasOrders = Order::where(function($query) use ($address) {
+            $query->where('shipping_address_id', $address->id)
+                  ->orWhere('billing_address_id', $address->id);
+        })->exists();
+
+        if ($hasOrders) {
+            return redirect()
+                ->route('addresses.index')
+                ->with('error', 'Cette adresse est utilisée dans vos commandes et ne peut pas être supprimée. Elle sera conservée pour l\'historique.');
         }
 
         $address->delete();
 
-        return redirect()->route('addresses.index')->with('success', 'Adresse supprimée avec succès !');
+        return redirect()->route('addresses.index')
+            ->with('success', 'Adresse supprimée avec succès.');
     }
 
-    // Synchroniser l'adresse de facturation dans le compte utilisateur
-   private function syncBillingAddressToUser(UserAddress $address)
-{
-    // 🔄 Synchroniser sans condition sur is_default
-    if ($address->type === 'billing' && $address->user) {
-        $address->user->update([
+    // Synchroniser l'adresse de facturation vers le compte utilisateur
+    private function syncBillingAddressToUser(UserAddress $address)
+    {
+        User::find($address->user_id)->update([
             'first_name' => $address->first_name,
             'last_name' => $address->last_name,
             'phone' => $address->phone,
         ]);
-    }
-}
-
-    // Vérifier si c'est la seule adresse de facturation
-    private function isOnlyBilling(UserAddress $address)
-    {
-        return $address->user->addresses()
-            ->where('type', 'billing')
-            ->count() === 1;
     }
 }

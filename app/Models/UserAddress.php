@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserAddress extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'type',
@@ -22,41 +24,61 @@ class UserAddress extends Model
 
     protected $casts = [
         'is_default' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    // Relations
-    public function user(): BelongsTo
+    /**
+     * Relation avec l'utilisateur
+     */
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Scopes
-    public function scopeBilling($query)
+    /**
+     * 🔥 Relation : Commandes utilisant cette adresse comme adresse de livraison
+     */
+    public function ordersAsShipping()
     {
-        return $query->where('type', 'billing');
+        return $this->hasMany(Order::class, 'shipping_address_id');
     }
 
-    public function scopeShipping($query)
+    /**
+     * 🔥 Relation : Commandes utilisant cette adresse comme adresse de facturation
+     */
+    public function ordersAsBilling()
     {
-        return $query->where('type', 'shipping');
+        return $this->hasMany(Order::class, 'billing_address_id');
     }
 
-    public function scopeDefault($query)
+    /**
+     * 🔥 Vérifier si cette adresse est verrouillée (utilisée dans des commandes)
+     */
+    public function isLocked()
     {
-        return $query->where('is_default', true);
+        return $this->ordersAsShipping()->exists() || $this->ordersAsBilling()->exists();
     }
 
-    // Méthodes utilitaires
-    public function getFullNameAttribute()
+    /**
+     * 🔥 Obtenir le nombre total de commandes utilisant cette adresse
+     */
+    public function getTotalOrdersCountAttribute()
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return $this->ordersAsShipping()->count() + $this->ordersAsBilling()->count();
     }
 
+    /**
+     * Formater l'adresse complète
+     */
     public function getFullAddressAttribute()
     {
-        return $this->street . ', ' . $this->postal_code . ' ' . $this->city;
+        return trim(sprintf(
+            "%s %s\n%s\n%s %s\n%s",
+            $this->first_name,
+            $this->last_name,
+            $this->street,
+            $this->postal_code,
+            $this->city,
+            $this->country
+        ));
     }
 }
-

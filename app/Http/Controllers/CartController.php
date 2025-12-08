@@ -150,7 +150,7 @@ class CartController extends Controller
 
                 $shippingAddress = $user->addresses
             ->where('type', 'shipping')
-            ->sortByDesc('is_default')  //  Priorise par défaut mais accepte les autres
+            ->sortByDesc('created_at')  //  Priorise par défaut mais accepte les autres
                 ->first();
 
             foreach ($cart->items as $item) {
