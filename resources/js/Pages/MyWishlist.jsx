@@ -141,11 +141,13 @@ export default function Wishlist({ wishlistItems = [], user }) {
                   >
                     {/* Image du produit */}
                     <div className="relative">
-                      <img
-                        src={`/${item.maillot.image}`}
-                        alt={item.maillot.nom}
-                        className="w-full h-48 object-cover"
-                      />
+                      <Link href={`/maillots/${item.maillot.id}`} aria-label={`Voir le produit ${item.maillot.nom}`}>
+                        <img
+                          src={`/${item.maillot.image}`}
+                          alt={item.maillot.nom}
+                          className="w-full h-48 object-cover"
+                        />
+                      </Link>
 
                       {/* Bouton supprimer */}
                       <button
