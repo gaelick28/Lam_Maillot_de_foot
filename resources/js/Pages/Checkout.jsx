@@ -142,6 +142,9 @@ export default function Checkout() {
                     </div>
                     <div>{shippingAddress.street}</div>
                     <div>{shippingAddress.postal_code} {shippingAddress.city}</div>
+                    <div className="text-sm md:text-base">
+  {shippingAddress.country}
+</div>
                     <Link href="/addresses" className="text-blue-600 underline mt-2 inline-block">
                       Modifier l'adresse
                     </Link>

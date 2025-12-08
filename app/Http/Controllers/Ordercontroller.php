@@ -56,6 +56,7 @@ class OrderController extends Controller
                     'street' => $order->shippingAddress->street,
                     'postal_code' => $order->shippingAddress->postal_code,
                     'city' => $order->shippingAddress->city,
+                    'country'     => $order->shippingAddress->country,
                 ] : null,
                 'billingAddress' => $order->billingAddress ? [
                     'first_name' => $order->billingAddress->first_name,
@@ -63,6 +64,7 @@ class OrderController extends Controller
                     'street' => $order->billingAddress->street,
                     'postal_code' => $order->billingAddress->postal_code,
                     'city' => $order->billingAddress->city,
+                    'country'     => $order->shippingAddress->country,
                 ] : null,
             ],
         ]);

@@ -116,7 +116,8 @@ export default function OrderConfirmation({ auth, order }) {
                 <p className="text-gray-700">
                   {order.shippingAddress.first_name} {order.shippingAddress.last_name}<br />
                   {order.shippingAddress.street}<br />
-                  {order.shippingAddress.postal_code} {order.shippingAddress.city}
+                  {order.shippingAddress.postal_code} {order.shippingAddress.city}<br />
+                   {order.shippingAddress.country}
                 </p>
               </div>
             )}

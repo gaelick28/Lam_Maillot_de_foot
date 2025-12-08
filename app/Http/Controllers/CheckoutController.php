@@ -115,7 +115,7 @@ $shippingAddress = $userAddresses->first();
             'supplements'     => $suppTotal,
             'total'           => $grandTotal,
             'shippingAddress' => $shippingAddress
-                ? $shippingAddress->only(['id','first_name','last_name','street','postal_code','city'])
+                ? $shippingAddress->only(['id','first_name','last_name','street','postal_code','city','country'])
                 : null,
         ]);
     }

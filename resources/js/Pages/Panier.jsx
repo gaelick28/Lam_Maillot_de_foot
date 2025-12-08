@@ -579,6 +579,9 @@ useEffect(() => {
                       <div className="text-sm md:text-base">
                         {shippingAddress.postal_code} {shippingAddress.city}
                       </div>
+                      <div className="text-sm md:text-base">
+                      {shippingAddress.country}
+                      </div>
                       <Link
                         href="/addresses"
                         className="text-blue-600 underline hover:text-blue-800 text-xs md:text-sm mt-2 inline-block"

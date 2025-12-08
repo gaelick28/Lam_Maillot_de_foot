@@ -260,7 +260,8 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
                     <p className="text-sm text-gray-600">
                       {shippingAddress.first_name} {shippingAddress.last_name}<br />
                       {shippingAddress.street}<br />
-                      {shippingAddress.postal_code} {shippingAddress.city}
+                      {shippingAddress.postal_code} {shippingAddress.city}<br />
+                      {shippingAddress.country}
                     </p>
                   </div>
                 )}
