@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Cart;
+use App\Helpers\CountryHelper;
 
 class CheckoutController extends Controller
 {
@@ -114,9 +115,16 @@ $shippingAddress = $userAddresses->first();
             'subtotal'        => $subTotal,
             'supplements'     => $suppTotal,
             'total'           => $grandTotal,
-            'shippingAddress' => $shippingAddress
-                ? $shippingAddress->only(['id','first_name','last_name','street','postal_code','city','country'])
-                : null,
+            'shippingAddress' => $shippingAddress ? [
+    'id'          => $shippingAddress->id,
+    'first_name'  => $shippingAddress->first_name,
+    'last_name'   => $shippingAddress->last_name,
+    'street'      => $shippingAddress->street,
+    'postal_code' => $shippingAddress->postal_code,
+    'city'        => $shippingAddress->city,
+    'country'     => CountryHelper::name($shippingAddress->country),
+    'is_default'  => (bool) $shippingAddress->is_default,
+] : null,
         ]);
     }
 

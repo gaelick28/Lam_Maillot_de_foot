@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Club;
 use App\Models\Order;
 use App\Models\UserAddress;
+use App\Helpers\CountryHelper;
+
 
 class PageController extends Controller
 {
@@ -185,8 +187,10 @@ public function order(Request $request)
                 ];
             })->toArray(),
             'shippingAddress' => $order->shippingAddress 
-                ? "{$order->shippingAddress->street}, {$order->shippingAddress->postal_code} {$order->shippingAddress->city}"
-                : 'Adresse non disponible',
+    ? "{$order->shippingAddress->street}, {$order->shippingAddress->postal_code} {$order->shippingAddress->city}, "
+        . CountryHelper::name($order->shippingAddress->country)
+    : 'Adresse non disponible',
+
             'trackingNumber' => null, // À implémenter plus tard si besoin
         ];
     })->toArray();

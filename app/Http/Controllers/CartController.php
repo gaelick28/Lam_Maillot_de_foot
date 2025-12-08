@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use App\Helpers\CountryHelper;
 
 class CartController extends Controller
 {
@@ -182,9 +183,19 @@ class CartController extends Controller
         return inertia('Panier', [
             'cartItems' => $cartItems,
             'auth' => [
-            'user' => $user,
-            'shippingAddress' => $shippingAddress  // Nouveau nom plus clair
-        ]
+                'user' => $user,
+                'shippingAddress' => $shippingAddress ? [
+                    'id'          => $shippingAddress->id,
+                    'first_name'  => $shippingAddress->first_name,
+                    'last_name'   => $shippingAddress->last_name,
+                    'street'      => $shippingAddress->street,
+                    'postal_code' => $shippingAddress->postal_code,
+                    'city'        => $shippingAddress->city,
+                    'country'     => CountryHelper::name($shippingAddress->country),
+                    'phone'       => $shippingAddress->phone,
+                    'is_default'  => (bool) $shippingAddress->is_default,
+                ] : null,
+                 ]
         ]);
     }
 

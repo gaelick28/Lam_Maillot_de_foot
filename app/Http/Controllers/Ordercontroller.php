@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Order;
+use App\Helpers\CountryHelper;
+
 
 class OrderController extends Controller
 {
@@ -56,7 +58,7 @@ class OrderController extends Controller
                     'street' => $order->shippingAddress->street,
                     'postal_code' => $order->shippingAddress->postal_code,
                     'city' => $order->shippingAddress->city,
-                    'country'     => $order->shippingAddress->country,
+                    'country'     => CountryHelper::name($order->shippingAddress->country),
                 ] : null,
                 'billingAddress' => $order->billingAddress ? [
                     'first_name' => $order->billingAddress->first_name,
@@ -64,7 +66,7 @@ class OrderController extends Controller
                     'street' => $order->billingAddress->street,
                     'postal_code' => $order->billingAddress->postal_code,
                     'city' => $order->billingAddress->city,
-                    'country'     => $order->shippingAddress->country,
+                    'country'     => CountryHelper::name($order->billingAddress->country),
                 ] : null,
             ],
         ]);
@@ -146,8 +148,23 @@ class OrderController extends Controller
                         'subtotal' => $item->subtotal,
                     ];
                 }),
-                'shippingAddress' => $order->shippingAddress,
-                'billingAddress' => $order->billingAddress,
+                'shippingAddress' => $order->shippingAddress ? [
+    'first_name'  => $order->shippingAddress->first_name,
+    'last_name'   => $order->shippingAddress->last_name,
+    'street'      => $order->shippingAddress->street,
+    'postal_code' => $order->shippingAddress->postal_code,
+    'city'        => $order->shippingAddress->city,
+    'country'     => CountryHelper::name($order->shippingAddress->country),
+] : null,
+'billingAddress' => $order->billingAddress ? [
+    'first_name'  => $order->billingAddress->first_name,
+    'last_name'   => $order->billingAddress->last_name,
+    'street'      => $order->billingAddress->street,
+    'postal_code' => $order->billingAddress->postal_code,
+    'city'        => $order->billingAddress->city,
+    'country'     => CountryHelper::name($order->billingAddress->country),
+] : null,
+
             ],
         ]);
     }

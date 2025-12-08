@@ -9,6 +9,8 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
+use App\Helpers\CountryHelper;
+
 
 class PaymentController extends Controller
 {
@@ -88,8 +90,23 @@ class PaymentController extends Controller
             'supplements' => $supplements,
             'shipping_cost' => $shippingCost,
             'total' => $total,
-            'shippingAddress' => $shippingAddress,
-            'billingAddress' => $billingAddress,
+            'shippingAddress' => $shippingAddress ? [
+    'first_name'  => $shippingAddress->first_name,
+    'last_name'   => $shippingAddress->last_name,
+    'street'      => $shippingAddress->street,
+    'postal_code' => $shippingAddress->postal_code,
+    'city'        => $shippingAddress->city,
+    'country'     => CountryHelper::name($shippingAddress->country),
+] : null,
+'billingAddress' => $billingAddress ? [
+    'first_name'  => $billingAddress->first_name,
+    'last_name'   => $billingAddress->last_name,
+    'street'      => $billingAddress->street,
+    'postal_code' => $billingAddress->postal_code,
+    'city'        => $billingAddress->city,
+    'country'     => CountryHelper::name($billingAddress->country),
+] : null,
+
         ]);
     }
 
