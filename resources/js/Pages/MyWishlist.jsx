@@ -5,7 +5,7 @@ import { Head, Link, router } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
-
+import WelcomeMessage from "@/Components/WelcomeMessage"
 // Icônes SVG
 const HeartIcon = ({ className, filled = false }) => (
   <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
@@ -94,12 +94,8 @@ export default function Wishlist({ wishlistItems = [], user }) {
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
             {/* Message de bienvenue */}
-            {user && (
-              <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-                <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-                <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
-              </div>
-            )}
+           <WelcomeMessage user={user} />
+      
 
             {/* En-tête */}
             <div className="mb-8">

@@ -3,6 +3,7 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import { FaBoxOpen, FaMapMarkerAlt, FaUser, FaHeart, FaBox, FaMap, FaSignInAlt } from "react-icons/fa"
 import Sidebar from "@/Components/Sidebar"
+import WelcomeMessage from "@/Components/WelcomeMessage"
 
 export default function Dashboard({ user, activities = [] }) {
   // Icône selon le type d'activité
@@ -49,10 +50,7 @@ export default function Dashboard({ user, activities = [] }) {
         <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             {/* Message de bienvenue */}
-            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
-            </div>
+            <WelcomeMessage user={user} />
 
             <h1 className="text-3xl font-bold text-center mb-8">Mon Tableau de Bord</h1>
             

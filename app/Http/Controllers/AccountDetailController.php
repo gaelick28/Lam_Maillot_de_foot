@@ -34,6 +34,7 @@ return Inertia::render('AccountDetails', [
         'first_name' => $user->first_name ?? $billingAddress->first_name ?? '',
         'last_name' => $user->last_name ?? $billingAddress->last_name ?? '',
         'phone' => $user->phone ?? $billingAddress->phone ?? '',
+         'created_at' => $user->created_at, // ← AJOUT
     ],
 ]);
 }

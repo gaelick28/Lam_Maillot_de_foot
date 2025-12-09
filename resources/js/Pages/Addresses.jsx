@@ -5,6 +5,7 @@ import { Head, useForm, usePage } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
+import WelcomeMessage from "@/Components/WelcomeMessage"
 
 export default function AddressPage({user, addresses = [],  countries = [] }) {
   const { url } = usePage()
@@ -187,10 +188,7 @@ const shippingAddresses = addresses
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
 
  {/* Message de bienvenue */}
-            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
-            </div>
+            <WelcomeMessage user={user} />
 
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Mes adresses</h1>
 

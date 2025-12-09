@@ -3,8 +3,9 @@ import { GiSoccerBall } from "react-icons/gi"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
+import WelcomeMessage from "@/Components/WelcomeMessage"
 
-export default function OrderHistory({ user, orders = [] }) {
+export default function OrderHistory({ auth, orders = [] }) {
   return (
     <>
       <Header />
@@ -14,11 +15,7 @@ export default function OrderHistory({ user, orders = [] }) {
         <div className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Message de bienvenue */}
-            <div className="bg-blue-300 p-4 rounded shadow mb-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">Bienvenue, {user.username} !</h2>
-              <p className="text-sm text-gray-600">Votre Email : {user.email}</p>
-            </div>
-
+             <WelcomeMessage user={auth.user} />
             <div className="flex items-center gap-3 mb-8">
               <GiSoccerBall className="w-8 h-8 text-blue-600" />
               <h1 className="text-3xl font-bold text-gray-900">Historique des commandes</h1>
