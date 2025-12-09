@@ -4,26 +4,40 @@ namespace App\Helpers;
 
 class CountryHelper
 {
+    
     protected static array $map = [
         'FR' => 'France',
         'BE' => 'Belgique',
         'CH' => 'Suisse',
         'LU' => 'Luxembourg',
+        'MC' => 'Monaco',
         'DE' => 'Allemagne',
         'ES' => 'Espagne',
         'IT' => 'Italie',
         'PT' => 'Portugal',
         'NL' => 'Pays-Bas',
         'IE' => 'Irlande',
-        'GB' => 'Royaume-Uni',
+        'GB' => 'Grande-Bretagne',
         'UK' => 'Royaume-Uni',
         'US' => 'États-Unis',
         'CA' => 'Canada',
         'JP' => 'Japon',
         'CN' => 'Chine',
-        // ajoute d'autres codes si besoin
+        'IN' => 'Inde',
+        'AT' => 'Autriche',
+        'SE' => 'Suède',
+        'NO' => 'Norvège',
+        'DK' => 'Danemark',
+        'FI' => 'Finlande',
+        'PL' => 'Pologne',
+        'CZ' => 'République tchèque',
+        'SK' => 'Slovaquie',
+        'HU' => 'Hongrie',
     ];
 
+    /**
+     * Obtenir le nom d'un pays à partir de son code
+     */
     public static function name(?string $code): ?string
     {
         if (!$code) {
@@ -32,6 +46,31 @@ class CountryHelper
 
         $code = strtoupper($code);
 
-        return self::$map[$code] ?? $code; // fallback : renvoie le code si inconnu
+        return self::$map[$code] ?? $code;
+    }
+
+    /**
+     * 🔥 NOUVELLE : Obtenir tous les pays
+     * Retourne un tableau associatif [code => nom]
+     */
+    public static function all(): array
+    {
+        return self::$map;
+    }
+
+    /**
+     * 🔥 NOUVELLE : Obtenir les pays formatés pour un select
+     * Retourne un tableau d'objets [{code, name}]
+     */
+    public static function forSelect(): array
+    {
+        $countries = [];
+        foreach (self::$map as $code => $name) {
+            $countries[] = [
+                'code' => $code,
+                'name' => $name,
+            ];
+        }
+        return $countries;
     }
 }

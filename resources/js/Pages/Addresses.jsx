@@ -6,7 +6,7 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
 
-export default function AddressPage({user, addresses = [] }) {
+export default function AddressPage({user, addresses = [],  countries = [] }) {
   const { url } = usePage()
 
   // SÉPARER les états d'édition
@@ -158,22 +158,22 @@ const shippingAddresses = addresses
   .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // la plus récente en premier
   .slice(0, 1) // on ne garde que 1 adresse
 
-  const getCountryName = (code) => {
-  const countries = {
-    FR: "France",
-    BE: "Belgique",
-    CH: "Suisse",
-    LU: "Luxembourg",
-    MC: "Monaco",
-    DE: "Allemagne",
-    ES: "Espagne",
-    IT: "Italie",
-    GB: "Royaume-Uni",
-    US: "États-Unis",
-    JP: "Japon"
-  }
-  return countries[code] || code
-}
+//   const getCountryName = (code) => {
+//   const countries = {
+//     FR: "France",
+//     BE: "Belgique",
+//     CH: "Suisse",
+//     LU: "Luxembourg",
+//     MC: "Monaco",
+//     DE: "Allemagne",
+//     ES: "Espagne",
+//     IT: "Italie",
+//     GB: "Royaume-Uni",
+//     US: "États-Unis",
+//     JP: "Japon"
+//   }
+//   return countries[code] || code
+// }
 
   return (
     <>
@@ -284,29 +284,21 @@ const shippingAddresses = addresses
                       </div>
 
 <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-  <select
-    value={billingForm.data.country}
-    onChange={(e) => billingForm.setData("country", e.target.value)}
-    className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-    required
-  >
-    <option value="FR">France</option>
-    <option value="BE">Belgique</option>
-    <option value="CH">Suisse</option>
-    <option value="LU">Luxembourg</option>
-    <option value="MC">Monaco</option>
-    <option value="DE">Allemagne</option>
-    <option value="ES">Espagne</option>
-    <option value="IT">Italie</option>
-    <option value="GB">Royaume-Uni</option>
-    <option value="US">États-Unis</option>
-    <option value="JP">Japon</option>
-  </select>
-  {billingForm.errors.country && (
-    <p className="text-red-500 text-sm mt-1">{billingForm.errors.country}</p>
-  )}
-</div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+        <select
+          value={billingForm.data.country}
+          onChange={(e) => billingForm.setData("country", e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          required
+        >
+          {/* 🔥 UTILISER LES PAYS DEPUIS LES PROPS */}
+          {countries.map((country) => (
+            <option key={country.code} value={country.code}>
+              {country.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
@@ -371,7 +363,7 @@ const shippingAddresses = addresses
                       <p className="text-gray-800 text-lg">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-800 text-lg">{getCountryName(address.country)}</p>
+                      <p className="text-gray-800 text-lg">{address.country_name || address.country}</p>
                       {address.phone && <p className="text-gray-800">{address.phone}</p>}
                     </div>
                     <div className="mt-8 flex gap-6">
@@ -483,30 +475,23 @@ const shippingAddresses = addresses
                       </div>
 
 <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-  <select
-    value={shippingForm.data.country}
-    onChange={(e) => shippingForm.setData("country", e.target.value)}
-    className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
-    required
-  >
-    <option value="FR">France</option>
-    <option value="BE">Belgique</option>
-    <option value="CH">Suisse</option>
-    <option value="LU">Luxembourg</option>
-    <option value="MC">Monaco</option>
-    <option value="DE">Allemagne</option>
-    <option value="ES">Espagne</option>
-    <option value="IT">Italie</option>
-    <option value="GB">Royaume-Uni</option>
-    <option value="US">États-Unis</option>
-    <option value="JP">Japon</option>
-  </select>
-  {shippingForm.errors.country && (
-    <p className="text-red-500 text-sm mt-1">{shippingForm.errors.country}</p>
-  )}
-</div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+        <select
+          value={shippingForm.data.country}
+          onChange={(e) => shippingForm.setData("country", e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:ring-green-500 focus:border-green-500"
+          required
+        >
+          {/* 🔥 UTILISER LES PAYS DEPUIS LES PROPS */}
+          {countries.map((country) => (
+            <option key={country.code} value={country.code}>
+              {country.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
+      
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
                         <input
@@ -570,7 +555,7 @@ const shippingAddresses = addresses
                       <p className="text-gray-800 text-lg">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-800 text-lg">{getCountryName(address.country)}</p>
+                      <p className="text-gray-800 text-lg">{address.country_name || address.country}</p>
                       {address.phone && <p className="text-gray-800">{address.phone}</p>}
                     </div>
                     <div className="mt-8 flex gap-6">

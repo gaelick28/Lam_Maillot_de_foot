@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Order;
+use App\Helpers\CountryHelper;
 
 class AddressController extends Controller
 {
@@ -28,12 +29,17 @@ class AddressController extends Controller
                 // 🔥 Marquer les adresses "verrouillées" (utilisées dans des commandes)
                 $address->is_locked = ($address->orders_as_shipping_count + $address->orders_as_billing_count) > 0;
                 $address->orders_count = $address->orders_as_shipping_count + $address->orders_as_billing_count;
+                
+                // 🔥 AJOUT : Convertir le code pays en nom complet
+                $address->country_name = CountryHelper::name($address->country);
+
                 return $address;
             });
 
         return Inertia::render('Addresses', [
             'user' => $user,  
             'addresses' => $addresses,
+            'countries' => CountryHelper::forSelect(), // 🔥 AJOUT : Liste des pays pour le select
         ]);
     }
 
