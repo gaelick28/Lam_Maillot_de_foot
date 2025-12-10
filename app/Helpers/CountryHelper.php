@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use Collator;
+
+
 class CountryHelper
 {
     
@@ -50,27 +53,40 @@ class CountryHelper
     }
 
     /**
-     * 🔥 NOUVELLE : Obtenir tous les pays
-     * Retourne un tableau associatif [code => nom]
+     * Obtenir tous les pays
+     * Retourne un tableau associatif [code => nom] trié par nom
      */
     public static function all(): array
     {
-        return self::$map;
+        $countries = self::$map;
+
+        // Si l’extension intl est dispo, tri FR insensible aux accents
+        if (class_exists(Collator::class)) {
+            $collator = new Collator('fr_FR');
+            $collator->asort($countries);
+        } else {
+            // Fallback : tri simple par valeur
+            asort($countries);
+        }
+
+        return $countries;
     }
 
     /**
-     * 🔥 NOUVELLE : Obtenir les pays formatés pour un select
-     * Retourne un tableau d'objets [{code, name}]
+     * Obtenir les pays formatés pour un select
+     * Retourne un tableau d'objets [{code, name}] trié par nom
      */
     public static function forSelect(): array
     {
         $countries = [];
-        foreach (self::$map as $code => $name) {
+
+        foreach (self::all() as $code => $name) {
             $countries[] = [
                 'code' => $code,
                 'name' => $name,
             ];
         }
+
         return $countries;
     }
 }
