@@ -286,6 +286,13 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                           <p className="text-red-500 text-sm mt-1">{personalInfoForm.errors.gender}</p>
                         )}
                       </div>
+
+                      {/* Membre depuis */}
+<div className="flex justify-center items-end">
+  <p className="text-base text-black">
+    Membre depuis le : {new Date(user.created_at).toLocaleDateString('fr-FR')}
+  </p>
+</div>
                     </div>
                     <div className="flex gap-4">
                       <button
@@ -349,7 +356,14 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                               ? new Date(user.birth_date).toLocaleDateString('fr-FR') // ou autre locale
                               : ''}
                         </span>
-                      </div>
+                   <div className="flex justify-items: start">
+                    <p className="text-base text-black">
+                      Membre depuis le : {new Date(user.created_at).toLocaleDateString('fr-FR')}
+                    </p>
+                   </div>   
+                    </div>
+                       {/* Membre depuis */}
+
                     </div>
                   </div>
                 )}

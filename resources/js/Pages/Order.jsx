@@ -5,7 +5,27 @@ import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
 import WelcomeMessage from "@/Components/WelcomeMessage"
 
-export default function OrderHistory({ auth, orders = [] }) {
+
+
+
+// La version commentée fonctionne pour WelcomeMessage pour la partie mise en commentaire : <p className="text-sm text-gray-600">Membre depuis le : {new Date(user.created_at).toLocaleDateString()}</p>
+// Cependant, pour éviter toute confusion, on utilise la version décommentée avec "auth.user" remplacée par "user" directement en props.
+// ceci permet de centraliser/uniformiser le passage des données utilisateur dans les composants.
+//
+// export default function OrderHistory({ auth, orders = [] }) {
+//   return (
+//     <>
+//       <Header />
+
+//       <div className="min-h-screen bg-gradient-to-r from-purple-200 to-blue-100 flex">
+//         <Sidebar currentRoute="/order" />
+//         <div className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+//           <div className="max-w-7xl mx-auto">
+//             {/* Message de bienvenue */}
+//              <WelcomeMessage user={auth.user} />
+
+
+export default function OrderHistory({ user, orders = [] }) {
   return (
     <>
       <Header />
@@ -15,7 +35,7 @@ export default function OrderHistory({ auth, orders = [] }) {
         <div className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Message de bienvenue */}
-             <WelcomeMessage user={auth.user} />
+             <WelcomeMessage user={user} />
             <div className="flex items-center gap-3 mb-8">
               <GiSoccerBall className="w-8 h-8 text-blue-600" />
               <h1 className="text-3xl font-bold text-gray-900">Historique des commandes</h1>
