@@ -342,38 +342,44 @@ const shippingAddresses = addresses
               )}
 
               {/* Liste adresses facturation */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              {/* 🔥 MODIFICATION : Grid responsive pour iPad */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
                 {billingAddresses.map((address) => (
-                  <div key={address.id} className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                    <span className="bg-blue-100 text-blue-800 text-sm px-4 py-2 rounded mb-2 inline-block">
-                      Facturation
-                    </span>
-                    {address.is_default && (
-                      <span className="bg-green-100 text-green-800 text-sm px-4 py-2 rounded mb-2 inline-block ml-2">
-                        Par défaut
+                  <div key={address.id} className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded">
+                        Facturation
                       </span>
-                    )}
-                    <div className="space-y-3 mt-4">
-                      <p className="font-medium text-xl text-gray-900">
+                      {address.is_default && (
+                        <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded">
+                          Par défaut
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 mb-6">
+                      <p className="font-medium text-lg text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
-                      <p className="text-gray-800 text-lg">{address.street}</p>
-                      <p className="text-gray-800 text-lg">
+                      <p className="text-gray-700 text-base">{address.street}</p>
+                      <p className="text-gray-700 text-base">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-800 text-lg">{address.country_name || address.country}</p>
-                      {address.phone && <p className="text-gray-800">{address.phone}</p>}
+                      <p className="text-gray-700 text-base">{address.country_name || address.country}</p>
+                      {address.phone && <p className="text-gray-700 text-sm">{address.phone}</p>}
                     </div>
-                    <div className="mt-8 flex gap-6">
+                    
+                    {/* 🔥 MODIFICATION : Boutons flexibles */}
+                    <div className="flex flex-wrap gap-4">
                       <button
                         onClick={() => handleBillingEdit(address)}
-                        className="text-blue-600 hover:text-blue-800 text-xl font-semibold"
+                        className="text-blue-600 hover:text-blue-800 text-base font-semibold"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleBillingDelete(address.id)}
-                        className="text-red-600 hover:text-red-800 text-xl font-semibold"
+                        className="text-red-600 hover:text-red-800 text-base font-semibold"
                       >
                         Supprimer
                       </button>
@@ -533,39 +539,44 @@ const shippingAddresses = addresses
                 </div>
               )}
 
-              {/* Liste adresses livraison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              {/* 🔥 MODIFICATION : Grid responsive pour iPad */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
                 {shippingAddresses.map((address) => (
-                  <div key={address.id} className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
-                    <span className="bg-green-100 text-green-800 text-sm px-4 py-2 rounded mb-2 inline-block">
-                      Livraison
-                    </span>
-                    {address.is_default && (
-                      <span className="bg-blue-100 text-blue-800 text-sm px-4 py-2 rounded mb-2 inline-block ml-2">
-                        Par défaut
+                  <div key={address.id} className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded">
+                        Livraison
                       </span>
-                    )}
-                    <div className="space-y-3 mt-4">
-                      <p className="font-medium text-xl text-gray-900">
+                      {address.is_default && (
+                        <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded">
+                          Par défaut
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2 mb-6">
+                      <p className="font-medium text-lg text-gray-900">
                         {address.first_name} {address.last_name}
                       </p>
-                      <p className="text-gray-800 text-lg">{address.street}</p>
-                      <p className="text-gray-800 text-lg">
+                      <p className="text-gray-700 text-base">{address.street}</p>
+                      <p className="text-gray-700 text-base">
                         {address.postal_code} {address.city}
                       </p>
-                      <p className="text-gray-800 text-lg">{address.country_name || address.country}</p>
-                      {address.phone && <p className="text-gray-800">{address.phone}</p>}
+                      <p className="text-gray-700 text-base">{address.country_name || address.country}</p>
+                      {address.phone && <p className="text-gray-700 text-sm">{address.phone}</p>}
                     </div>
-                    <div className="mt-8 flex gap-6">
+                    
+                    {/* 🔥 MODIFICATION : Boutons flexibles */}
+                    <div className="flex flex-wrap gap-4">
                       <button
                         onClick={() => handleShippingEdit(address)}
-                        className="text-green-600 hover:text-green-800 text-xl font-semibold"
+                        className="text-green-600 hover:text-green-800 text-base font-semibold"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleShippingDelete(address.id)}
-                        className="text-red-600 hover:text-red-800 text-xl font-semibold"
+                        className="text-red-600 hover:text-red-800 text-base font-semibold"
                       >
                         Supprimer
                       </button>
