@@ -20,10 +20,12 @@ class UserAddress extends Model
         'country',
         'phone',
         'is_default',
+        'is_archived',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
+        'is_archived' => 'boolean',
     ];
 
     /**
