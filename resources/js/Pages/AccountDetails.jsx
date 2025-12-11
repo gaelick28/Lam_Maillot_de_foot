@@ -355,16 +355,15 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                             {user.birth_date
                               ? new Date(user.birth_date).toLocaleDateString('fr-FR') // ou autre locale
                               : ''}
-                        </span>
-                   <div className="flex justify-items: start">
+                        </span>                
+                    </div>    
+                    </div>
+                    {/* Membre depuis */}
+                    <div className="flex justify-items: start">
                     <p className="text-base text-black">
                       Membre depuis le : {new Date(user.created_at).toLocaleDateString('fr-FR')}
                     </p>
                    </div>   
-                    </div>
-                       {/* Membre depuis */}
-
-                    </div>
                   </div>
                 )}
               </div>
