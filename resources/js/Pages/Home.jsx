@@ -213,15 +213,7 @@ const MaillotCard = React.memo(function MaillotCard({ maillot }) {
             className="w-full h-48 sm:h-56 object-contain bg-white cursor-pointer"
             loading="lazy"
           />
-          {maillot.badge && (
-            <span 
-              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
-              aria-label={`Badge ${maillot.badge}`}
-            >
-              {maillot.badge}
-            </span>
-          )}
-        </div>
+         
 
         <div className="p-4">
           <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
@@ -234,12 +226,21 @@ const MaillotCard = React.memo(function MaillotCard({ maillot }) {
             <span className="text-lg font-bold text-blue-800">
               <span className="sr-only">Prix : </span>
               {maillot.price.toFixed(2)}€
+            </span> {maillot.badge && (
+            <span 
+              className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
+              aria-label={`Badge ${maillot.badge}`}
+            >
+              {maillot.badge}
             </span>
+          )}
+        </div>
           </div>
         </div>
       </Link>
 
-      {/* 🔥 Bouton Wishlist - EN DEHORS du Link, comme dans la version originale */}
+      {/* 🔥 Bouton Wishlist - EN DEHORS du Link/}
+      {/* Bouton Wishlist en haut à droite */}
       <div className="absolute top-2 right-2 z-10">
         <WishlistButton maillotId={maillot.id} />
       </div>
