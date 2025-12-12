@@ -111,26 +111,30 @@ export default function Homepage({ maillots }) {
       <Head title="Accueil - Fou2Foot" />
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-red-700 to-blue-400 py-12 sm:py-16 md:py-20 w-full">
-        <div className="w-full px-4 sm:px-6 lg:px-8 text-center text-white">
-          <div className="mx-auto max-w-7xl">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              Maillots de Football Officiels
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-6">
-              Retrouvez les tenues des plus grands clubs et des plus grandes sélections
-            </p>
-            <p className="text-base sm:text-lg max-w-4xl mx-auto">
-              Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité,
-              personnalisables, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section - Accessible */}
+<section 
+  className="bg-gradient-to-r from-red-700 to-blue-400 py-9 sm:py-12 md:py-15 w-full"
+  aria-label="Bannière principale"
+>
+  <div className="w-full px-4 sm:px-6 lg:px-8 text-center text-white">
+    <div className="mx-auto max-w-7xl">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+        Maillots de Football Officiels
+      </h1>
+      <p className="text-base sm:text-lg md:text-xl mb-4">
+        Retrouvez les tenues des plus grands clubs et des plus grandes sélections
+      </p>
+      <p className="text-sm sm:text-base max-w-4xl mx-auto">
+        Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité,
+        personnalisables, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide.
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* Maillots vedettes */}
-      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full">
+      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
+      aria-label= "Section des maillots vedettes">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -147,7 +151,8 @@ export default function Homepage({ maillots }) {
       </section>
 
       {/* Nos nouveaux Maillots */}
-      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full">
+      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
+      aria-label="Section des nouveaux maillots">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -164,7 +169,8 @@ export default function Homepage({ maillots }) {
       </section>
 
       {/* Section Équipes */}
-      <section className="bg-gray-100 py-12 w-full flex-grow">
+      <section className="bg-gray-100 py-12 w-full flex-grow"
+      aria-label="Section des équipes">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">Nos Équipes</h2>
@@ -176,7 +182,6 @@ export default function Homepage({ maillots }) {
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   )
@@ -198,7 +203,8 @@ const MaillotCard = React.memo(function MaillotCard({ maillot }) {
           </span>
         )}
         {/* 🔥 Bouton Wishlist */}
-        <div className="absolute top-2 right-2 z-10">
+        <div className="absolute top-2 right-2 z-10"
+        aria-label="Ajouter aux favoris">
           <WishlistButton maillotId={maillot.id} />
         </div>
       </div>
