@@ -21,26 +21,22 @@ class AddressController extends Controller
 
         $addresses = UserAddress::where('user_id', $userId)
             ->where('is_archived', false)
-            ->withCount(['ordersAsShipping', 'ordersAsBilling']) // 🔥 Compter les commandes liées
+            ->withCount(['ordersAsShipping', 'ordersAsBilling'])
             ->orderBy('type', 'asc')
             ->orderBy('is_default', 'desc')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($address) {
-                // 🔥 Marquer les adresses "verrouillées" (utilisées dans des commandes)
                 $address->is_locked = ($address->orders_as_shipping_count + $address->orders_as_billing_count) > 0;
                 $address->orders_count = $address->orders_as_shipping_count + $address->orders_as_billing_count;
-                
-                // 🔥 AJOUT : Convertir le code pays en nom complet
                 $address->country_name = CountryHelper::name($address->country);
-
                 return $address;
             });
 
         return Inertia::render('Addresses', [
             'user' => $user,  
             'addresses' => $addresses,
-            'countries' => CountryHelper::forSelect(), // 🔥 AJOUT : Liste des pays pour le select
+            'countries' => CountryHelper::forSelect(),
         ]);
     }
 
@@ -61,14 +57,14 @@ class AddressController extends Controller
             'is_default' => 'boolean',
         ]);
 
-        Log::info('Données validées:', $validated);
-
         $userId = Auth::user()->id;
 
+        // 🔥 COMPORTEMENT UNIFORME pour billing et shipping
         // Si cette adresse est par défaut, désactiver les autres du même type
         if ($validated['is_default'] ?? false) {
             UserAddress::where('user_id', $userId)
                 ->where('type', $validated['type'])
+                ->where('is_archived', false)
                 ->update(['is_default' => false]);
         }
 
@@ -92,6 +88,7 @@ class AddressController extends Controller
             'country' => $validated['country'],
             'phone' => $validated['phone'],
             'is_default' => $validated['is_default'] ?? false,
+            'is_archived' => false,
         ]);
 
         return redirect()->back()->with('success', 'Adresse ajoutée avec succès.');
@@ -122,7 +119,7 @@ class AddressController extends Controller
                 ->with('error', 'Accès non autorisé.');
         }
 
-        // 🔥 AMÉLIORATION : Vérifier si l'adresse est utilisée dans des commandes
+        // Vérifier si l'adresse est utilisée dans des commandes
         $hasOrders = Order::where(function($query) use ($address) {
             $query->where('shipping_address_id', $address->id)
                   ->orWhere('billing_address_id', $address->id);
@@ -130,21 +127,22 @@ class AddressController extends Controller
 
         if ($hasOrders) {
             // L'adresse est utilisée : créer une nouvelle adresse et archiver l'ancienne
+            
+            // 🔥 COMPORTEMENT UNIFORME : Respecter le choix is_default
             $isDefault = $validated['is_default'] ?? false;
-
+            
             if ($isDefault) {
                 UserAddress::where('user_id', $userId)
                     ->where('type', $validated['type'])
-                    ->where('is_archived', false) // 🔥 Ne toucher que les adresses actives
+                    ->where('is_archived', false)
                     ->update(['is_default' => false]);
             }
 
-            // 🔥 ARCHIVER l'ancienne adresse
+            // Archiver l'ancienne adresse
             $address->update([
                 'is_default' => false,
-                'is_archived' => true, // 🔥 Devient invisible
+                'is_archived' => true,
             ]);
-
 
             $newAddress = UserAddress::create([
                 'user_id' => $userId,
@@ -156,8 +154,8 @@ class AddressController extends Controller
                 'postal_code' => $validated['postal_code'],
                 'country' => $validated['country'],
                 'phone' => $validated['phone'],
-                'is_default' => $isDefault,
-                 'is_archived' => false,
+                'is_default' => $isDefault, 
+                'is_archived' => false,
             ]);
 
             // Synchroniser vers le compte utilisateur si c'est une adresse de facturation
@@ -165,17 +163,16 @@ class AddressController extends Controller
                 $this->syncBillingAddressToUser($newAddress);
             }
 
-            // 🔥 Marquer l'ancienne adresse comme "archivée" au lieu de la laisser active
-            $address->update(['is_default' => false]);
-
             return redirect()
                 ->route('addresses.index')
-                ->with('success', 'Une nouvelle adresse a été créée. L\'ancienne est conservée pour vos commandes existantes.');
+                ->with('success', 'Adresse mise à jour avec succès.');
         }
 
         // L'adresse n'est pas utilisée : modification normale
+        
+         // 🔥 COMPORTEMENT UNIFORME : Respecter le choix is_default
         $isDefault = $validated['is_default'] ?? false;
-
+        
         if ($isDefault) {
             UserAddress::where('user_id', $userId)
                 ->where('type', $validated['type'])
@@ -205,25 +202,25 @@ class AddressController extends Controller
                 ->with('error', 'Accès non autorisé.');
         }
 
-        // ❌ Ne pas supprimer si l'adresse est utilisée dans une commande
+        // Vérifier si l'adresse est utilisée dans des commandes
         $hasOrders = Order::where(function($query) use ($address) {
             $query->where('shipping_address_id', $address->id)
                   ->orWhere('billing_address_id', $address->id);
         })->exists();
 
-         if ($hasOrders) {
-        // 🔥 ARCHIVER au lieu de bloquer
-        $address->update([
-            'is_archived' => true,
-            'is_default' => false,
-        ]);
+        if ($hasOrders) {
+            // Archiver au lieu de bloquer
+            $address->update([
+                'is_archived' => true,
+                'is_default' => false,
+            ]);
 
-        return redirect()
-            ->route('addresses.index')
-            ->with('success', 'Adresse supprimée avec succès.');
-    }
+            return redirect()
+                ->route('addresses.index')
+                ->with('success', 'Adresse supprimée avec succès.');
+        }
 
-        // 🗑️ Suppression physique si pas utilisée
+        // Suppression physique si pas utilisée
         $address->delete();
 
         return redirect()->route('addresses.index')

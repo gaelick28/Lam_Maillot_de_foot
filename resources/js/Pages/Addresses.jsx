@@ -153,11 +153,23 @@ export default function AddressPage({user, addresses = [],  countries = [] }) {
   /// Séparer les adresses par type
 const billingAddresses = addresses.filter((addr) => addr.type === "billing")
 
-// On ne garde que la DERNIÈRE adresse de livraison (la plus récente)
+// MODIFICATION : Afficher seulement les adresses par défaut pour shipping
 const shippingAddresses = addresses
   .filter((addr) => addr.type === "shipping")
-  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // la plus récente en premier
-  .slice(0, 1) // on ne garde que 1 adresse
+  .sort((a, b) => {
+    // Priorité 1 : Adresse par défaut
+    if (a.is_default && !b.is_default) return -1
+    if (!a.is_default && b.is_default) return 1
+    // Priorité 2 : Plus récente
+    return new Date(b.created_at) - new Date(a.created_at)
+  })
+  .slice(0, 1)
+  
+// On ne garde que la DERNIÈRE adresse de livraison (la plus récente)
+// const shippingAddresses = addresses
+//   .filter((addr) => addr.type === "shipping")
+  // .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // la plus récente en premier
+  // .slice(0, 1) // on ne garde que 1 adresse
 
 //   const getCountryName = (code) => {
 //   const countries = {

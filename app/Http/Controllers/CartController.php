@@ -145,14 +145,16 @@ class CartController extends Controller
             $cart->load('items.maillot.club');
 
             $user = \App\Models\User::with(['addresses' => function ($query) {
-                $query->orderBy('is_default', 'desc')
-                      ->orderBy('type', 'asc');
-            }])->findOrFail(Auth::id());
+    $query->where('is_archived', false) // 🔥 FILTRER les archivées
+          ->orderBy('type', 'asc')
+          ->orderBy('is_default', 'desc')
+          ->orderBy('created_at', 'desc');
+}])->findOrFail(Auth::id());
 
-                $shippingAddress = $user->addresses
-            ->where('type', 'shipping')
-            ->sortByDesc('created_at')  //  Priorise par défaut mais accepte les autres
-                ->first();
+// Récupérer la première adresse de livraison active
+$shippingAddress = $user->addresses
+    ->where('type', 'shipping')
+    ->first(); // La requête est déjà triée
 
             foreach ($cart->items as $item) {
                 $maillot = $item->maillot;
