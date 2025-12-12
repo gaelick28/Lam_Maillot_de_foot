@@ -165,29 +165,6 @@ const shippingAddresses = addresses
   })
   .slice(0, 1)
   
-// On ne garde que la DERNIÈRE adresse de livraison (la plus récente)
-// const shippingAddresses = addresses
-//   .filter((addr) => addr.type === "shipping")
-  // .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // la plus récente en premier
-  // .slice(0, 1) // on ne garde que 1 adresse
-
-//   const getCountryName = (code) => {
-//   const countries = {
-//     FR: "France",
-//     BE: "Belgique",
-//     CH: "Suisse",
-//     LU: "Luxembourg",
-//     MC: "Monaco",
-//     DE: "Allemagne",
-//     ES: "Espagne",
-//     IT: "Italie",
-//     GB: "Royaume-Uni",
-//     US: "États-Unis",
-//     JP: "Japon"
-//   }
-//   return countries[code] || code
-// }
-
   return (
     <>
       <Head title="Mes adresses" />
