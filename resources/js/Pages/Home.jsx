@@ -112,32 +112,34 @@ export default function Homepage({ maillots }) {
       <Header />
 
       {/* Hero Section - Accessible */}
-<section 
-  className="bg-gradient-to-r from-red-700 to-blue-400 py-9 sm:py-12 md:py-15 w-full"
-  aria-label="Bannière principale"
->
-  <div className="w-full px-4 sm:px-6 lg:px-8 text-center text-white">
-    <div className="mx-auto max-w-7xl">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
-        Maillots de Football Officiels
-      </h1>
-      <p className="text-base sm:text-lg md:text-xl mb-4">
-        Retrouvez les tenues des plus grands clubs et des plus grandes sélections
-      </p>
-      <p className="text-sm sm:text-base max-w-4xl mx-auto">
-        Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité,
-        personnalisables, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide.
-      </p>
-    </div>
-  </div>
-</section>
+      <section 
+        className="bg-gradient-to-r from-red-700 to-blue-400 py-9 sm:py-12 md:py-15 w-full"
+        aria-labelledby="hero-title"
+      >
+        <div className="w-full px-4 sm:px-6 lg:px-8 text-center text-white">
+          <div className="mx-auto max-w-7xl">
+            <h1 id="hero-title" className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+              Maillots de Football Officiels
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl mb-4">
+              Retrouvez les tenues des plus grands clubs et des plus grandes sélections
+            </p>
+            <p className="text-sm sm:text-base max-w-4xl mx-auto">
+              Nous nous engageons à vous fournir des maillots de football officiels de la meilleure qualité,
+              personnalisables, à partir d'un catalogue complet recensant les meilleures ligues, avec livraison rapide.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Maillots vedettes */}
-      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
-      aria-label= "Section des maillots vedettes">
+      <section 
+        className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
+        aria-labelledby="featured-title"
+      >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
+            <h2 id="featured-title" className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
               Nos Maillots Phares
             </h2>
 
@@ -151,11 +153,13 @@ export default function Homepage({ maillots }) {
       </section>
 
       {/* Nos nouveaux Maillots */}
-      <section className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
-      aria-label="Section des nouveaux maillots">
+      <section 
+        className="bg-gradient-to-r from-purple-200 to-blue-100 py-12 w-full"
+        aria-labelledby="new-title"
+      >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
+            <h2 id="new-title" className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
               Nos nouveaux Maillots
             </h2>
 
@@ -169,11 +173,15 @@ export default function Homepage({ maillots }) {
       </section>
 
       {/* Section Équipes */}
-      <section className="bg-gray-100 py-12 w-full flex-grow"
-      aria-label="Section des équipes">
+      <section 
+        className="bg-gray-100 py-12 w-full flex-grow"
+        aria-labelledby="teams-title"
+      >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">Nos Équipes</h2>
+            <h2 id="teams-title" className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">
+              Nos Équipes
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               <TeamCard team="Girondins de Bordeaux" image="/images/maillot/images_maillot/girondins.jfif" count={11} />
               <TeamCard team="Olympique Lyonnais" image="/images/maillot/images_maillot/lyon_75ans.jfif" count={8} />
@@ -189,34 +197,53 @@ export default function Homepage({ maillots }) {
 
 const MaillotCard = React.memo(function MaillotCard({ maillot }) {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full">
-      <div className="relative w-full">
-        <img
-          src={maillot.image || "/placeholder.svg"}
-          alt={`Maillot ${maillot.team}`}
-          className="w-full h-48 sm:h-56 object-contain bg-white"
-          loading="lazy"
-        />
-        {maillot.badge && (
-          <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-            {maillot.badge}
-          </span>
-        )}
-        {/* 🔥 Bouton Wishlist */}
-        <div className="absolute top-2 right-2 z-10"
-        aria-label="Ajouter aux favoris">
-          <WishlistButton maillotId={maillot.id} />
+    <article 
+      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative"
+      aria-label={`Maillot ${maillot.team} ${maillot.type}`}
+    >
+      <Link 
+        href={`/maillots/${maillot.id}`} 
+        className="block w-full"
+        aria-label={`Voir les détails du maillot ${maillot.team} ${maillot.type} à ${maillot.price.toFixed(2)} euros`}
+      >
+        <div className="relative w-full">
+          <img
+            src={maillot.image || "/placeholder.svg"}
+            alt={`Maillot ${maillot.team} - ${maillot.type}`}
+            className="w-full h-48 sm:h-56 object-contain bg-white cursor-pointer"
+            loading="lazy"
+          />
+          {maillot.badge && (
+            <span 
+              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
+              aria-label={`Badge ${maillot.badge}`}
+            >
+              {maillot.badge}
+            </span>
+          )}
         </div>
-      </div>
 
-      <Link href={`/maillots/${maillot.id}`} className="block w-full p-4">
-        <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">{maillot.team}</h3>
-        <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">{maillot.type}</p>
-        <div className="flex justify-between items-center w-full">
-          <span className="text-lg font-bold text-blue-800">{maillot.price.toFixed(2)}€</span>
+        <div className="p-4">
+          <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
+            {maillot.team}
+          </h3>
+          <p className="text-gray-600 text-xs sm:text-sm mb-2 truncate">
+            {maillot.type}
+          </p>
+          <div className="flex justify-between items-center w-full">
+            <span className="text-lg font-bold text-blue-800">
+              <span className="sr-only">Prix : </span>
+              {maillot.price.toFixed(2)}€
+            </span>
+          </div>
         </div>
       </Link>
-    </div>
+
+      {/* 🔥 Bouton Wishlist - EN DEHORS du Link, comme dans la version originale */}
+      <div className="absolute top-2 right-2 z-10">
+        <WishlistButton maillotId={maillot.id} />
+      </div>
+    </article>
   )
 })
 
@@ -224,19 +251,27 @@ const TeamCard = React.memo(function TeamCard({ team, image, count }) {
   const slug = team.toLowerCase().replace(/ /g, "-")
 
   return (
-    <Link href={`/clubs/${slug}/maillots`} className="block w-full">
-      <div className="relative rounded-lg overflow-hidden group cursor-pointer w-full">
+    <Link 
+      href={`/clubs/${slug}/maillots`} 
+      className="block w-full"
+      aria-label={`Voir les ${count} maillots de ${team}`}
+    >
+      <article className="relative rounded-lg overflow-hidden group cursor-pointer w-full">
         <img
           src={image || "/placeholder.svg"}
-          alt={team}
+          alt={`Logo ${team}`}
           className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center flex-col p-4">
-          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-2">{team}</h3>
-          <p className="text-white text-sm sm:text-base">{count} maillots disponibles</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-2">
+            {team}
+          </h3>
+          <p className="text-white text-sm sm:text-base">
+            {count} maillots disponibles
+          </p>
         </div>
-      </div>
+      </article>
     </Link>
   )
 })
