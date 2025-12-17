@@ -15,7 +15,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
-
+use App\Http\Controllers\Backoffice\DashboardController;
 
 
 // Routes publiques
@@ -189,7 +189,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderController::class, 'history'])->name('orders.index'); // 🔥 NOUVELLE (historique)
     Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show'); // 🔥 NOUVELLE (détails)
 
-
 });
+
+
+//  ROUTES ADMIN - Backoffice
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard admin
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+
+
 
 

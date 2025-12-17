@@ -26,6 +26,7 @@ class User extends Authenticatable
         'birth_date',
         'gender',
         'is_active',
+        'role'
     ];
 
     protected $hidden = [
@@ -37,6 +38,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'birth_date' => 'date',
         'is_active' => 'boolean',
+        'role' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
