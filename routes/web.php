@@ -16,7 +16,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Backoffice\DashboardController;
-
+use App\Http\Controllers\Backoffice\AdminUserController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -196,6 +196,12 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Routes users
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/toggle', [AdminUserController::class, 'toggleActive'])->name('users.toggle');
+    
 });
 
 
