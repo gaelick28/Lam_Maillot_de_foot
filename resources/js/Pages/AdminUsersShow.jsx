@@ -1,7 +1,9 @@
 import { Head, Link, router } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
+import { useState } from "react"
 
 export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) {
+   const [activeTab, setActiveTab] = useState('shipping')
   const toggleActive = () => {
     if (confirm('Êtes-vous sûr de vouloir changer le statut de ce compte ?')) {
       router.post(`/admin/users/${user.id}/toggle`, {}, {
@@ -148,40 +150,106 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
           </div>
         </div>
 
-{/* Adresses de livraison */}
+{/* Adresses avec onglets */}
 <div className="bg-white rounded-lg shadow">
   <div className="p-6 border-b">
-    <h2 className="text-xl font-semibold text-gray-900">Adresses de livraison</h2>
+    <h2 className="text-xl font-semibold text-gray-900">Adresses</h2>
   </div>
-  
-  {user.addresses && user.addresses.length > 0 ? (
-    <div className="p-6 space-y-4">
-      {user.addresses.map((address) => (
-        <div key={address.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-          <div className="flex justify-between items-start mb-2">
-            <h4 className="font-semibold text-gray-900">{address.title}</h4>
-            {address.is_default && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                Par défaut
-              </span>
-            )}
-          </div>
-          <div className="text-sm text-gray-600 space-y-1">
-            <p>{address.first_name} {address.last_name}</p>
-            <p>{address.street}</p>
-            {address.address_complement && <p>{address.address_complement}</p>}
-            <p>{address.postal_code} {address.city}</p>
-            <p>{address.country}</p>
-            {address.phone && <p>📞 {address.phone}</p>}
-          </div>
-        </div>
-      ))}
+
+  {/* Onglets */}
+  <div className="border-b border-gray-200">
+    <div className="flex">
+      <button
+        onClick={() => setActiveTab('shipping')}
+        className={`px-6 py-3 font-medium transition-colors ${
+          activeTab === 'shipping'
+            ? 'border-b-2 border-blue-600 text-blue-600'
+            : 'text-gray-600 hover:text-gray-800'
+        }`}
+      >
+        Adresses de livraison
+      </button>
+      <button
+        onClick={() => setActiveTab('billing')}
+        className={`px-6 py-3 font-medium transition-colors ${
+          activeTab === 'billing'
+            ? 'border-b-2 border-blue-600 text-blue-600'
+            : 'text-gray-600 hover:text-gray-800'
+        }`}
+      >
+        Adresses de facturation
+      </button>
     </div>
-  ) : (
-    <div className="p-8 text-center text-gray-500">
-      <p>Aucune adresse enregistrée</p>
-    </div>
-  )}
+  </div>
+
+  {/* Contenu des onglets */}
+  <div className="p-6">
+    {activeTab === 'shipping' && (
+      <div className="space-y-4">
+        {user.addresses?.filter(addr => addr.type === 'shipping').length > 0 ? (
+          user.addresses
+            .filter(addr => addr.type === 'shipping')
+            .map((address) => (
+              <div key={address.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-semibold text-gray-900">{address.title}</h4>
+                  {address.is_default && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                      Par défaut
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p>{address.first_name} {address.last_name}</p>
+                  <p>{address.street}</p>
+                  {address.address_complement && <p>{address.address_complement}</p>}
+                  <p>{address.postal_code} {address.city}</p>
+                  <p>{address.country}</p>
+                  {address.phone && <p>📞 {address.phone}</p>}
+                </div>
+              </div>
+            ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            Aucune adresse de livraison enregistrée
+          </div>
+        )}
+      </div>
+    )}
+
+    {activeTab === 'billing' && (
+      <div className="space-y-4">
+        {user.addresses?.filter(addr => addr.type === 'billing').length > 0 ? (
+          user.addresses
+            .filter(addr => addr.type === 'billing')
+            .map((address) => (
+              <div key={address.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-semibold text-gray-900">{address.title}</h4>
+                  {address.is_default && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                      Par défaut
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p>{address.first_name} {address.last_name}</p>
+                  <p>{address.street}</p>
+                  {address.address_complement && <p>{address.address_complement}</p>}
+                  <p>{address.postal_code} {address.city}</p>
+                  <p>{address.country}</p>
+                  {address.phone && <p>📞 {address.phone}</p>}
+                </div>
+              </div>
+            ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            Aucune adresse de facturation enregistrée
+          </div>
+        )}
+      </div>
+    )}
+  </div>
 </div>
 
 
