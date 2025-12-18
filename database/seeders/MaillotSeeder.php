@@ -119,6 +119,33 @@ class MaillotSeeder extends Seeder
                 'image' => 'images/maillot/images_maillot/naples-1986-dom.webp'
             ],
 
+            
+
+
+                [
+                    'club_slug' => 'japon',
+                    'nom' => 'Japon Sakura Edition 2023',
+                    'price' => 20.00,
+                    'image' => 'images/maillot/images_maillot/japon-2023-Sakura-edition.webp'
+                ],
+
+
+                [
+                    'club_slug' => 'japon',
+                    'nom' => 'Japon 2024 Peinture à l\'huile du matin ',
+                    'price' => 20.00,
+                    'image' => 'images/maillot/images_maillot/japon-2024-peinture-a-lhuile-du-matin.webp'
+                ],
+
+
+                [
+                    'club_slug' => 'japon',
+                    'nom' => 'Japon Samouraï Noir 2024-2025',
+                    'price' => 20.00,
+                    'image' => 'images/maillot/images_maillot/japon_samourai_noir.webp'
+                ],
+
+
             // Pour ajouter d'autres maillots :
             // [
             //     'club_slug' => 'autre-club',
