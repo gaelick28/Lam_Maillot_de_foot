@@ -16,7 +16,7 @@ export default function Checkout() {
   } = usePage().props;
 
   const [processing, setProcessing] = useState(false);
-  const [sameAddress, setSameAddress] = useState(true);
+  const [sameAddress, setSameAddress] = useState(false);
   const [selectedBillingId, setSelectedBillingId] = useState(null);
 
   // Récupérer les adresses de facturation de l'utilisateur
