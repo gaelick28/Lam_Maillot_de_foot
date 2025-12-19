@@ -265,6 +265,20 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
                     </p>
                   </div>
                 )}
+
+                {/* Adresse de facturation */}
+
+{billingAddress && (
+  <div className="mt-4 pt-4 border-t">
+    <h3 className="text-sm font-semibold text-gray-900 mb-2">Facturation à :</h3>
+    <p className="text-sm text-gray-600">
+      {billingAddress.first_name} {billingAddress.last_name}<br />
+      {billingAddress.street}<br />
+      {billingAddress.postal_code} {billingAddress.city}<br />
+      {billingAddress.country}
+    </p>
+  </div>
+)}
               </div>
             </div>
           </div>
