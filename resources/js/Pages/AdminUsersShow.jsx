@@ -204,7 +204,7 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
                   <p>{address.street}</p>
                   {address.address_complement && <p>{address.address_complement}</p>}
                   <p>{address.postal_code} {address.city}</p>
-                  <p>{address.country}</p>
+                  <p>{address.country_name || address.country}</p> 
                   {address.phone && <p>📞 {address.phone}</p>}
                 </div>
               </div>
@@ -237,7 +237,7 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
                   <p>{address.street}</p>
                   {address.address_complement && <p>{address.address_complement}</p>}
                   <p>{address.postal_code} {address.city}</p>
-                  <p>{address.country}</p>
+                  <p>{address.country_name || address.country}</p> 
                   {address.phone && <p>📞 {address.phone}</p>}
                 </div>
               </div>

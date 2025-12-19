@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\CountryHelper;
 
 class AdminUserController extends Controller
 {
@@ -50,6 +51,11 @@ class AdminUserController extends Controller
         },
         'addresses' // ← AJOUTEZ cette ligne
     ]);
+
+ // Formater les noms de pays pour toutes les adresses
+    foreach ($user->addresses as $address) {
+        $address->country_name = CountryHelper::name($address->country);
+    }
 
     return Inertia::render('AdminUsersShow', [
         'user' => $user,
