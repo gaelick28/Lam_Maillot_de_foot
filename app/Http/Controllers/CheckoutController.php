@@ -101,32 +101,62 @@ class CheckoutController extends Controller
     ];
 }
 
-        // Adresse de livraison  (comme dans Panier.jsx)
-       $userAddresses = $user->addresses()
-    ->where('type', 'shipping')
-    ->orderBy('created_at', 'desc')
-    ->get();
+        // 🔥 CORRECTION : Charger les adresses de livraison ET de facturation
+    $shippingAddresses = $user->addresses()
+        ->where('type', 'shipping')
+        ->where('is_archived', false)  // Ne pas afficher les archivées
+        ->orderBy('is_default', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-$shippingAddress = $userAddresses->first();
+    $billingAddresses = $user->addresses()
+        ->where('type', 'billing')
+        ->where('is_archived', false)  // Ne pas afficher les archivées
+        ->orderBy('is_default', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return Inertia::render('Checkout', [
-            'auth'            => ['user' => $user->only(['id','name','email'])],
-            'items'           => $itemsOut,
-            'subtotal'        => $subTotal,
-            'supplements'     => $suppTotal,
-            'total'           => $grandTotal,
-            'shippingAddress' => $shippingAddress ? [
-    'id'          => $shippingAddress->id,
-    'first_name'  => $shippingAddress->first_name,
-    'last_name'   => $shippingAddress->last_name,
-    'street'      => $shippingAddress->street,
-    'postal_code' => $shippingAddress->postal_code,
-    'city'        => $shippingAddress->city,
-    'country'     => CountryHelper::name($shippingAddress->country),
-    'is_default'  => (bool) $shippingAddress->is_default,
-] : null,
-        ]);
-    }
+    $shippingAddress = $shippingAddresses->first();
+
+    return Inertia::render('Checkout', [
+        'auth' => [
+            'user' => array_merge(
+                $user->only(['id', 'name', 'email']),
+                [
+                    // 🔥 AJOUT : Passer les adresses de facturation
+                    'addresses' => $billingAddresses->map(function($addr) {
+                        return [
+                            'id' => $addr->id,
+                            'type' => $addr->type,
+                            'title' => $addr->title ?? null,
+                            'first_name' => $addr->first_name,
+                            'last_name' => $addr->last_name,
+                            'street' => $addr->street,
+                            'postal_code' => $addr->postal_code,
+                            'city' => $addr->city,
+                            'country' => CountryHelper::name($addr->country),
+                            'is_default' => (bool) $addr->is_default,
+                        ];
+                    })
+                ]
+            )
+        ],
+        'items' => $itemsOut,
+        'subtotal' => $subTotal,
+        'supplements' => $suppTotal,
+        'total' => $grandTotal,
+        'shippingAddress' => $shippingAddress ? [
+            'id' => $shippingAddress->id,
+            'first_name' => $shippingAddress->first_name,
+            'last_name' => $shippingAddress->last_name,
+            'street' => $shippingAddress->street,
+            'postal_code' => $shippingAddress->postal_code,
+            'city' => $shippingAddress->city,
+            'country' => CountryHelper::name($shippingAddress->country),
+            'is_default' => (bool) $shippingAddress->is_default,
+        ] : null,
+    ]);
+}
 
     /**
      * 🔥 NOUVELLE MÉTHODE : Passer au paiement

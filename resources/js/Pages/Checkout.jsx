@@ -1,7 +1,7 @@
 "use client";
 
 import { usePage, router, Link } from "@inertiajs/react";
-import React, { useMemo, useState } from "react"; // 🔥 AJOUT: useState
+import React, { useMemo, useState, useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
@@ -12,17 +12,29 @@ export default function Checkout() {
     supplements = 0,
     total = 0,
     shippingAddress = null,
+    auth = {},
   } = usePage().props;
 
-  // 🔥 AJOUT: État pour gérer le processing
   const [processing, setProcessing] = useState(false);
+  const [sameAddress, setSameAddress] = useState(true);
+  const [selectedBillingId, setSelectedBillingId] = useState(null);
+
+  // Récupérer les adresses de facturation de l'utilisateur
+  const billingAddresses = auth.user?.addresses?.filter(addr => addr.type === 'billing') || [];
+
+  // Par défaut, sélectionner la première adresse de facturation
+  useEffect(() => {
+    if (billingAddresses.length > 0 && !selectedBillingId) {
+      setSelectedBillingId(billingAddresses[0].id);
+    }
+  }, [billingAddresses, selectedBillingId]);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }),
     []
   );
 
-  // Fallbacks côté client si jamais le back renvoie 0
+  // Fallbacks côté client
   const calcSubtotal = useMemo(
     () => items.reduce((s, it) => s + (Number(it.price || 0) * Number(it.quantity || 1)), 0),
     [items]
@@ -35,7 +47,6 @@ export default function Checkout() {
   const showSupplements = supplements > 0 ? supplements : calcSupplements;
   const showTotal       = total       > 0 ? total       : (showSubtotal + showSupplements);
 
-  // 🔥 MODIFICATION: Remplacer handleConfirm par handleProceedToPayment
   const handleProceedToPayment = () => {
     if (!shippingAddress) {
       alert("Veuillez d'abord renseigner votre adresse de livraison.");
@@ -46,12 +57,19 @@ export default function Checkout() {
       return;
     }
 
+    // Déterminer l'adresse de facturation
+    const billingId = sameAddress ? shippingAddress.id : selectedBillingId;
+
+    if (!billingId) {
+      alert("Veuillez sélectionner une adresse de facturation.");
+      return;
+    }
+
     setProcessing(true);
 
-    // 🔥 MODIFICATION: Changer la route et les données envoyées
     router.post("/checkout/proceed", {
       shipping_address_id: shippingAddress.id,
-      billing_address_id: shippingAddress.id, // Par défaut = même adresse
+      billing_address_id: billingId, // ✅ CORRIGÉ
     }, {
       onFinish: () => setProcessing(false),
       onError: (errors) => {
@@ -97,22 +115,21 @@ export default function Checkout() {
                       return (
                         <tr key={it.id} className="border-b">
                           <td className="p-3">
-  <div className="flex items-center gap-3">
-    {it.image && (
-      <img
-        src={it.image}
-        alt={it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
-        className="w-12 h-12 object-cover rounded"
-      />
-    )}
-    <div className="text-sm">
-      <div className="font-medium">
-        {it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
-      </div>
-    </div>
-  </div>
-</td>
-
+                            <div className="flex items-center gap-3">
+                              {it.image && (
+                                <img
+                                  src={it.image}
+                                  alt={it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
+                                  className="w-12 h-12 object-cover rounded"
+                                />
+                              )}
+                              <div className="text-sm">
+                                <div className="font-medium">
+                                  {it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
                           <td className="p-3">{it.size}</td>
                           <td className="p-3">{qty}</td>
                           <td className="p-3">{it.nom || "-"}</td>
@@ -131,8 +148,9 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Adresse + Totaux */}
+            {/* Adresses + Totaux */}
             <div className="space-y-6">
+              {/* Adresse de livraison */}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div className="font-semibold mb-2">Adresse de livraison</div>
                 {shippingAddress ? (
@@ -142,9 +160,7 @@ export default function Checkout() {
                     </div>
                     <div>{shippingAddress.street}</div>
                     <div>{shippingAddress.postal_code} {shippingAddress.city}</div>
-                    <div className="text-sm md:text-base">
-  {shippingAddress.country}
-</div>
+                    <div className="text-sm md:text-base">{shippingAddress.country}</div>
                     <Link href="/addresses" className="text-blue-600 underline mt-2 inline-block">
                       Modifier l'adresse
                     </Link>
@@ -159,6 +175,67 @@ export default function Checkout() {
                 )}
               </div>
 
+              {/* Adresse de facturation - NOUVEAU */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="font-semibold mb-3">Adresse de facturation</div>
+                
+                {/* Case à cocher "Même adresse" */}
+                <label className="flex items-center gap-2 mb-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={sameAddress}
+                    onChange={(e) => setSameAddress(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm">Identique à l'adresse de livraison</span>
+                </label>
+
+                {/* Sélecteur d'adresse de facturation */}
+                {!sameAddress && (
+                  <>
+                    {billingAddresses.length > 0 ? (
+                      <select
+                        value={selectedBillingId || ''}
+                        onChange={(e) => setSelectedBillingId(Number(e.target.value))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        {billingAddresses.map((addr) => (
+                          <option key={addr.id} value={addr.id}>
+                            {addr.title || `${addr.first_name} ${addr.last_name} - ${addr.city}`}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="text-sm text-gray-600">
+                        Aucune adresse de facturation disponible.
+                        <Link href="/addresses" className="text-blue-600 underline ml-1">
+                          Ajouter une adresse
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Afficher l'adresse sélectionnée */}
+                    {selectedBillingId && billingAddresses.length > 0 && (
+                      <div className="mt-3 p-3 bg-white rounded border border-gray-200 text-sm">
+                        {(() => {
+                          const addr = billingAddresses.find(a => a.id === selectedBillingId);
+                          if (!addr) return null;
+                          return (
+                            <>
+                              <div className="font-medium">{addr.first_name} {addr.last_name}</div>
+                              <div>{addr.street}</div>
+                              <div>{addr.postal_code} {addr.city}</div>
+                              <div>{addr.country}</div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Totaux */}
               <div className="bg-white rounded-lg shadow-md p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-600">Sous-total</span>
@@ -173,7 +250,6 @@ export default function Checkout() {
                   <span className="text-blue-700">{fmt.format(showTotal)}</span>
                 </div>
 
-                {/* 🔥 MODIFICATION: Bouton et onClick changés */}
                 <button
                   onClick={handleProceedToPayment}
                   disabled={processing}
