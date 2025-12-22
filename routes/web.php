@@ -19,6 +19,7 @@ use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\AdminUserController;
 use App\Http\Controllers\Backoffice\AdminOrderController;
 use App\Http\Controllers\Backoffice\AdminClubController;
+use App\Http\Controllers\Backoffice\AdminMaillotController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -215,7 +216,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/clubs/{club}', [AdminClubController::class, 'update'])->name('clubs.update');
     Route::delete('/clubs/{club}', [AdminClubController::class, 'destroy'])->name('clubs.destroy');
 
-    
+    // 👕 ROUTES MAILLOTS
+    Route::get('/maillots', [AdminMaillotController::class, 'index'])->name('maillots.index');
+    Route::post('/maillots', [AdminMaillotController::class, 'store'])->name('maillots.store');
+    Route::put('/maillots/{maillot}', [AdminMaillotController::class, 'update'])->name('maillots.update');
+    Route::delete('/maillots/{maillot}', [AdminMaillotController::class, 'destroy'])->name('maillots.destroy');
 
 });
 
