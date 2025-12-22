@@ -48,45 +48,39 @@ class HandleInertiaRequests extends Middleware
     ];
 }
 
-    /**
-     * Génère les données des catégories pour le Header
-     * 
-     * @return array
-     */
-    private function getCategoriesData()
-    {
-        // Créer une instance du controller pour accéder à la config
-        $controller = new CategoryController();
-        $config = $controller->getCategoryConfig();
+   /**
+ * Génère les données des catégories pour le Header
+ * 
+ * @return array
+ */
+private function getCategoriesData()
+{
+    // Créer une instance du controller pour accéder à la config
+    $controller = new CategoryController();
+    $config = $controller->getCategoryConfig();
+    
+    $categories = [];
+    
+    foreach ($config as $slug => $data) {
+        // ✅ CHANGEMENT : Charger les clubs basé sur la catégorie en BDD
+        $clubs = Club::where('category', $slug)
+            ->orderBy('name', 'asc')
+            ->get(['name', 'slug'])
+            ->map(function($club) {
+                return [
+                    'name' => $club->name,
+                    'href' => "/clubs/{$club->slug}/maillots"
+                ];
+            })
+            ->toArray();
         
-        // Créer un collator français pour le tri
-        $collator = new \Collator('fr_FR');
-        
-        $categories = [];
-        
-        foreach ($config as $slug => $data) {
-            // Récupérer les clubs de cette catégorie depuis la DB
-            $clubs = Club::whereIn('slug', $data['slugs'])
-                ->get(['name', 'slug'])
-                ->sortBy(function($club) use ($collator) {
-                    return $club->name;
-                }, SORT_REGULAR, false)
-                ->map(function($club) {
-                    return [
-                        'name' => $club->name,
-                        'href' => "/clubs/{$club->slug}/maillots"
-                    ];
-                })
-                ->values()
-                ->toArray();
-            
-            $categories[] = [
-                'name' => $data['title'],
-                'slug' => $slug,
-                'clubs' => $clubs
-            ];
-        }
-        
-        return $categories;
+        $categories[] = [
+            'name' => $data['title'],
+            'slug' => $slug,
+            'clubs' => $clubs
+        ];
     }
+    
+    return $categories;
+}
 }

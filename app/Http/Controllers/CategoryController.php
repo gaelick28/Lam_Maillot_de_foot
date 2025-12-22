@@ -91,48 +91,49 @@ class CategoryController extends Controller
     /**
      * Méthode générique pour afficher une catégorie
      */
-    public function show($categorySlug)
-    {
-        $config = $this->getCategoryConfig();
+   public function show($categorySlug)
+{
+    $config = $this->getCategoryConfig();
 
-        // Vérifier si la catégorie existe
-        if (!isset($config[$categorySlug])) {
-            abort(404, 'Catégorie non trouvée');
-        }
-
-        $category = $config[$categorySlug];
-
-        // Récupérer UN maillot représentatif par club (30 premiers)
-        $featuredMaillots = Club::whereIn('slug', $category['slugs'])
-            ->with(['maillots' => function($query) {
-                $query->orderBy('id', 'asc')->limit(1);
-            }])
-            ->limit(30)
-            ->get()
-            ->map(function($club) {
-                $maillot = $club->maillots->first();
-                if (!$maillot) return null;
-                
-                return [
-                    'id' => $maillot->id,
-                    'club_name' => $club->name,
-                    'club_slug' => $club->slug,
-                    'maillot_name' => $maillot->nom,
-                    'image' => $maillot->image,
-                    'price' => $maillot->price ?? 20.00,
-                    'href' => "/clubs/{$club->slug}/maillots"
-                ];
-            })
-            ->filter() // Enlever les null
-            ->values();
-
-        return Inertia::render('CategoryPage', [
-            'featuredMaillots' => $featuredMaillots,
-            'title' => $category['title'],
-            'description' => $category['description'],
-            'categorySlug' => $categorySlug
-        ]);
+    // Vérifier si la catégorie existe
+    if (!isset($config[$categorySlug])) {
+        abort(404, 'Catégorie non trouvée');
     }
+
+    $category = $config[$categorySlug];
+
+    // ✅ NOUVEAU : Charger TOUS les clubs de cette catégorie dynamiquement
+    $featuredMaillots = Club::where('category', $categorySlug)
+     ->orderBy('name', 'asc')
+        ->with(['maillots' => function($query) {
+            $query->orderBy('id', 'asc')->limit(1);
+        }])
+        ->limit(30)
+        ->get()
+        ->map(function($club) {
+            $maillot = $club->maillots->first();
+            if (!$maillot) return null;
+            
+            return [
+                'id' => $maillot->id,
+                'club_name' => $club->name,
+                'club_slug' => $club->slug,
+                'maillot_name' => $maillot->nom,
+                'image' => $maillot->image,
+                'price' => $maillot->price ?? 20.00,
+                'href' => "/clubs/{$club->slug}/maillots"
+            ];
+        })
+        ->filter()
+        ->values();
+
+    return Inertia::render('CategoryPage', [
+        'featuredMaillots' => $featuredMaillots,
+        'title' => $category['title'],
+        'description' => $category['description'],
+        'categorySlug' => $categorySlug
+    ]);
+}
 
     // Méthodes spécifiques (pour garder la compatibilité si besoin)
     public function selectionsNationales()
