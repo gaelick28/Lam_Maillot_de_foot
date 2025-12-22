@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Helpers\CountryHelper;
 
-
 class OrderController extends Controller
 {
     /**
@@ -58,7 +57,7 @@ class OrderController extends Controller
                     'street' => $order->shippingAddress->street,
                     'postal_code' => $order->shippingAddress->postal_code,
                     'city' => $order->shippingAddress->city,
-                    'country'     => CountryHelper::name($order->shippingAddress->country),
+                    'country' => CountryHelper::name($order->shippingAddress->country),
                 ] : null,
                 'billingAddress' => $order->billingAddress ? [
                     'first_name' => $order->billingAddress->first_name,
@@ -66,7 +65,7 @@ class OrderController extends Controller
                     'street' => $order->billingAddress->street,
                     'postal_code' => $order->billingAddress->postal_code,
                     'city' => $order->billingAddress->city,
-                    'country'     => CountryHelper::name($order->billingAddress->country),
+                    'country' => CountryHelper::name($order->billingAddress->country),
                 ] : null,
             ],
         ]);
@@ -79,22 +78,45 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $orders = Order::with('items')
+        $orders = Order::with(['items.maillot', 'shippingAddress', 'billingAddress'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('Orders', [
-            'auth' => ['user' => $user->only(['id', 'username', 'email'])],
+        return Inertia::render('Order', [
+            'user' => $user->only(['id', 'username', 'email']),
             'orders' => $orders->map(function ($order) {
                 return [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'total_amount' => $order->total_amount,
-                    'order_status' => $order->order_status,
-                    'status_label' => $order->status_label,
-                    'created_at' => $order->created_at->format('d/m/Y'),
-                    'items_count' => $order->items->count(),
+                    'id' => $order->order_number,
+                    'date' => $order->created_at->format('d F Y'),
+                    'items' => $order->items->count(),
+                    'total' => $order->total_amount,
+                    'status' => $order->status_label,
+                    'trackingNumber' => null,
+                    'itemsDetails' => $order->items->map(function ($item) {
+                        return [
+                            'name' => $item->maillot_name,
+                            'club_name' => $item->club_name,
+                            'image' => $item->maillot->image ?? null,
+                            'size' => $item->size,
+                            'quantity' => $item->quantity,
+                            'numero' => $item->numero,
+                            'nom' => $item->nom,
+                            'price' => $item->subtotal,
+                        ];
+                    }),
+                    'shippingAddress' => $order->shippingAddress ? 
+                        $order->shippingAddress->first_name . ' ' . $order->shippingAddress->last_name . "\n" .
+                        $order->shippingAddress->street . "\n" .
+                        $order->shippingAddress->postal_code . ' ' . $order->shippingAddress->city . "\n" .
+                        CountryHelper::name($order->shippingAddress->country)
+                    : 'Adresse non disponible',
+                    'billingAddress' => $order->billingAddress ? 
+                        $order->billingAddress->first_name . ' ' . $order->billingAddress->last_name . "\n" .
+                        $order->billingAddress->street . "\n" .
+                        $order->billingAddress->postal_code . ' ' . $order->billingAddress->city . "\n" .
+                        CountryHelper::name($order->billingAddress->country)
+                    : 'Adresse non disponible',
                 ];
             }),
             'pagination' => [
@@ -149,22 +171,21 @@ class OrderController extends Controller
                     ];
                 }),
                 'shippingAddress' => $order->shippingAddress ? [
-    'first_name'  => $order->shippingAddress->first_name,
-    'last_name'   => $order->shippingAddress->last_name,
-    'street'      => $order->shippingAddress->street,
-    'postal_code' => $order->shippingAddress->postal_code,
-    'city'        => $order->shippingAddress->city,
-    'country'     => CountryHelper::name($order->shippingAddress->country),
-] : null,
-'billingAddress' => $order->billingAddress ? [
-    'first_name'  => $order->billingAddress->first_name,
-    'last_name'   => $order->billingAddress->last_name,
-    'street'      => $order->billingAddress->street,
-    'postal_code' => $order->billingAddress->postal_code,
-    'city'        => $order->billingAddress->city,
-    'country'     => CountryHelper::name($order->billingAddress->country),
-] : null,
-
+                    'first_name' => $order->shippingAddress->first_name,
+                    'last_name' => $order->shippingAddress->last_name,
+                    'street' => $order->shippingAddress->street,
+                    'postal_code' => $order->shippingAddress->postal_code,
+                    'city' => $order->shippingAddress->city,
+                    'country' => CountryHelper::name($order->shippingAddress->country),
+                ] : null,
+                'billingAddress' => $order->billingAddress ? [
+                    'first_name' => $order->billingAddress->first_name,
+                    'last_name' => $order->billingAddress->last_name,
+                    'street' => $order->billingAddress->street,
+                    'postal_code' => $order->billingAddress->postal_code,
+                    'city' => $order->billingAddress->city,
+                    'country' => CountryHelper::name($order->billingAddress->country),
+                ] : null,
             ],
         ]);
     }

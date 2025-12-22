@@ -26,6 +26,9 @@ import WelcomeMessage from "@/Components/WelcomeMessage"
 
 
 export default function OrderHistory({ user, orders = [] }) {
+  console.log('Orders reçus:', orders);
+  console.log('Premier order:', orders[0]);
+  
   return (
     <>
       <Header />
@@ -136,37 +139,40 @@ export default function OrderHistory({ user, orders = [] }) {
                           </div>
                         </div>
 
-                        {/* Informations de livraison */}
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-4">Adresse de livraison</h4>
-                          <div className="bg-yellow-100 rounded-lg p-4 border border-gray-200">
-                            <p className="text-gray-700">{order.shippingAddress}</p>
-                          </div>
+                        {/* Informations de livraison et facturation */}
+<div>
+  <h4 className="font-semibold text-gray-900 mb-4">Adresses</h4>
+  
+  {/* Adresse de livraison */}
+  <div className="bg-yellow-100 rounded-lg p-4 border border-gray-200 mb-3">
+    <p className="text-xs font-semibold text-gray-600 mb-1">📦 LIVRAISON</p>
+    <p className="text-gray-700 whitespace-pre-line">{order.shippingAddress}</p>
+  </div>
 
-                          {order.trackingNumber && (
-                            <div className="mt-6">
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Suivi de colis</p>
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  value={order.trackingNumber}
-                                  readOnly
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50"
-                                />
-                                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition-colors">
-                                  Suivre
-                                </button>
-                              </div>
-                            </div>
-                          )}
+  {/* Adresse de facturation - TOUJOURS affichée */}
 
-                          {/* Bouton voir détails, supprimé car superfétatoire + 404 not found. Infos déjà présentes dans les commandes */}
-                          {/* <Link
-                            href={`/orders/${order.id}`}
-                            className="mt-6 w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
-                          >
-                            Voir les détails
-                          </Link> */}
+    <div className="bg-blue-100 rounded-lg p-4 border border-gray-200 mb-3">
+      <p className="text-xs font-semibold text-gray-600 mb-1">🧾 FACTURATION</p>
+      <p className="text-gray-700 whitespace-pre-line">{order.billingAddress ?? "Adresse non disponible"}</p>
+    </div>
+  
+
+  {order.trackingNumber && (
+    <div className="mt-4">
+      <p className="text-sm font-semibold text-gray-900 mb-2">Suivi de colis</p>
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={order.trackingNumber}
+          readOnly
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50"
+        />
+        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm transition-colors">
+          Suivre
+        </button>
+      </div>
+    </div>
+  )}
                         </div>
                       </div>
                     </div>

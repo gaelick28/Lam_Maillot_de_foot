@@ -96,7 +96,7 @@ Route::prefix('api/wishlist')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/compte', [PageController::class, 'account'])->name('account');
-    Route::get('/order', [PageController::class, 'order'])->name('order');
+   Route::get('/order', [OrderController::class, 'history'])->name('order');
     Route::get('/accountdetails', [PageController::class, 'accountDetails'])->name('account.details');
    
     // 🔥 Route wishlist - UTILISE WishlistController au lieu de PageController
