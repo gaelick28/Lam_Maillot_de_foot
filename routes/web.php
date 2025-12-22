@@ -18,6 +18,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Backoffice\DashboardController;
 use App\Http\Controllers\Backoffice\AdminUserController;
 use App\Http\Controllers\Backoffice\AdminOrderController;
+use App\Http\Controllers\Backoffice\AdminClubController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -207,6 +208,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+
+    // 📦 ROUTES CLUBS
+    Route::get('/clubs', [AdminClubController::class, 'index'])->name('clubs.index');
+    Route::post('/clubs', [AdminClubController::class, 'store'])->name('clubs.store');
+    Route::put('/clubs/{club}', [AdminClubController::class, 'update'])->name('clubs.update');
+    Route::delete('/clubs/{club}', [AdminClubController::class, 'destroy'])->name('clubs.destroy');
+
+    
+
 });
 
 

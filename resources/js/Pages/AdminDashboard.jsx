@@ -155,7 +155,15 @@ export default function AdminDashboard({ stats }) {
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les commandes</h3>
             <p className="text-sm text-gray-600">Voir et traiter les commandes en attente</p>
           </a>
-
+          
+          <a
+            href="/admin/orders"
+            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+          >
+            <h3 className="font-semibold text-gray-900 mb-2">Gérer les commandes</h3>
+            <p className="text-sm text-gray-600">Voir et traiter les commandes en attente</p>
+          </a>
+          
           <a
             href="/admin/maillots"
             className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
@@ -163,14 +171,15 @@ export default function AdminDashboard({ stats }) {
             <h3 className="font-semibold text-gray-900 mb-2">Ajouter un maillot</h3>
             <p className="text-sm text-gray-600">Ajouter un nouveau produit au catalogue</p>
           </a>
-
-          <a
-            href="/admin/users"
+          
+            <a
+            href="/admin/clubs"
             className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
-            <h3 className="font-semibold text-gray-900 mb-2">Gérer les utilisateurs</h3>
-            <p className="text-sm text-gray-600">Voir et modifier les comptes utilisateurs</p>
+            <h3 className="font-semibold text-gray-900 mb-2">Clubs</h3>
+            <p className="text-sm text-gray-600">Ajouter un nouveau club</p>
           </a>
+          
         </div>
       </div>
     </AdminLayout>

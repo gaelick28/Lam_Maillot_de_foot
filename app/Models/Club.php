@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Club extends Model
 {
+protected $fillable = [
+        'name',
+        'slug',
+        'category',
+        'logo',
+    ];
+
+
     public function maillots()
     {
         return $this->hasMany(Maillot::class);
