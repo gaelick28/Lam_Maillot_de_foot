@@ -198,32 +198,32 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
           </table>
 
           {/* Pagination */}
-          {maillots.last_page > 1 && (
-            <div className="px-6 py-4 bg-gray-50 border-t flex justify-between items-center">
-              <div className="text-sm text-gray-600">
-                Page {maillots.current_page} sur {maillots.last_page}
-              </div>
-              <div className="flex gap-2">
-                {maillots.links.map((link, index) => (
-                  <Link
-                    key={index}
-                    href={link.url || '#'}
-                    disabled={!link.url}
-                    className={`px-3 py-1 rounded ${
-                      link.active
-                        ? 'bg-blue-600 text-white'
-                        : link.url
-                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+          {/* Pagination */}
+{maillots.last_page > 1 && (
+  <div className="flex justify-between items-center bg-white rounded-lg shadow px-6 py-4">
+    <p className="text-sm text-gray-600">
+      Affichage de {maillots.from} à {maillots.to} sur {maillots.total} maillots
+    </p>
+    
+    <div className="flex gap-2">
+      {maillots.links.map((link, index) => (
+        <Link
+          key={index}
+          href={link.url || '#'}
+          preserveState
+          className={`px-3 py-1 rounded text-sm ${
+            link.active
+              ? 'bg-blue-600 text-white'
+              : link.url
+              ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+          }`}
+          dangerouslySetInnerHTML={{ __html: link.label }}
+        />
+      ))}
+    </div>
+  </div>
+)}
 
       {/* Modal Créer/Éditer */}
       {showModal && (
@@ -335,6 +335,8 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
           </div>
         </div>
       )}
+    </div>
+      </div>
     </AdminLayout>
   )
 }

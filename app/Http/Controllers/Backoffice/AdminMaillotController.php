@@ -22,12 +22,21 @@ class AdminMaillotController extends Controller
         $maillots = Maillot::query()
             ->with('club')
             ->when($search, function ($query, $search) {
-                $query->where('nom', 'like', "%{$search}%");
+                $query->where(function($q) use ($search) {
+    $q->where('nom', 'like', "%{$search}%")
+      ->orWhereHas('club', function($clubQuery) use ($search) {
+          $clubQuery->where('name', 'like', "%{$search}%");
+      });
+});
             })
             ->when($clubFilter, function ($query, $clubFilter) {
                 $query->where('club_id', $clubFilter);
             })
-            ->orderBy('created_at', 'desc')
+            // tri par nom de club puis nom de maillot
+->join('clubs', 'maillots.club_id', '=', 'clubs.id')
+->orderBy('clubs.name', 'asc')
+->orderBy('maillots.nom', 'asc')
+->select('maillots.*')
             ->paginate(20)
             ->withQueryString();
 
