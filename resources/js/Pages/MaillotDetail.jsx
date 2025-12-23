@@ -10,6 +10,9 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [numero, setNumero] = useState("");
   const [nom, setNom] = useState("");
   const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [mobileZoom, setMobileZoom] = useState(false);
 
   // Validation identique à Panier.jsx pour le numéro
   const validateNumero = (val) => {
@@ -63,25 +66,74 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
     });
   }
 
+  // Gestion de l'effet loupe
+  const handleMouseMove = (e) => {
+  const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+
+  const x = ((e.clientX - left) / width) * 100;
+  const y = ((e.clientY - top) / height) * 100;
+
+  setZoomPosition({ x, y });
+};
+
   return (
     <>
       <Header />
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8 flex flex-col md:flex-row gap-8">
-          {/* 🔥 Section image avec bouton wishlist - CORRECTION: wrapper qui épouse l'image */}
+          
+          {/* 🔥 Section image avec bouton wishlist - CORRECTION: wrapper qui épouse l'image  + ajout effet loupe (zoom)*/}
           <div className="flex-1 flex justify-center md:justify-start">
-            <div className="relative w-full max-w-md">
-              <img 
-                src={`/${maillot.image}`} 
-                alt={maillot.nom} 
-                className="w-full rounded shadow" 
-              />   
-              {/* Bouton Wishlist positionné en haut à droite de l'image */}
-              <div className="absolute top-2 right-2 z-10">
-                <WishlistButton maillotId={maillot.id} />
+              <div
+                className="relative w-full max-w-md overflow-hidden"
+                onMouseEnter={() => setShowZoom(true)}
+                onMouseLeave={() => setShowZoom(false)}
+                onMouseMove={handleMouseMove}
+              >
+                {/* Image normale */}
+                <img
+                  src={`/${maillot.image}`}
+                  alt={maillot.nom}
+                  className="w-full rounded shadow"
+                  onClick={() => setMobileZoom(true)}  // Pour mobile : afficher l'image en grand
+                />
+
+                {/* Effet loupe */}
+                {showZoom && (
+                  <div
+                    className="absolute inset-0 rounded"
+                    style={{
+                      backgroundImage: `url(/${maillot.image})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "200%", // niveau de zoom
+                      backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    }}
+                  />
+                )}
+                
+                {/*  version mobile de l'effet zoom */}
+            {mobileZoom && (
+              <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center md:hidden">
+                <img
+                  src={`/${maillot.image}`}
+                  alt={maillot.nom}
+                  className="max-w-full max-h-full"
+                />
+                <button
+                  className="absolute top-4 right-4 text-white text-3xl"
+                  onClick={() => setMobileZoom(false)}
+                >
+                  ✕
+                </button>
               </div>
+            )}
+
+            {/* Wishlist */}
+            <div className="absolute top-2 right-2 z-10">
+              <WishlistButton maillotId={maillot.id} />
             </div>
           </div>
+        </div>
 
           <div className="flex-1">  
             <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
