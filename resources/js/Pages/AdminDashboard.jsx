@@ -224,7 +224,7 @@ export default function AdminDashboard({ stats }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link
             href="/admin/users"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-orange-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les utilisateurs</h3>
             <p className="text-sm text-gray-600">Actions et informations comptes utilisateurs</p>
@@ -232,7 +232,7 @@ export default function AdminDashboard({ stats }) {
           
           <Link
             href="/admin/orders"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-green-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les commandes</h3>
             <p className="text-sm text-gray-600">Voir et traiter les commandes en attente</p>
@@ -240,7 +240,7 @@ export default function AdminDashboard({ stats }) {
           
           <Link
             href="/admin/maillots"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-blue-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les maillots</h3>
             <p className="text-sm text-gray-600">Modifier les produits et les stocks</p>
@@ -248,7 +248,7 @@ export default function AdminDashboard({ stats }) {
           
           <Link
             href="/admin/clubs"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-purple-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les clubs</h3>
             <p className="text-sm text-gray-600">Ajouter ou modifier des clubs</p>
