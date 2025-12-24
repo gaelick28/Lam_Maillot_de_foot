@@ -18,7 +18,7 @@ class AdminMaillotController extends Controller
     {
         $search = $request->get('search');
         $clubFilter = $request->get('club');
-        $stockFilter = $request->get('stock'); // 'low', 'out', 'all'
+        $stockFilter = $request->get('stock'); // 'low', 'out', 'partial', 'all'
 
         $maillots = Maillot::query()
             ->with('club')
@@ -35,15 +35,40 @@ class AdminMaillotController extends Controller
             })
             ->when($stockFilter, function ($query, $stockFilter) {
                 if ($stockFilter === 'out') {
-                    // Stock épuisé (toutes les tailles à 0)
+                    // ✅ Rupture totale (toutes les tailles à 0)
                     $query->where('stock_s', 0)
                           ->where('stock_m', 0)
                           ->where('stock_l', 0)
                           ->where('stock_xl', 0);
+                } elseif ($stockFilter === 'partial') {
+                    // ✅ Rupture partielle (au moins une taille à 0, mais pas toutes)
+                    $query->where(function($q) {
+                        $q->where('stock_s', 0)
+                          ->orWhere('stock_m', 0)
+                          ->orWhere('stock_l', 0)
+                          ->orWhere('stock_xl', 0);
+                    })
+                    ->whereRaw('(stock_s + stock_m + stock_l + stock_xl) > 0');
                 } elseif ($stockFilter === 'low') {
-                    // Stock faible (total < 10)
+                    // ✅ Stock faible total (total < 10 et > 0)
                     $query->whereRaw('(stock_s + stock_m + stock_l + stock_xl) < 10')
                           ->whereRaw('(stock_s + stock_m + stock_l + stock_xl) > 0');
+                } elseif ($stockFilter === 'low_partial') {
+                    // ✅ NOUVEAU : Stock faible partiel (au moins une taille < 5)
+                    $query->where(function($q) {
+                        $q->where(function($subQ) {
+                            $subQ->where('stock_s', '<', 5)->where('stock_s', '>', 0);
+                        })
+                        ->orWhere(function($subQ) {
+                            $subQ->where('stock_m', '<', 5)->where('stock_m', '>', 0);
+                        })
+                        ->orWhere(function($subQ) {
+                            $subQ->where('stock_l', '<', 5)->where('stock_l', '>', 0);
+                        })
+                        ->orWhere(function($subQ) {
+                            $subQ->where('stock_xl', '<', 5)->where('stock_xl', '>', 0);
+                        });
+                    });
                 }
             })
             ->join('clubs', 'maillots.club_id', '=', 'clubs.id')

@@ -146,8 +146,10 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Tous les stocks</option>
-              <option value="out">Rupture de stock</option>
-              <option value="low">Stock faible (&lt; 10)</option>
+              <option value="partial">Rupture partielle (au moins 1 taille)</option>
+              <option value="out">Rupture totale (toutes les tailles)</option>
+              <option value="low_partial">Stock faible partiel (au moins 1 taille &lt; 5)</option>
+              <option value="low">Stock faible total (&lt; 10)</option>
             </select>
 
             <button

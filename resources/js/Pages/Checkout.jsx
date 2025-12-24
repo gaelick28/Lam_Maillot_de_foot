@@ -5,6 +5,70 @@ import React, { useMemo, useState, useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
+// ✅ NOUVEAU : Composant Modal d'erreur de stock
+function StockErrorModal({ stockIssues, onClose }) {
+  if (!stockIssues || stockIssues.length === 0) return null
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
+        {/* En-tête */}
+        <div className="flex items-center mb-4">
+          <div className="p-3 bg-red-100 rounded-full mr-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Stock insuffisant</h2>
+            <p className="text-gray-600 text-sm">Certains articles ne sont plus disponibles</p>
+          </div>
+        </div>
+
+        {/* Liste des articles en problème */}
+        <div className="mb-6">
+          <p className="text-gray-700 mb-3">
+            Les articles suivants n'ont pas assez de stock :
+          </p>
+          <div className="space-y-3">
+            {stockIssues.map((issue, index) => (
+              <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="font-semibold text-red-800">{issue.message}</p>
+                {issue.details && (
+                  <p className="text-sm text-red-600 mt-1">{issue.details}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Message d'aide */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+          <p className="text-sm text-blue-800">
+            💡 <strong>Suggestion :</strong> Retournez à votre panier pour ajuster les quantités ou supprimer les articles concernés.
+          </p>
+        </div>
+
+        {/* Boutons */}
+        <div className="flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+          >
+            Fermer
+          </button>
+          <Link
+            href="/panier"
+            className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-center"
+          >
+            Retour au panier
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Checkout() {
   const {
     items = [],
@@ -13,11 +77,13 @@ export default function Checkout() {
     total = 0,
     shippingAddress = null,
     auth = {},
+    stockIssues = [], // ✅ NOUVEAU : Récupérer les erreurs de stock
   } = usePage().props;
 
   const [processing, setProcessing] = useState(false);
   const [sameAddress, setSameAddress] = useState(false);
   const [selectedBillingId, setSelectedBillingId] = useState(null);
+  const [showStockModal, setShowStockModal] = useState(false); // ✅ NOUVEAU : State pour la modal
 
   // Récupérer les adresses de facturation de l'utilisateur
   const billingAddresses = auth.user?.addresses?.filter(addr => addr.type === 'billing') || [];
@@ -28,6 +94,13 @@ export default function Checkout() {
       setSelectedBillingId(billingAddresses[0].id);
     }
   }, [billingAddresses, selectedBillingId]);
+
+  // ✅ NOUVEAU : Afficher la modal automatiquement si erreurs de stock
+  useEffect(() => {
+    if (stockIssues && stockIssues.length > 0) {
+      setShowStockModal(true);
+    }
+  }, [stockIssues]);
 
   const fmt = useMemo(
     () => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }),
@@ -48,6 +121,12 @@ export default function Checkout() {
   const showTotal       = total       > 0 ? total       : (showSubtotal + showSupplements);
 
   const handleProceedToPayment = () => {
+    // ✅ NOUVEAU : Empêcher la validation si erreurs de stock
+    if (stockIssues && stockIssues.length > 0) {
+      setShowStockModal(true);
+      return;
+    }
+
     if (!shippingAddress) {
       alert("Veuillez d'abord renseigner votre adresse de livraison.");
       return;
@@ -69,7 +148,7 @@ export default function Checkout() {
 
     router.post("/checkout/proceed", {
       shipping_address_id: shippingAddress.id,
-      billing_address_id: billingId, // ✅ CORRIGÉ
+      billing_address_id: billingId,
     }, {
       onFinish: () => setProcessing(false),
       onError: (errors) => {
@@ -82,9 +161,41 @@ export default function Checkout() {
   return (
     <>
       <Header />
+
+      {/* ✅ NOUVEAU : Modal d'erreur de stock */}
+      {showStockModal && (
+        <StockErrorModal 
+          stockIssues={stockIssues} 
+          onClose={() => setShowStockModal(false)}
+        />
+      )}
+
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 min-h-screen">
         <div className="container max-w-7xl mx-auto px-4 py-6 md:py-10">
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Validation de la commande</h1>
+
+          {/* ✅ NOUVEAU : Alerte visible si problème de stock */}
+          {stockIssues && stockIssues.length > 0 && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+              <div className="flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div>
+                  <p className="font-bold">⚠️ Attention : Stock insuffisant</p>
+                  <p className="text-sm mt-1">
+                    Vous ne pouvez pas finaliser cette commande. 
+                    <button 
+                      onClick={() => setShowStockModal(true)}
+                      className="underline ml-1 font-medium hover:text-red-800"
+                    >
+                      Voir les détails
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Récap produits */}
@@ -175,7 +286,7 @@ export default function Checkout() {
                 )}
               </div>
 
-              {/* Adresse de facturation - NOUVEAU */}
+              {/* Adresse de facturation */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="font-semibold mb-3">Adresse de facturation</div>
                 
@@ -250,12 +361,22 @@ export default function Checkout() {
                   <span className="text-blue-700">{fmt.format(showTotal)}</span>
                 </div>
 
+                {/* ✅ MODIFIÉ : Bouton désactivé si erreur de stock */}
                 <button
                   onClick={handleProceedToPayment}
-                  disabled={processing}
-                  className="w-full mt-4 bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={processing || (stockIssues && stockIssues.length > 0)}
+                  className={`w-full mt-4 text-white py-3 rounded-md focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed transition-colors ${
+                    stockIssues && stockIssues.length > 0
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-red-800 to-blue-500 hover:opacity-95 disabled:opacity-50'
+                  }`}
                 >
-                  {processing ? 'Chargement...' : `Continuer vers le paiement →`}
+                  {stockIssues && stockIssues.length > 0 
+                    ? '⚠️ Stock insuffisant - Retournez au panier'
+                    : processing 
+                      ? 'Chargement...' 
+                      : 'Continuer vers le paiement →'
+                  }
                 </button>
               </div>
             </div>
