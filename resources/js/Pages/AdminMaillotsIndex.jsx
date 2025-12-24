@@ -126,13 +126,13 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un maillot..."
-              className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-blue-50 flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             
             <select
               value={clubFilter}
               onChange={(e) => setClubFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-red-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Tous les clubs</option>
               {clubs.map((club) => (
@@ -143,7 +143,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             <select
               value={stockFilter}
               onChange={(e) => setStockFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-yellow-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Tous les stocks</option>
               <option value="partial">Rupture partielle (au moins 1 taille)</option>
