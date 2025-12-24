@@ -35,6 +35,9 @@ class DashboardController extends Controller
             'totalProducts' => Maillot::count(),
             'totalClubs' => Club::count(),
             
+            // ✅ NOUVELLES STATISTIQUES : STOCKS
+            'stockStats' => $this->getStockStatistics(),
+            
             // Dernières commandes (5 plus récentes)
             'recentOrders' => Order::with('user')
                 ->orderBy('created_at', 'desc')
@@ -56,8 +59,44 @@ class DashboardController extends Controller
         return Inertia::render('AdminDashboard', [
             'stats' => $stats,
             'auth' => [
-        'user' => Auth::user()
-        ]
+                'user' => Auth::user()
+            ]
         ]);
+    }
+
+    /**
+     * ✅ NOUVELLE MÉTHODE : Calculer les statistiques de stock
+     */
+    private function getStockStatistics()
+    {
+        // Récupérer tous les maillots avec leurs stocks
+        $maillots = Maillot::all();
+
+        $stats = [
+            'outOfStock' => 0,      // Rupture totale (toutes tailles à 0)
+            'lowStock' => 0,        // Stock faible (total < 10)
+            'inStock' => 0,         // Stock normal (total >= 10)
+            'totalStockValue' => 0, // Valeur totale du stock (prix × quantité)
+            'totalUnits' => 0,      // Nombre total d'unités en stock
+        ];
+
+        foreach ($maillots as $maillot) {
+            $totalStock = $maillot->stock_s + $maillot->stock_m + $maillot->stock_l + $maillot->stock_xl;
+            $stats['totalUnits'] += $totalStock;
+            
+            // Valeur du stock
+            $stats['totalStockValue'] += $totalStock * $maillot->price;
+
+            // Catégorisation
+            if ($totalStock === 0) {
+                $stats['outOfStock']++;
+            } elseif ($totalStock < 10) {
+                $stats['lowStock']++;
+            } else {
+                $stats['inStock']++;
+            }
+        }
+
+        return $stats;
     }
 }

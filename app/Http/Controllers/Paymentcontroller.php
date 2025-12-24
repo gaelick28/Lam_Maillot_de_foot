@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
+use App\Models\Maillot;
 use App\Helpers\CountryHelper;
 
 
@@ -35,6 +36,16 @@ class PaymentController extends Controller
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.show')
                 ->with('error', 'Votre panier est vide.');
+        }
+
+        // ✅ VÉRIFICATION DES STOCKS AVANT AFFICHAGE
+        $stockIssues = $this->checkStockAvailability($cart);
+        
+        if (!empty($stockIssues)) {
+            // Rediriger vers le panier avec les erreurs
+            return redirect()->route('cart.show')
+                ->with('error', 'Certains articles ne sont plus disponibles en stock.')
+                ->with('stock_issues', $stockIssues);
         }
 
         // Calculer les totaux
@@ -91,27 +102,58 @@ class PaymentController extends Controller
             'shipping_cost' => $shippingCost,
             'total' => $total,
             'shippingAddress' => $shippingAddress ? [
-    'first_name'  => $shippingAddress->first_name,
-    'last_name'   => $shippingAddress->last_name,
-    'street'      => $shippingAddress->street,
-    'postal_code' => $shippingAddress->postal_code,
-    'city'        => $shippingAddress->city,
-    'country'     => CountryHelper::name($shippingAddress->country),
-] : null,
-'billingAddress' => $billingAddress ? [
-    'first_name'  => $billingAddress->first_name,
-    'last_name'   => $billingAddress->last_name,
-    'street'      => $billingAddress->street,
-    'postal_code' => $billingAddress->postal_code,
-    'city'        => $billingAddress->city,
-    'country'     => CountryHelper::name($billingAddress->country),
-] : null,
-
+                'first_name'  => $shippingAddress->first_name,
+                'last_name'   => $shippingAddress->last_name,
+                'street'      => $shippingAddress->street,
+                'postal_code' => $shippingAddress->postal_code,
+                'city'        => $shippingAddress->city,
+                'country'     => CountryHelper::name($shippingAddress->country),
+            ] : null,
+            'billingAddress' => $billingAddress ? [
+                'first_name'  => $billingAddress->first_name,
+                'last_name'   => $billingAddress->last_name,
+                'street'      => $billingAddress->street,
+                'postal_code' => $billingAddress->postal_code,
+                'city'        => $billingAddress->city,
+                'country'     => CountryHelper::name($billingAddress->country),
+            ] : null,
         ]);
     }
 
     /**
-     * Traiter le paiement (factice)
+     * ✅ NOUVELLE MÉTHODE : Vérifier la disponibilité des stocks
+     */
+    private function checkStockAvailability($cart)
+    {
+        $issues = [];
+
+        foreach ($cart->items as $item) {
+            $maillot = Maillot::find($item->maillot_id);
+            
+            if (!$maillot) {
+                $issues[] = "Le maillot n'existe plus.";
+                continue;
+            }
+
+            $requestedQty = (int) $item->quantity;
+            $availableStock = $maillot->getStockForSize($item->size);
+
+            if ($availableStock < $requestedQty) {
+                $issues[] = sprintf(
+                    "%s (taille %s) : Stock insuffisant (disponible: %d, demandé: %d)",
+                    $maillot->nom,
+                    $item->size,
+                    $availableStock,
+                    $requestedQty
+                );
+            }
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Traiter le paiement avec décrémentation des stocks
      */
     public function process(Request $request)
     {
@@ -136,6 +178,15 @@ class PaymentController extends Controller
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.show')
                 ->with('error', 'Votre panier est vide.');
+        }
+
+        // ✅ VÉRIFICATION FINALE DES STOCKS
+        $stockIssues = $this->checkStockAvailability($cart);
+        
+        if (!empty($stockIssues)) {
+            return redirect()->route('cart.show')
+                ->with('error', 'Stock insuffisant pour certains articles.')
+                ->with('stock_issues', $stockIssues);
         }
 
         // Transaction pour garantir la cohérence
@@ -177,7 +228,7 @@ class PaymentController extends Controller
                 'paid_at' => now(),
             ]);
 
-            // Créer les order_items
+            // Créer les order_items ET décrémenter les stocks
             foreach ($cart->items as $item) {
                 $price = (float) ($item->price ?? $item->maillot->price ?? 0);
                 $qty = (int) $item->quantity;
@@ -203,6 +254,17 @@ class PaymentController extends Controller
                     'personalization_cost' => $personalizationCost,
                     'subtotal' => $subtotalLine,
                 ]);
+
+                // ✅ DÉCRÉMENTER LE STOCK
+                $maillot = Maillot::find($item->maillot_id);
+                
+                if ($maillot) {
+                    $success = $maillot->decrementStock($item->size, $qty);
+                    
+                    if (!$success) {
+                        throw new \Exception("Impossible de décrémenter le stock pour {$maillot->nom} taille {$item->size}");
+                    }
+                }
             }
 
             // Vider le panier
