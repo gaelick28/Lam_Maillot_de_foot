@@ -73,8 +73,7 @@ export default function AdminLayout({ children }) {
             </svg>
             {sidebarOpen && <span>Maillots</span>}
           </Link>
-        </nav>
-
+        
         <Link
             href="/admin/statistics"
             className="flex items-center gap-3 px-4 py-3 hover:bg-gray-700 transition-colors"
@@ -84,6 +83,7 @@ export default function AdminLayout({ children }) {
             </svg>
             {sidebarOpen && <span>Statistiques</span>}
           </Link>
+      </nav>
 
         {/* Bouton retour au site */}
        <div className="mt-auto w-full p-4 border-t border-gray-700">
