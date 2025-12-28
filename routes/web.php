@@ -198,7 +198,8 @@ Route::middleware(['auth'])->group(function () {
 //  ROUTES ADMIN - Backoffice
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard admin
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics'); // ✅ NOUVEAU
 
 // Routes users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
@@ -222,6 +223,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/maillots/{maillot}', [AdminMaillotController::class, 'update'])->name('maillots.update');
     Route::delete('/maillots/{maillot}', [AdminMaillotController::class, 'destroy'])->name('maillots.destroy');
 
+    
 });
 
 

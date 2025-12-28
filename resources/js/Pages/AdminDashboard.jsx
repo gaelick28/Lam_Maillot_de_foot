@@ -253,6 +253,14 @@ export default function AdminDashboard({ stats }) {
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les clubs</h3>
             <p className="text-sm text-gray-600">Ajouter ou modifier des clubs</p>
           </Link>
+
+          <Link
+  href="/admin/statistics"
+  className="bg-red-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+>
+  <h3 className="font-semibold text-gray-900 mb-2">📊 Statistiques avancées</h3>
+  <p className="text-sm text-gray-600">Graphiques et analyses détaillées</p>
+</Link>
         </div>
       </div>
     </AdminLayout>
