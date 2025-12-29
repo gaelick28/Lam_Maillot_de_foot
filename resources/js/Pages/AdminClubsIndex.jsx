@@ -1,6 +1,9 @@
 import { Head, Link, router, useForm } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
+import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
+
+
 
 export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
   const [search, setSearch] = useState(filters.search || '')
@@ -309,6 +312,8 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
           </div>
         </div>
       )}
+      <BackToDashboardButton />
     </AdminLayout>
+    
   )
 }

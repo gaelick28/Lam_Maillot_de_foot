@@ -1,6 +1,7 @@
 import { Head, Link } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
 
 export default function AdminStatistics({ stats, auth }) {
   // Formater les données pour les graphiques
@@ -33,7 +34,7 @@ export default function AdminStatistics({ stats, auth }) {
     <h1 className="text-3xl font-bold text-gray-900">Statistiques Avancées</h1>
     <p className="text-gray-600 mt-1">Analyse détaillée de vos ventes et performances</p>
   </div>
- <button
+ {/* <button
             onClick={() => window.location.href = '/admin/dashboard'}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
           >
@@ -41,7 +42,7 @@ export default function AdminStatistics({ stats, auth }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Retour au Dashboard
-          </button>
+          </button> */}
 </div>
         {/* Statistiques par période */}
         <div>
@@ -248,17 +249,7 @@ export default function AdminStatistics({ stats, auth }) {
         </div>
 
         {/* Actions */}
-        {/* <div className="flex gap-4">
-          <button
-            onClick={() => window.location.href = '/admin/dashboard'}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Retour au Dashboard
-          </button>
-        </div> */}
+        <BackToDashboardButton />
       </div>
     </AdminLayout>
   )

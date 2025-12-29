@@ -1,6 +1,8 @@
 import { Head, Link, router } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
+import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
+
 
 export default function AdminOrdersIndex({ orders, stats, filters, auth }) {
   const [search, setSearch] = useState(filters.search || '')
@@ -236,6 +238,7 @@ export default function AdminOrdersIndex({ orders, stats, filters, auth }) {
           </div>
         )}
       </div>
+      <BackToDashboardButton />
     </AdminLayout>
   )
 }
