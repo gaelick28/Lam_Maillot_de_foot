@@ -198,8 +198,8 @@ Route::middleware(['auth'])->group(function () {
 //  ROUTES ADMIN - Backoffice
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard admin
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics'); // ✅ NOUVEAU
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics');
 
 // Routes users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
