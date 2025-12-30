@@ -79,12 +79,15 @@ export default function OrderHistory({ user, orders = [] }) {
                                 ? "bg-green-100 text-green-800"
                                 : order.status === "Expédiée"
                                   ? "bg-blue-100 text-blue-800"
-                                  : order.status === "En préparation"
+                                  : order.status === "En attente"
                                     ? "bg-yellow-100 text-yellow-800"
                                     : "bg-gray-100 text-gray-800"
                             }`}
                           >
-                            {order.status}
+                            {/* {order.status} 
+                  // order.status === "En attente"
+                  Sinon version suivante Afficher "En cours de préparation" à la place de "En attente" */}
+                {order.status === "En attente" ? "En cours de préparation" : order.status} 
                           </span>
                           <span className="text-xl font-bold text-gray-900">{Number(order.total).toFixed(2)}€</span>
                         </div>
