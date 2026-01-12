@@ -20,6 +20,7 @@ use App\Http\Controllers\Backoffice\AdminUserController;
 use App\Http\Controllers\Backoffice\AdminOrderController;
 use App\Http\Controllers\Backoffice\AdminClubController;
 use App\Http\Controllers\Backoffice\AdminMaillotController;
+use App\Http\Controllers\Backoffice\AdminProfileController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -223,6 +224,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/maillots/{maillot}', [AdminMaillotController::class, 'update'])->name('maillots.update');
     Route::delete('/maillots/{maillot}', [AdminMaillotController::class, 'destroy'])->name('maillots.destroy');
 
+    // 👤 ROUTES PROFIL ADMIN
+    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::put('/profile/info', [AdminProfileController::class, 'updateInfo'])->name('profile.info');
     
 });
 
