@@ -31,7 +31,7 @@ export default function Contact() {
                     <span className="text-blue-600 mr-3">📞</span>
                     <div>
                       <p className="font-semibold">Téléphone</p>
-                      <p className="text-gray-600">01 23 45 67 89</p>
+                      <p className="text-gray-600">06 13 06 27 30</p>
                       <p className="text-sm text-gray-500">Lun-Ven : 9h-18h</p>
                     </div>
                   </div>
@@ -40,7 +40,7 @@ export default function Contact() {
                     <span className="text-blue-600 mr-3">🏢</span>
                     <div>
                       <p className="font-semibold">Adresse</p>
-                      <p className="text-gray-600">101 Avenue du Football,</p>
+                      <p className="text-gray-600">101 Avenue Bernard Lacombe,</p>
                       <p className="text-gray-600"> 69002 Lyon France</p>
                     </div>
                   </div>
