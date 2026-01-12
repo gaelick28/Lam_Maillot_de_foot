@@ -255,14 +255,14 @@ export default function AdminDashboard({ stats }) {
           </Link>
 
           <Link
-  href="/admin/statistics"
-  className="bg-red-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
->
-  <h3 className="font-semibold text-gray-900 mb-2">📊 Statistiques avancées</h3>
-  <p className="text-sm text-gray-600">Graphiques et analyses détaillées</p>
-</Link>
+          href="/admin/statistics"
+          className="bg-red-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+        >
+          <h3 className="font-semibold text-gray-900 mb-2">📊 Statistiques avancées</h3>
+          <p className="text-sm text-gray-600">Graphiques et analyses détaillées</p>
+        </Link>
 
- <Link
+        <Link
             href="/admin/profile"
             className="bg-yellow-100 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
           >
