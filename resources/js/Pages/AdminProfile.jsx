@@ -192,9 +192,9 @@ export default function AdminProfile({ auth }) {
                     <p className="text-sm text-gray-500">Votre mot de passe est protégé</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mt-4">
+                {/* <p className="text-sm text-gray-600 mt-4">
                   Dernière modification : Informations non disponibles
-                </p>
+                </p> */}
               </div>
             ) : (
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
