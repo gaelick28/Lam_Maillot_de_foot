@@ -1,6 +1,7 @@
 import { Head, useForm } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
+import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
 
 export default function AdminProfile({ auth }) {
   const [showPasswordForm, setShowPasswordForm] = useState(false)
@@ -340,6 +341,7 @@ export default function AdminProfile({ auth }) {
           </div>
         </div>
       </div>
+    <BackToDashboardButton />
     </AdminLayout>
   )
 }
