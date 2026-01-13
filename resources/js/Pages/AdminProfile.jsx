@@ -95,6 +95,10 @@ export default function AdminProfile({ auth }) {
                   <p className="text-gray-900">{auth.user.email}</p>
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                  <p className="text-gray-900">{auth.user.phone || 'Non renseigné'}</p>
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                     Administrateur
