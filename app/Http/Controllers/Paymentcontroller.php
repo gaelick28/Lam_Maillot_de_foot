@@ -11,7 +11,8 @@ use App\Models\OrderItem;
 use App\Models\UserAddress;
 use App\Models\Maillot;
 use App\Helpers\CountryHelper;
-
+use Illuminate\Support\Facades\Log;      // ✅ AJOUTÉ
+use Illuminate\Support\Facades\Mail;     // ✅ AJOUTÉ
 
 class PaymentController extends Controller
 {
@@ -276,6 +277,9 @@ class PaymentController extends Controller
 
             DB::commit();
 
+            // ✅ ENVOI D'EMAIL DE CONFIRMATION (NON-BLOQUANT)
+            $this->sendOrderConfirmationEmail($order);
+
             // Rediriger vers la page de confirmation
             return redirect()->route('order.confirmation', ['orderId' => $order->id])
                 ->with('success', 'Votre commande a été validée avec succès !');
@@ -285,6 +289,38 @@ class PaymentController extends Controller
             
             return redirect()->back()
                 ->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * ✅ NOUVELLE MÉTHODE : Envoi d'email de confirmation de commande (non-bloquant)
+     */
+    private function sendOrderConfirmationEmail($order)
+    {
+        // Vérifier si l'envoi d'email est activé
+        if (!env('MAIL_ORDER_CONFIRMATION_ENABLED', true)) {
+            Log::info('Email de confirmation désactivé pour la commande ' . $order->order_number);
+            return;
+        }
+
+        try {
+            // Charger les relations nécessaires
+            $order->load(['items.maillot', 'user', 'shippingAddress', 'billingAddress']);
+
+            // Envoyer l'email
+            Mail::to($order->user->email)->send(new \App\Mail\OrderConfirmationMail($order));
+
+            Log::info('Email de confirmation envoyé avec succès pour la commande ' . $order->order_number);
+
+        } catch (\Exception $e) {
+            // ⚠️ IMPORTANT : On log l'erreur mais on ne fait PAS échouer la commande
+            Log::error('Erreur lors de l\'envoi de l\'email de confirmation : ' . $e->getMessage(), [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'user_email' => $order->user->email ?? 'N/A',
+            ]);
+
+            // La commande est QUAND MÊME validée, même si l'email n'est pas parti
         }
     }
 }
