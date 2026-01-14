@@ -4,7 +4,7 @@ import Footer from "../Components/Footer";
 import { router } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
 
-export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_numero, prix_nom }) {
+export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix, prix_numero, prix_nom }) {
   const [taille, setTaille] = useState(tailles[0]);
   const [qte, setQte] = useState(1);
   const [numero, setNumero] = useState("");
@@ -13,6 +13,19 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [mobileZoom, setMobileZoom] = useState(false);
+
+  // ✅ Obtenir le stock disponible pour la taille sélectionnée
+  const stockDisponible = stocks[taille] || 0;
+
+  // ✅ Gérer le changement de taille
+  const handleTailleChange = (nouvelleTaille) => {
+    setTaille(nouvelleTaille);
+    const nouveauStock = stocks[nouvelleTaille] || 0;
+    // Si la quantité actuelle dépasse le nouveau stock, on l'ajuste
+    if (qte > nouveauStock) {
+      setQte(nouveauStock > 0 ? nouveauStock : 1);
+    }
+  };
 
   // Validation identique à Panier.jsx pour le numéro
   const validateNumero = (val) => {
@@ -36,7 +49,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   };
 
     // Validation identique à Panier.jsx
-    const validateNom = (val) => /^[A-Z'ÇÉÈÊËÏÄÜÖÔ\s-]*$/.test(val);
+    const validateNom = (val) => /^[A-ZÀÇÉÈÊËÏÄÜÖÔ'\s-]*$/.test(val);
   
     // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
@@ -82,7 +95,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8 flex flex-col md:flex-row gap-8">
           
-          {/* 🔥 Section image avec bouton wishlist - CORRECTION: wrapper qui épouse l'image  + ajout effet loupe (zoom)*/}
+          {/* Section image avec bouton wishlist */}
           <div className="flex-1 flex justify-center md:justify-start">
               <div
                 className="relative w-full max-w-md overflow-hidden"
@@ -95,7 +108,7 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                   src={`/${maillot.image}`}
                   alt={maillot.nom}
                   className="w-full rounded shadow"
-                  onClick={() => setMobileZoom(true)}  // Pour mobile : afficher l'image en grand
+                  onClick={() => setMobileZoom(true)}
                 />
 
                 {/* Effet loupe */}
@@ -105,13 +118,13 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                     style={{
                       backgroundImage: `url(/${maillot.image})`,
                       backgroundRepeat: "no-repeat",
-                      backgroundSize: "200%", // niveau de zoom
+                      backgroundSize: "200%",
                       backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
                     }}
                   />
                 )}
                 
-                {/*  version mobile de l'effet zoom */}
+                {/* Version mobile de l'effet zoom */}
             {mobileZoom && (
               <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center md:hidden">
                 <img
@@ -138,30 +151,56 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
           <div className="flex-1">  
             <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
             <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
-            <div className="mb-2">Prix : <span className="font-semibold">{prix} €</span></div>
+            <div className="mb-2">Prix : <span className="font-semibold">{prix} €</span></div>
             <div className="mb-2">Type : <span className="font-semibold">{maillot.type || "Maillot"}</span></div>
-            <div className="mb-2">Quantité disponible : <span className="font-semibold">{quantite}</span></div>
+            
+            {/* ✅ Affichage du stock total et du stock par taille */}
+            <div className="mb-2">
+              <span>Stock total : </span>
+              <span className="font-semibold">{quantite}</span>
+              {stockDisponible > 0 && (
+                <span className="ml-2 text-sm text-gray-600">
+                  (Taille {taille} : {stockDisponible} disponible{stockDisponible > 1 ? 's' : ''})
+                </span>
+              )}
+              {stockDisponible === 0 && (
+                <span className="ml-2 text-sm text-red-600 font-semibold">
+                  (Taille {taille} : Rupture de stock)
+                </span>
+              )}
+            </div>
+            
             <div className="mb-2">
               Taille :
-              <select value={taille} onChange={e => setTaille(e.target.value)} className="ml-2 border rounded px-2 py-1">
-                {tailles.map(t => <option key={t} value={t}>{t}</option>)}
+              <select 
+                value={taille} 
+                onChange={e => handleTailleChange(e.target.value)} 
+                className="ml-2 border rounded px-2 py-1"
+              >
+                {tailles.map(t => (
+                  <option key={t} value={t}>
+                    {t} {stocks[t] === 0 ? '(Rupture)' : `(${stocks[t]} dispo)`}
+                  </option>
+                ))}
               </select>
             </div>
+            
             <div className="mb-2">
               Quantité :
               <input
                 type="number"
                 min="1"
-                max={quantite}
+                max={stockDisponible}
                 value={qte}
                  onInput={(e) => {
-    // parseInt retire automatiquement les 0 initiaux
     e.target.value = e.target.value.replace(/^0+/, '') || '1';
   }}
                 onChange={e => setQte(e.target.value)}
                 className="ml-2 border rounded px-2 py-1 w-16"
+                disabled={stockDisponible === 0}
               />
             </div>
+            
             <div className="mb-2">
               <label>
                 <input
@@ -179,20 +218,6 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
   pattern="[0-9]*"
                   value={numero}
                   onChange={handleNumeroChange}
-                 
-                 
-                  // onKeyDown={(e) => {
-                  //   // Bloquer "e", "+", "-", ".", etc. - Identique à Panier.jsx
-                  //   // if (
-                  //   //   e.key === "e" ||
-                  //   //   e.key === "E" ||
-                  //   //   e.key === "+" ||
-                  //   //   e.key === "-" ||
-                  //   //   e.key === "."
-                  //   // ) {
-                  //   //   e.preventDefault();
-                  //   // }
-                  // }}
                   placeholder="Numéro (1-99)"
                   className="ml-2 border rounded px-2 py-1 w-20"
                 />
@@ -213,19 +238,31 @@ export default function MaillotDetail({ maillot, tailles, quantite, prix, prix_n
                   type="text"
                   value={nom}
                   onChange={handleNomChange}
-                  placeholder="NOM " //(nom en MAJUSCULES; espaces, - et ' autorisés)
+                  placeholder="NOM"
                   className="ml-2 border rounded px-2 py-1 w-32"
                 />
 
               )}
             </div>
-            <div className="text-xl font-bold mt-4">Total : {total} €</div>
-            <button
-              onClick={handleAddToCart}
-              className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900"
-            >
-              AJOUTER AU PANIER
-            </button>
+            
+            <div className="text-xl font-bold mt-4">Total : {total} €</div>
+            
+            {/* ✅ Bouton conditionnel selon le stock */}
+            {stockDisponible > 0 ? (
+              <button
+                onClick={handleAddToCart}
+                className="mt-6 px-6 py-2 bg-gradient-to-r from-red-800 to-blue-500 text-white rounded shadow hover:bg-blue-900 transition-colors"
+              >
+                AJOUTER AU PANIER
+              </button>
+            ) : (
+              <button
+                disabled
+                className="mt-6 px-6 py-2 bg-gray-400 text-white rounded shadow cursor-not-allowed"
+              >
+                RUPTURE DE STOCK - TAILLE {taille}
+              </button>
+            )}
           </div>
         </div>
       </main>
