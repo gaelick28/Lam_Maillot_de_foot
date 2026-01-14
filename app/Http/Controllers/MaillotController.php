@@ -23,7 +23,7 @@ class MaillotController extends Controller
             'quantite' => $quantite,
             'nom' => $maillot->nom,
             'numero' => $maillot->numero,
-            'prix' => 20,
+            'prix' => $maillot->price, 
             'prix_nom' => 3,
             'prix_numero' => 2,
         ]);
