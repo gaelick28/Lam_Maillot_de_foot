@@ -11,8 +11,8 @@ use App\Models\OrderItem;
 use App\Models\UserAddress;
 use App\Models\Maillot;
 use App\Helpers\CountryHelper;
-use Illuminate\Support\Facades\Log;      // ✅ AJOUTÉ
-use Illuminate\Support\Facades\Mail;     // ✅ AJOUTÉ
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -277,7 +277,7 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            // ✅ ENVOI D'EMAIL DE CONFIRMATION (NON-BLOQUANT)
+            // ✅ ENVOI D'EMAIL DE CONFIRMATION (NON-BLOQUANT) IMPORTANT:COMMENTER ICI POUR TESTER SANS ENVOI
             $this->sendOrderConfirmationEmail($order);
 
             // Rediriger vers la page de confirmation
@@ -297,6 +297,8 @@ class PaymentController extends Controller
      */
     private function sendOrderConfirmationEmail($order)
     {
+
+    
         // Vérifier si l'envoi d'email est activé
         if (!env('MAIL_ORDER_CONFIRMATION_ENABLED', true)) {
             Log::info('Email de confirmation désactivé pour la commande ' . $order->order_number);
