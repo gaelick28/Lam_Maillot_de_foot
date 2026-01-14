@@ -179,7 +179,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
               >
                 {tailles.map(t => (
                   <option key={t} value={t}>
-                    {t} {stocks[t] === 0 ? '(Rupture)' : `(${stocks[t]} dispo)`}
+                    {t} - {stocks[t] === 0 ? '(Rupture)' : `${stocks[t]} dispo`}
                   </option>
                 ))}
               </select>
