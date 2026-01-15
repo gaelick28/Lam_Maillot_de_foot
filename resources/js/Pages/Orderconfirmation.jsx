@@ -141,20 +141,20 @@ export default function OrderConfirmation({ auth, order }) {
   )}
 
             {/* Informations de paiement */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-lg shadow-lg p-6 md:col-span-2">
               <h3 className="font-bold text-gray-900 mb-4">Informations de paiement</h3>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Mode de paiement</span>
-                  <span className="font-medium">{order.payment_method_label}</span>
+                <div className="flex justify-normal gap-4">
+                  <span className="text-gray-600">Mode de paiement : </span>
+                  <span className="font-medium"> {order.payment_method_label}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Statut</span>
-                  <span className="text-green-600 font-medium">✓ Payé</span>
+                <div className="flex justify-normal gap-4">
+                  <span className="text-gray-600">Statut : </span>
+                  <span className="text-green-600 font-medium"> ✓ Payé</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Date</span>
-                  <span className="font-medium">{order.created_at}</span>
+                <div className="flex justify-normal gap-4">
+                  <span className="text-gray-600">Date : </span>
+                  <span className="font-medium"> {order.created_at}</span>
                 </div>
               </div>
             </div>
