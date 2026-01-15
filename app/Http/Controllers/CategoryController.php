@@ -77,7 +77,7 @@ class CategoryController extends Controller
             ],
             'autres-clubs' => [
                 'title' => 'Autres Clubs',
-                'description' => 'Découvrez les maillots d\'autres grands clubs européens',
+                'description' => 'Découvrez les maillots d\'autres grands clubs européens ou internationaux',
                 'slugs' => [
                     'porto', 'benfica', 'sporting-cp', 'galatasaray', 
                     'fenerbahce', 'celtic-fc', 'rangers-fc', 
