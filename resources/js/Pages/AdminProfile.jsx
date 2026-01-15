@@ -3,7 +3,7 @@ import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
 import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
 
-export default function AdminProfile({ auth }) {
+export default function AdminProfile({ auth, address, countries }) {
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [showInfoForm, setShowInfoForm] = useState(false)
   
@@ -19,11 +19,19 @@ export default function AdminProfile({ auth }) {
     new_password_confirmation: '',
   })
 
-  // Formulaire informations personnelles
+  // Formulaire informations personnelles avec adresse
   const infoForm = useForm({
     username: auth.user.username,
     email: auth.user.email,
     phone: auth.user.phone || '',
+    address: {
+      first_name: address?.first_name || '',
+      last_name: address?.last_name || '',
+      street: address?.street || '',
+      postal_code: address?.postal_code || '',
+      city: address?.city || '',
+      country: address?.country || 'FR',
+    }
   })
 
   const handlePasswordSubmit = (e) => {
@@ -45,6 +53,29 @@ export default function AdminProfile({ auth }) {
         setShowInfoForm(false)
       }
     })
+  }
+
+  // Formater l'adresse pour l'affichage
+  const formatAddress = () => {
+    if (!address || !address.street) {
+      return 'Non renseignée'
+    }
+    
+    const parts = []
+    if (address.street) parts.push(address.street)
+    if (address.postal_code && address.city) {
+      parts.push(`${address.postal_code} ${address.city}`)
+    } else if (address.city) {
+      parts.push(address.city)
+    }
+    // ✅ Utiliser country_name si disponible, sinon le code
+    if (address.country_name) {
+      parts.push(address.country_name)
+    } else if (address.country) {
+      parts.push(address.country)
+    }
+    
+    return parts.join(', ')
   }
 
   return (
@@ -99,6 +130,10 @@ export default function AdminProfile({ auth }) {
                   <p className="text-gray-900">{auth.user.phone || 'Non renseigné'}</p>
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                  <p className="text-gray-900">{formatAddress()}</p>
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                     Administrateur
@@ -140,15 +175,107 @@ export default function AdminProfile({ auth }) {
                 </div>
                 
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Téléphone
-                </label>
-                <input
+                  </label>
+                  <input
                     type="tel"
                     value={infoForm.data.phone}
                     onChange={(e) => infoForm.setData('phone', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                />
+                  />
+                </div>
+                
+                {/* ✅ Section Adresse */}
+                <div className="border-t pt-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Adresse</h3>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {/* correspond à Prénom mais Agent est plus professionnel pour l'affichage du formulaire */}
+                        Agent
+                      </label>
+                      <input
+                        type="text"
+                        value={infoForm.data.address.first_name}
+                        onChange={(e) => infoForm.setData('address', {...infoForm.data.address, first_name: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nom
+                      </label>
+                      <input
+                        type="text"
+                        value={infoForm.data.address.last_name}
+                        onChange={(e) => infoForm.setData('address', {...infoForm.data.address, last_name: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Numéro et nom de rue
+                    </label>
+                    <input
+                      type="text"
+                      value={infoForm.data.address.street}
+                      onChange={(e) => infoForm.setData('address', {...infoForm.data.address, street: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Code postal
+                      </label>
+                      <input
+                        type="text"
+                        value={infoForm.data.address.postal_code}
+                        onChange={(e) => infoForm.setData('address', {...infoForm.data.address, postal_code: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                       
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Ville
+                      </label>
+                      <input
+                        type="text"
+                        value={infoForm.data.address.city}
+                        onChange={(e) => infoForm.setData('address', {...infoForm.data.address, city: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Pays
+                    </label>
+                    <select
+                      value={infoForm.data.address.country}
+                      onChange={(e) => infoForm.setData('address', {...infoForm.data.address, country: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    >
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 
                 <div className="flex gap-3">
@@ -174,7 +301,7 @@ export default function AdminProfile({ auth }) {
             )}
           </div>
 
-          {/* Carte Sécurité - Mot de passe */}
+          {/* Carte Sécurité */}
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-900">Sécurité</h2>
@@ -188,8 +315,8 @@ export default function AdminProfile({ auth }) {
 
             {!showPasswordForm ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-gray-600">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-3">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                   <div>
@@ -197,9 +324,6 @@ export default function AdminProfile({ auth }) {
                     <p className="text-sm text-gray-500">Votre mot de passe est protégé</p>
                   </div>
                 </div>
-                {/* <p className="text-sm text-gray-600 mt-4">
-                  Dernière modification : Informations non disponibles
-                </p> */}
               </div>
             ) : (
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
