@@ -21,7 +21,7 @@ export default function Legal({ legalInfo }) {
                 <p>Société par actions simplifiée au capital de 10 000 €</p>
                 <p>RCS Lyon 123 456 789</p>
                 {legalInfo?.address ? (
-                  <p>Siège social : {legalInfo.address.street}, {legalInfo.address.postal_code} {legalInfo.address.city}</p>
+                  <p>Siège social : {legalInfo.address.street}, {legalInfo.address.postal_code} {legalInfo.address.city}, {legalInfo.address.country}</p>
                 ) : (
                   <p>Siège social : Non renseigné</p>
                 )}

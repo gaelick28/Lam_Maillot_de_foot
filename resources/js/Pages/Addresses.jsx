@@ -231,7 +231,7 @@ const shippingAddresses = addresses
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Numéro et nom de rue</label>
                         <textarea
                           value={billingForm.data.street}
                           onChange={(e) => billingForm.setData("street", e.target.value)}
@@ -428,7 +428,7 @@ const shippingAddresses = addresses
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Numéro et nom de rue</label>
                         <textarea
                           value={shippingForm.data.street}
                           onChange={(e) => shippingForm.setData("street", e.target.value)}
