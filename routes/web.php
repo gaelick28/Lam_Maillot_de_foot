@@ -22,6 +22,7 @@ use App\Http\Controllers\Backoffice\AdminClubController;
 use App\Http\Controllers\Backoffice\AdminMaillotController;
 use App\Http\Controllers\Backoffice\AdminProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LegalController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -52,6 +53,8 @@ Route::get('/returns', function () {
 Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact');
+
+Route::get('/legal', [LegalController::class, 'index'])->name('legal');
 
 // Routes de contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');

@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
-export default function Legal() {
+export default function Legal({ legalInfo }) {
   return (
     <>
       <Head title="Mentions légales - Fou2Foot" />
@@ -20,9 +20,13 @@ export default function Legal() {
                 <p><strong>Fou2Foot</strong></p>
                 <p>Société par actions simplifiée au capital de 10 000 €</p>
                 <p>RCS Lyon 123 456 789</p>
-                <p>Siège social : 101 Avenue Bernard Lacombe, 69002 Lyon</p>
-                <p>Téléphone : 06 13 06 27 30</p>
-                <p>Email : contact@fou2foot.com</p>
+                {legalInfo?.address ? (
+                  <p>Siège social : {legalInfo.address.street}, {legalInfo.address.postal_code} {legalInfo.address.city}</p>
+                ) : (
+                  <p>Siège social : Non renseigné</p>
+                )}
+                <p>Téléphone : {legalInfo?.phone || 'Non renseigné'}</p>
+                <p>Email : {legalInfo?.email || 'contact@fou2foot.com'}</p>
               </section>
 
               <section>
@@ -34,7 +38,7 @@ export default function Legal() {
                 <h2 className="text-xl font-semibold text-gray-800 mb-3">3. Hébergement</h2>
                 <p><strong>OVH Cloud</strong></p>
                 <p>107 crs Charlemagne - 69002 Lyon - France</p>
-                <p>Téléphone : 1007</p>
+                <p>Téléphone : 04 78 37 78 55</p>
               </section>
 
               <section>

@@ -3,7 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
-export default function Contact({ flash }) {
+export default function Contact({ flash, contactInfo }) {
   const { data, setData, post, processing, errors, reset } = useForm({
     name: '',
     email: '',
@@ -88,7 +88,7 @@ export default function Contact({ flash }) {
                     <span className="text-blue-600 mr-3">📧</span>
                     <div>
                       <p className="font-semibold">Email</p>
-                      <p className="text-gray-600">admin@fou2foot.com</p>
+                      <p className="text-gray-600">{contactInfo?.email || 'contact@fou2foot.com'}</p>
                     </div>
                   </div>
                   
@@ -96,7 +96,7 @@ export default function Contact({ flash }) {
                     <span className="text-blue-600 mr-3">📞</span>
                     <div>
                       <p className="font-semibold">Téléphone</p>
-                      <p className="text-gray-600">06 13 06 27 30</p>
+                      <p className="text-gray-600">{contactInfo?.phone || 'Non renseigné'}</p>
                       <p className="text-sm text-gray-500">Lun-Ven : 9h-18h</p>
                     </div>
                   </div>
@@ -105,8 +105,14 @@ export default function Contact({ flash }) {
                     <span className="text-blue-600 mr-3">🏢</span>
                     <div>
                       <p className="font-semibold">Adresse</p>
-                      <p className="text-gray-600">101 Avenue Bernard Lacombe,</p>
-                      <p className="text-gray-600"> 69002 Lyon France</p>
+                      {contactInfo?.address ? (
+                        <>
+                          <p className="text-gray-600">{contactInfo.address.street},</p>
+                          <p className="text-gray-600">{contactInfo.address.postal_code} {contactInfo.address.city} {contactInfo.address.country}</p>
+                        </>
+                      ) : (
+                        <p className="text-gray-600">Non renseignée</p>
+                      )}
                     </div>
                   </div>
                 </div>
