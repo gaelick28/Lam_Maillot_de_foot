@@ -54,6 +54,7 @@ Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact');
 
+// Routes  mentions légales
 Route::get('/legal', [LegalController::class, 'index'])->name('legal');
 
 // Routes de contact
