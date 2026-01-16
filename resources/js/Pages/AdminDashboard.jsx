@@ -55,7 +55,7 @@ export default function AdminDashboard({ stats }) {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Revenus Total</p>
+                <p className="text-sm text-gray-600">Revenus Totaux</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {Number(stats.totalRevenue).toLocaleString('fr-FR')}€
                 </p>
