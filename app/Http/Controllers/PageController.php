@@ -9,7 +9,7 @@ use App\Models\Club;
 use App\Models\Order;
 use App\Models\UserAddress;
 use App\Helpers\CountryHelper;
-
+use App\Models\OrderActivity;
 
 class PageController extends Controller
 {
@@ -22,17 +22,33 @@ class PageController extends Controller
     }
 
     public function dashboard()
-    {
-        $user = request()->user();
-        
-        // 📊 Récupération des activités récentes
-        $activities = [];
+{
+    $user = request()->user();
+    
+    // 📊 Récupération des activités récentes
+    $activities = [];
 
-        // 1️⃣ Dernières commandes (3 max)
-        $recentOrders = Order::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get();
+    // ✅ NOUVEAU : 0️⃣ Activités de changement de statut de commande (expédiée, livrée, etc.)
+    $orderActivities = OrderActivity::where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->limit(5)
+        ->get();
+
+    foreach ($orderActivities as $orderActivity) {
+        $activities[] = [
+            'type' => $orderActivity->type,
+            'icon' => 'box',
+            'message' => $orderActivity->message,
+            'date' => $orderActivity->created_at,
+            'details' => $orderActivity->details, // Numéro de commande
+        ];
+    }
+
+    // 1️⃣ Dernières commandes (3 max)
+    $recentOrders = Order::where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get();
 
         foreach ($recentOrders as $order) {
             $activities[] = [
@@ -77,7 +93,7 @@ class PageController extends Controller
                 return $b['date'] <=> $a['date'];
             });
             
-            $activities = array_slice($activities, 0, 5);
+            $activities = array_slice($activities, 0, 10);
 
             // Formater les dates pour l'affichage
             foreach ($activities as &$activity) {
@@ -90,6 +106,7 @@ class PageController extends Controller
         return Inertia::render('Dashboard', [
             'user' => $user,
             'activities' => $activities,
+            
         ]);
     }
 

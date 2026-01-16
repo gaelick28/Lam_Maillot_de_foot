@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Helpers\CountryHelper;
+use App\Models\OrderActivity;
 
 class AdminOrderController extends Controller
 {
@@ -83,22 +84,27 @@ class AdminOrderController extends Controller
      * Changer le statut d'une commande
      */
     public function updateStatus(Order $order, Request $request)
-    {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,shipped,delivered,cancelled'
-        ]);
+{
+    $validated = $request->validate([
+        'status' => 'required|in:pending,shipped,delivered,cancelled'
+    ]);
 
-        $oldStatus = $order->order_status;
-        $order->order_status = $validated['status'];
-        $order->save();
+    $oldStatus = $order->order_status;
+    $newStatus = $validated['status'];
 
-        $statusLabels = [
-            'pending' => 'En attente',
-            'shipped' => 'Expédiée',
-            'delivered' => 'Livrée',
-            'cancelled' => 'Annulée',
-        ];
+    // ✅ AJOUTER CETTE LIGNE
+    OrderActivity::recordStatusChange($order, $oldStatus, $newStatus);
 
-        return back()->with('success', "Commande #{$order->order_number} : statut changé de '{$statusLabels[$oldStatus]}' à '{$statusLabels[$validated['status']]}'");
-    }
+    $order->order_status = $newStatus;
+    $order->save();
+
+    $statusLabels = [
+        'pending' => 'En attente',
+        'shipped' => 'Expédiée',
+        'delivered' => 'Livrée',
+        'cancelled' => 'Annulée',
+    ];
+
+    return back()->with('success', "Commande #{$order->order_number} : statut changé de '{$statusLabels[$oldStatus]}' à '{$statusLabels[$newStatus]}'");
+}
 }
