@@ -61,11 +61,11 @@ export default function AdminDashboard({ stats }) {
                 </p>
               </div>
               <div className="p-3 bg-yellow-100 rounded-full">
-  <svg className="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
-    <text x="12" y="17" fontSize="14" fontWeight="bold" textAnchor="middle" fill="currentColor">€</text>
-  </svg>
-</div>
+              <svg className="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
+                <text x="12" y="17" fontSize="14" fontWeight="bold" textAnchor="middle" fill="currentColor">€</text>
+              </svg>
+            </div>
             </div>
             <p className="text-xs text-green-600 mt-2">
               {Number(stats.monthRevenue).toLocaleString('fr-FR')}€ ce mois
