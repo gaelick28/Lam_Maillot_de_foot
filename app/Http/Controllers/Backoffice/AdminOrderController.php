@@ -8,6 +8,9 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Helpers\CountryHelper;
 use App\Models\OrderActivity;
+use App\Mail\OrderStatusChanged;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class AdminOrderController extends Controller
 {
@@ -97,6 +100,17 @@ class AdminOrderController extends Controller
 
     $order->order_status = $newStatus;
     $order->save();
+// ✅ Charger les relations
+$order->load(['user', 'shippingAddress']);
+
+// ✅ Envoyer l'email
+try {
+    Mail::to($order->user->email)->send(new OrderStatusChanged($order, $oldStatus, $newStatus));
+    Log::info("Email envoyé pour commande {$order->order_number}");
+} catch (\Exception $e) {
+    Log::error("Erreur envoi email: " . $e->getMessage());
+}
+
 
     $statusLabels = [
         'pending' => 'En attente',
