@@ -11,6 +11,7 @@ export default function MaillotsList({ club, maillots }) {
       <Header />
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8">
+          
           {/* En-tête de la page */}
           <div className="mb-8">
             <div className="flex items-center gap-4 mb-2">
@@ -27,6 +28,13 @@ export default function MaillotsList({ club, maillots }) {
                 Maillots de {club.name}
               </h1>
             </div>
+            
+            <p className="text-gray-600 text-lg">
+              Découvrez notre collection de maillots {club.name} 
+              {maillots.length > 0 && (
+                <span> - {maillots.length} maillot{maillots.length > 1 ? 's' : ''} disponible{maillots.length > 1 ? 's' : ''}</span>
+              )}
+            </p>
           </div>
 
           {/* Grille des maillots */}
