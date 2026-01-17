@@ -148,9 +148,18 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
           </div>
         </div>
 
-          <div className="flex-1">  
-            <h1 className="text-3xl font-bold mb-2">{maillot.club?.name}</h1>
-            <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
+          <div className="flex-1">
+  <div className="flex items-center gap-4 mb-2">
+    {maillot.club?.logo && (
+      <img
+        src={`/${maillot.club.logo}`}
+        alt={`Logo ${maillot.club.name}`}
+        className="w-16 h-16 object-contain"
+      />
+    )}
+    <h1 className="text-3xl font-bold">{maillot.club?.name}</h1>
+  </div>
+  <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>
             <div className="mb-2">Prix : <span className="font-semibold">{prix} €</span></div>
             <div className="mb-2">Type : <span className="font-semibold">{maillot.type || "Maillot"}</span></div>
             

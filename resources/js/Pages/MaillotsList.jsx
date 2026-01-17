@@ -12,17 +12,21 @@ export default function MaillotsList({ club, maillots }) {
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8">
           {/* En-tête de la page */}
-          <div className="mb-8">            
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Maillots de {club.name}
-            </h1>
-            
-            <p className="text-gray-600 text-lg">
-              Découvrez notre collection de maillots {club.name} 
-              {maillots.length > 0 && (
-                <span> - {maillots.length} maillot{maillots.length > 1 ? 's' : ''} disponible{maillots.length > 1 ? 's' : ''}</span>
+          <div className="mb-8">
+            <div className="flex items-center gap-4 mb-2">
+              {/* Logo du club */}
+              {club.logo && (
+                <img
+                  src={`/${club.logo}`}
+                  alt={`Logo ${club.name}`}
+                  className="w-16 h-16 object-contain"
+                />
               )}
-            </p>
+              
+              <h1 className="text-3xl font-bold text-gray-900">
+                Maillots de {club.name}
+              </h1>
+            </div>
           </div>
 
           {/* Grille des maillots */}
