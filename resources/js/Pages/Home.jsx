@@ -105,7 +105,13 @@ const NEW_MAILLOTS = [
   },
 ]
 
-export default function Homepage({ maillots }) {
+export default function Homepage({ maillots, featuredClubs = [] }) {
+  
+  console.log('===== HOME DEBUG =====');
+  console.log('featuredClubs:', featuredClubs);
+  console.log('Type:', typeof featuredClubs);
+  console.log('Length:', featuredClubs?.length);
+  console.log('======================');
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       <Head title="Accueil - Fou2Foot" />
@@ -183,9 +189,24 @@ export default function Homepage({ maillots }) {
               Nos Équipes
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <TeamCard team="Girondins de Bordeaux" image="/images/maillot/images_maillot/girondins.jfif" count={11} />
-              <TeamCard team="Olympique Lyonnais" image="/images/maillot/images_maillot/lyon_75ans.jfif" count={8} />
-              <TeamCard team="France" image="/images/maillot/images_maillot/france.jpg" count={8} />
+              {featuredClubs.length > 0 ? (
+                featuredClubs.map((club) => (
+                  <TeamCard 
+                    key={club.slug}
+                    team={club.name} 
+                    slug={club.slug}
+                    image={club.image} 
+                    count={club.maillots_count} 
+                  />
+                ))
+              ) : (
+                // Fallback si pas de données dynamiques (pour rétrocompatibilité)
+                <>
+                  <TeamCard team="Girondins de Bordeaux" slug="girondins-de-bordeaux" image="/images/maillot/images_maillot/girondins.jfif" count={0} />
+                  <TeamCard team="Olympique Lyonnais" slug="olympique-lyonnais" image="/images/maillot/images_maillot/lyon_75ans.jfif" count={0} />
+                  <TeamCard team="France" slug="france" image="/images/maillot/images_maillot/france.jpg" count={0} />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -248,9 +269,7 @@ const MaillotCard = React.memo(function MaillotCard({ maillot }) {
   )
 })
 
-const TeamCard = React.memo(function TeamCard({ team, image, count }) {
-  const slug = team.toLowerCase().replace(/ /g, "-")
-
+const TeamCard = React.memo(function TeamCard({ team, slug, image, count }) {
   return (
     <Link 
       href={`/clubs/${slug}/maillots`} 
@@ -269,7 +288,7 @@ const TeamCard = React.memo(function TeamCard({ team, image, count }) {
             {team}
           </h3>
           <p className="text-white text-sm sm:text-base">
-            {count} maillots disponibles
+            {count} maillot{count > 1 ? 's' : ''} disponible{count > 1 ? 's' : ''}
           </p>
         </div>
       </article>

@@ -23,9 +23,11 @@ use App\Http\Controllers\Backoffice\AdminMaillotController;
 use App\Http\Controllers\Backoffice\AdminProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\HomeController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/', HomeController::class);
 Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
 
 
