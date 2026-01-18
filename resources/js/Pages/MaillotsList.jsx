@@ -20,7 +20,7 @@ export default function MaillotsList({ club, maillots }) {
                 <img
                   src={`/${club.logo}`}
                   alt={`Logo ${club.name}`}
-                  className="w-16 h-16 object-contain"
+                  className="w-16 h-16 object-contain mix-blend-multiply"
                 />
               )}
               

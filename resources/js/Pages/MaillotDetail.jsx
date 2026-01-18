@@ -154,7 +154,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
       <img
         src={`/${maillot.club.logo}`}
         alt={`Logo ${maillot.club.name}`}
-        className="w-16 h-16 object-contain"
+        className="w-16 h-16 object-contain mix-blend-multiply"
       />
     )}
     <h1 className="text-3xl font-bold">{maillot.club?.name}</h1>
