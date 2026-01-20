@@ -151,12 +151,26 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
           <div className="flex-1">
   <div className="flex items-center gap-4 mb-2">
     {maillot.club?.logo && (
-      <img
+      <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
+        <img
+          src={`/${maillot.club.logo}`}
+          alt={`Logo ${maillot.club.name}`}
+          className="w-full h-full object-contain"
+        />
+      </div>
+    )}
+
+ {/* //Ou versiontransparente avec le mix-blend-multiply//      */}
+ {/* {maillot.club?.logo && (
+    <img
         src={`/${maillot.club.logo}`}
         alt={`Logo ${maillot.club.name}`}
         className="w-16 h-16 object-contain mix-blend-multiply"
-      />
-    )}
+      /> 
+       )} */}
+     
+
+
     <h1 className="text-3xl font-bold">{maillot.club?.name}</h1>
   </div>
   <h2 className="text-2xl font-semibold mb-4">{maillot.nom}</h2>

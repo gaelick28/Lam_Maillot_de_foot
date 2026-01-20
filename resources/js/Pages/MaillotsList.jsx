@@ -13,17 +13,29 @@ export default function MaillotsList({ club, maillots }) {
         <div className="container mx-auto py-8">
           
           {/* En-tête de la page */}
+          {/* Logo du club */}
+          
           <div className="mb-8">
             <div className="flex items-center gap-4 mb-2">
-              {/* Logo du club */}
+              {/* // Version avec fond blanc// */}
               {club.logo && (
+  <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
+    <img
+      src={`/${club.logo}`}
+      alt={`Logo ${club.name}`}
+      className="w-full h-full object-contain"
+    />
+  </div>
+)}
+       {/* // ou autre version en transparence avec le mix-blend-multiply// */}
+              {/* {club.logo && (
                 <img
                   src={`/${club.logo}`}
                   alt={`Logo ${club.name}`}
                   className="w-16 h-16 object-contain mix-blend-multiply"
                 />
-              )}
-              
+              )} */}   
+                   
               <h1 className="text-3xl font-bold text-gray-900">
                 Maillots de {club.name}
               </h1>
