@@ -93,11 +93,11 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
 
   const getStockBadge = (stock) => {
     if (stock === 0) {
-      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Rupture</span>
+      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 whitespace-nowrap">Rupture</span>
     } else if (stock < 10) {
-      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Faible</span>
+      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 whitespace-nowrap">Faible</span>
     } else {
-      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">En stock</span>
+      return <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">En stock</span>
     }
   }
 
