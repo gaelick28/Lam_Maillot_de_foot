@@ -27,7 +27,8 @@ use App\Http\Controllers\HomeController;
 
 // Routes publiques
 Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/', HomeController::class);
+// route alternative pour la page d'accueil mise en commentaire car empêche la déconnexion
+// Route::get('/', HomeController::class);
 Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
 
 
