@@ -27,9 +27,13 @@ class AdminOrderController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('order_number', 'like', "%{$search}%")
                       ->orWhereHas('user', function ($q) use ($search) {
-                          $q->where('username', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                      });
+    $q->where('username', 'like', "%{$search}%")
+      ->orWhere('email', 'like', "%{$search}%")
+      ->orWhere('first_name', 'like', "%{$search}%")
+      ->orWhere('last_name', 'like', "%{$search}%")
+      // Recherche sur le nom complet
+      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+});
             })
             ->when($status, function ($query, $status) {
                 $query->where('order_status', $status);
