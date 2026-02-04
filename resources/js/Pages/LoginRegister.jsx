@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import { syncWishlistOnLogin } from '@/Components/WishlistButton';
@@ -32,6 +32,15 @@ const {
     email: "" 
   })
 
+  // 🔥 NOUVEAU : Charger la wishlist au montage du composant
+  useEffect(() => {
+    const localWishlist = localStorage.getItem('wishlist');
+    const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
+    setData('wishlist_ids', wishlistIds);
+    
+    console.log('🛒 Wishlist chargée depuis localStorage:', wishlistIds);
+  }, []);
+
   const handleChange = (e) => {
     setData(e.target.name, e.target.value)
   }
@@ -41,33 +50,48 @@ const {
   const handleSubmit = (e) => {
     e.preventDefault()
     
+    // Récupérer la wishlist du localStorage
+    const localWishlist = localStorage.getItem('wishlist');
+    const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
+    
     if (isLogin) {
-      // Récupérer la wishlist du localStorage AVANT la connexion
-      const localWishlist = localStorage.getItem('wishlist');
-      const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
+      // CONNEXION
+      console.log('🔑 Tentative de connexion avec wishlist:', wishlistIds);
       
-      
-     // IMPORTANT : Mettre à jour data.wishlist_ids AVANT d'envoyer
+      // Mettre à jour data.wishlist_ids AVANT d'envoyer
       data.wishlist_ids = wishlistIds;
       
-      console.log('📤 Envoi des données:', data);
-      
-      // Envoyer avec post() - Inertia va envoyer TOUT le data
       post('/login', {
         onSuccess: () => {
           console.log('✅ Connexion réussie');
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
-         // 🔥 Reload complet de la page pour rafraîchir le CSRF token
-  window.location.href = '/dashboard';
+          // 🔥 Reload complet de la page pour rafraîchir le CSRF token
+          window.location.href = '/dashboard';
         },
         onError: (errors) => {
           console.error('❌ Erreur de connexion:', errors);
         }
       });
     } else {
-      // Inscription
-      post('/register');
+      // 🔥 INSCRIPTION - CORRECTION ICI
+      console.log('📝 Tentative d\'inscription avec wishlist:', wishlistIds);
+      
+      // Mettre à jour data.wishlist_ids AVANT d'envoyer
+      data.wishlist_ids = wishlistIds;
+      
+      post('/register', {
+        onSuccess: () => {
+          console.log('✅ Inscription réussie');
+          // Vider le localStorage après succès
+          localStorage.removeItem('wishlist');
+          // Reload complet de la page
+          window.location.href = '/dashboard';
+        },
+        onError: (errors) => {
+          console.error('❌ Erreur d\'inscription:', errors);
+        }
+      });
     }
   }
 
