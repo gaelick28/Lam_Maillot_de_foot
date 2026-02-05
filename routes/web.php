@@ -27,10 +27,10 @@ use App\Http\Controllers\HomeController;
 
 // Routes publiques
 Route::get('/', [HomeController::class, '__invoke'])->name('home');
-// LES 2 ROUTES SUIVANTES SONT DES DOUBLONS, LA PREMIÈRE EST COMMENTÉE POUR ÉVITER LES CONFLITS AVEC LA ROUTE DE DÉCONNEXION
+// LES 2 ROUTES SUIVANTES SONT DES DOUBLONS
 // la route suivante ne récupère pas le nombre de maillots disponibles 
 // Route::get('/', [PageController::class, 'home'])->name('home');
-// route alternative pour la page d'accueil mise en commentaire car empêche la déconnexion
+//  la route alternative pour la page d'accueil est mise en commentaire car elle empêche la déconnexion
 // Route::get('/', HomeController::class);
 Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
 
