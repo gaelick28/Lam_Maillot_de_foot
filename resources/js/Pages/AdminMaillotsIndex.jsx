@@ -314,7 +314,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               {/* Club */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Club *
+                  Club
                 </label>
                 <select
                   value={data.club_id}
@@ -335,7 +335,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               {/* Nom */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom du maillot *
+                  Nom du maillot
                 </label>
                 <input
                   type="text"
@@ -351,7 +351,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               {/* Prix */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Prix (€) *
+                  Prix (€)
                 </label>
                 <input
                   type="number"
@@ -368,7 +368,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               {/* Stocks */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Stocks par taille *
+                  Stocks par taille
                 </label>
                 <div className="grid grid-cols-4 gap-4">
                   <div>

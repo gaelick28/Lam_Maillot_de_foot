@@ -234,7 +234,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
               {/* Nom */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom du club *
+                  Nom du club 
                 </label>
                 <input
                   type="text"
@@ -249,7 +249,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
               {/* Catégorie */}
 <div>
   <label className="block text-sm font-medium text-gray-700 mb-1">
-    Catégorie *
+    Catégorie 
   </label>
   <select
     value={data.category}
