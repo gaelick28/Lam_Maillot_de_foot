@@ -5,6 +5,11 @@ import { router } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
 
 export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix, prix_numero, prix_nom }) {
+// FORCER la conversion en nombres
+  const prixNum = Number(prix);
+  const prixNumeroNum = Number(prix_numero);
+  const prixNomNum = Number(prix_nom);
+
   const [taille, setTaille] = useState(tailles[0]);
   const [qte, setQte] = useState(1);
   const [numero, setNumero] = useState("");
@@ -61,12 +66,13 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
 
   // Calcul du supplément pour personnalisation
   const supplement =
-    (personnalisation.numero && numero ? prix_numero : 0) +
-    (personnalisation.nom && nom ? prix_nom : 0);
+    (personnalisation.numero && numero ? prixNumeroNum : 0) +
+    (personnalisation.nom && nom ? prixNomNum : 0);
 
   // Multiplie bien par la quantité choisie
-  const total = (prix + supplement) * parseInt(qte || 1, 10);
-
+  const quantiteNumerique = parseInt(qte, 10) || 1;
+  const total = (prixNum + supplement) * quantiteNumerique;
+  
   function handleAddToCart() {
     router.post('/cart/add', {
       maillot_id: maillot.id,
