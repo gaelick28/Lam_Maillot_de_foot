@@ -238,22 +238,22 @@ export default function AdminDashboard({ stats }) {
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les commandes</h3>
             <p className="text-sm text-gray-600">Voir et traiter les commandes en attente</p>
           </Link>
-          
           <Link
-            href="/admin/maillots"
-            className="bg-blue-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            href="/admin/clubs"
+           className="bg-blue-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+          >
+            <h3 className="font-semibold text-gray-900 mb-2">Gérer les clubs</h3>
+            <p className="text-sm text-gray-600">Ajouter ou modifier des clubs</p>
+          </Link>
+          <Link
+            href="/admin/maillots" 
+            className="bg-purple-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"     
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les maillots</h3>
             <p className="text-sm text-gray-600">Modifier les produits et les stocks</p>
           </Link>
           
-          <Link
-            href="/admin/clubs"
-            className="bg-purple-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <h3 className="font-semibold text-gray-900 mb-2">Gérer les clubs</h3>
-            <p className="text-sm text-gray-600">Ajouter ou modifier des clubs</p>
-          </Link>
+          
 
           <Link
           href="/admin/statistics"
