@@ -161,8 +161,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{club.name}</div>
-                      <div className="text-sm text-gray-500">{club.slug}</div>
+                      <div className="font-medium text-gray-900">{club.name}</div>                      
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {club.category_name || club.category}
