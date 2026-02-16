@@ -133,7 +133,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Logo</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catégorie</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nb Maillots</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Nombre de Maillots</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
