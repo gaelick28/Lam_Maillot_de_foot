@@ -106,7 +106,7 @@ export default function UsersIndex({ users, filters, auth }) {
                         {user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold text-center">
                       {user.orders_count}
                     </td>
                     <td className="px-6 py-4">

@@ -167,11 +167,11 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {club.category_name || club.category}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
-                        {club.maillots_count}
-                      </span>
-                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600 text-center">
+                    <span className="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
+                      {club.maillots_count}
+                    </span>
+                  </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
                         <button
