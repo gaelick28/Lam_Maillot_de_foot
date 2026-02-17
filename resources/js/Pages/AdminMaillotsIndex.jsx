@@ -221,8 +221,8 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {maillot.club?.name || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                        {Number(maillot.price).toFixed(2)} €
+                      <td className="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                        {Number(maillot.price).toFixed(2)}&nbsp;€
                       </td>
                       <td className="px-6 py-4 text-center text-sm">
                         <span className={maillot.stock_s === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
