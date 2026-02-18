@@ -32,7 +32,7 @@ export default function AdminStatistics({ stats, auth }) {
         <div className="flex justify-between items-start">
   <div>
     <h1 className="text-3xl font-bold text-gray-900">Statistiques Avancées</h1>
-    <p className="text-gray-600 mt-1">Analyse détaillée de vos ventes et performances</p>
+    <p className="text-gray-600 mt-1">Analyse détaillée de vos ventes et de vos résultats</p>
   </div>
  {/* <button
             onClick={() => window.location.href = '/admin/dashboard'}
