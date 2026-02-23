@@ -18,7 +18,7 @@ export default function LoginRegister() {
     password: "",
     password_confirmation: "",
      remember: false,
-      wishlist_ids: [], // 🔥 Ajouté pour la wishlist
+      wishlist_ids: [], // Ajouté pour la wishlist
   })
 
 const { 
@@ -32,7 +32,7 @@ const {
     email: "" 
   })
 
-  // 🔥 NOUVEAU : Charger la wishlist au montage du composant
+  //  Charger la wishlist au montage du composant
   useEffect(() => {
     const localWishlist = localStorage.getItem('wishlist');
     const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
@@ -46,7 +46,7 @@ const {
   }
   
 
-   // 🔥 Fonction modifiée pour inclure la wishlist localStorage
+   //  Fonction modifiée pour inclure la wishlist localStorage
   const handleSubmit = (e) => {
     e.preventDefault()
     
@@ -66,7 +66,7 @@ const {
           console.log('✅ Connexion réussie');
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
-          // 🔥 Reload complet de la page pour rafraîchir le CSRF token
+          //  Reload complet de la page pour rafraîchir le CSRF token
           window.location.href = '/dashboard';
         },
         onError: (errors) => {
@@ -74,7 +74,7 @@ const {
         }
       });
     } else {
-      // 🔥 INSCRIPTION - CORRECTION ICI
+      //  INSCRIPTION - CORRECTION ICI
       console.log('📝 Tentative d\'inscription avec wishlist:', wishlistIds);
       
       // Mettre à jour data.wishlist_ids AVANT d'envoyer
