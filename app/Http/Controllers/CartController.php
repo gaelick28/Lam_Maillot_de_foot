@@ -129,6 +129,8 @@ class CartController extends Controller
                 'maillot_id' => $sessionItem['maillot_id'],
                 'image' => $maillot->image,
                 'size' => $sessionItem['size'],
+                'is_session' => true,
+                'stock' => $maillot->getStockForSize($sessionItem['size']),  
                 'quantity' => $quantity,
                 'price' => $price,
                 'nom' => $sessionItem['nom'] ?? null,
@@ -171,6 +173,8 @@ $shippingAddress = $user->addresses
                     'maillot_id' => $item->maillot_id,
                     'image' => $maillot->image,
                     'size' => $item->size,
+                    'is_session' => false,
+'stock' => $maillot ? $maillot->getStockForSize($item->size) : 0,  
                     'quantity' => $item->quantity,
                     'price' => $price,
                     'nom' => $item->nom,
@@ -270,6 +274,7 @@ $shippingAddress = $user->addresses
                 ($sessionItem['nom'] ?? null) == $nom &&
                 ($sessionItem['numero'] ?? null) == $numero
             ) {
+                
                 // 🔥 VÉRIFIER QUE LA NOUVELLE QUANTITÉ TOTALE NE DÉPASSE PAS LE STOCK
                 $nouvelleQuantite = $sessionItem['quantity'] + $request->quantity;
                 
@@ -315,6 +320,36 @@ $shippingAddress = $user->addresses
 
         $data['nom'] = $request->filled('nom') ? $request->nom : null;
         $data['numero'] = $request->filled('numero') ? $request->numero : null;
+
+// ✅ VÉRIFICATION DU STOCK AVANT MISE À JOUR
+if (str_starts_with($itemId, 'session_')) {
+    $sessionCart = Session::get('cart', []);
+    $maillotId = null;
+    foreach ($sessionCart as $si) {
+        if ($si['id'] === $itemId) {
+            $maillotId = $si['maillot_id'];
+            break;
+        }
+    }
+} else {
+    $itemCheck = CartItem::findOrFail($itemId);
+    $maillotId = $itemCheck->maillot_id;
+}
+
+if ($maillotId) {
+    $maillot = Maillot::find($maillotId);
+    if ($maillot) {
+        $stockDisponible = $maillot->getStockForSize($data['size']);
+        if ($data['quantity'] > $stockDisponible) {
+            return redirect()->route('cart.show')->with('error', sprintf(
+                'Stock insuffisant en taille %s. Disponible : %d.',
+                strtoupper($data['size']),
+                $stockDisponible
+            ));
+        }
+    }
+}
+
 
         // Si l'ID commence par "session_" → item de session
         if (str_starts_with($itemId, 'session_')) {

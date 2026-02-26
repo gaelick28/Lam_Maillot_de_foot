@@ -96,32 +96,48 @@ export default function Panier() {
     }
   }, []);
 
-  const handleSave = useCallback((item) => {
+ const handleSave = useCallback((item) => {
+    // ✅ Vérification du stock AVANT d'envoyer au serveur
+    if (item.stock !== undefined && item.quantity > item.stock) {
+        alert(`Stock insuffisant en taille ${item.size}. Maximum disponible : ${item.stock}`);
+        // Remettre la quantité au maximum disponible
+        handleEdit(item.id, "quantity", item.stock);
+        return; // On n'envoie rien au serveur
+    }
+
     setLoadingId(item.id);
     router.put(
-      `/panier/item/${item.id}`,
-      {
-        size: item.size,
-        quantity: item.quantity,
-        nom: item.nom,
-        numero: item.numero,
-      },
-      {
-        preserveScroll: true,
-        onSuccess: () => {
-          setDirtyMap((prev) => ({ ...prev, [item.id]: false }));
-          setLoadingId(null);
-         
-           // Retirer le focus du champ actif (enlève le curseur des champs après sauvegarde)
-          if (document.activeElement) {
-          document.activeElement.blur();
-        }
-          alert("Modifications enregistrées !");
+        `/panier/item/${item.id}`,
+        {
+            size: item.size,
+            quantity: item.quantity,
+            nom: item.nom,
+            numero: item.numero,
         },
-        onError: () => setLoadingId(null),
-      }
+        {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                // ✅ Vérifier si le backend a renvoyé une erreur flash
+                if (page.props.flash?.error) {
+                    alert(page.props.flash.error);
+                } else {
+                    setDirtyMap((prev) => ({ ...prev, [item.id]: false }));
+                    alert("Modifications enregistrées !");
+                }
+                setLoadingId(null);
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+            },
+            onError: (errors) => {
+                // ✅ Afficher les erreurs de validation
+                const message = Object.values(errors).flat().join('\n');
+                alert(message || "Une erreur est survenue.");
+                setLoadingId(null);
+            },
+        }
     );
-  }, []);
+}, [handleEdit]);
 
 const handleKeyDown = useCallback((e, item) => {
   if (e.key === "Enter" && dirtyMap[item.id]) {
@@ -151,6 +167,13 @@ const handleKeyDown = useCallback((e, item) => {
   
   if (cartItems.length === 0) {
     alert("Votre panier est vide !");
+    return;
+  }
+  
+ // ✅ NOUVEAU : Vérifier les stocks avant checkout
+  const stockIssues = cartItems.filter(item => item.stock !== undefined && item.quantity > item.stock);
+  if (stockIssues.length > 0) {
+    alert("Certains articles dépassent le stock disponible. Veuillez ajuster les quantités.");
     return;
   }
   
@@ -189,9 +212,6 @@ useEffect(() => {
 
 
 
-
-
-  // --- Rendu ---
   return (
     <>
       <Header />
