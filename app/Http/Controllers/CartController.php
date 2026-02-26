@@ -209,6 +209,20 @@ $shippingAddress = $user->addresses
         $nom = $request->filled('nom') ? $request->nom : null;
         $numero = $request->filled('numero') ? $request->numero : null;
 
+        // 🔥 RÉCUPÉRER LE MAILLOT POUR VÉRIFIER LE STOCK
+        $maillot = Maillot::findOrFail($request->maillot_id);
+        
+        // 🔥 DÉTERMINER LE STOCK DISPONIBLE POUR LA TAILLE
+        $stockField = 'stock_' . strtolower($request->size);
+        $stockDisponible = $maillot->$stockField ?? 0;
+        
+        // 🔥 VÉRIFICATION : La quantité demandée est-elle disponible ?
+        if ($request->quantity > $stockDisponible) {
+            return back()->withErrors([
+                'quantity' => "Stock insuffisant. Seulement {$stockDisponible} article(s) disponible(s) en taille {$request->size}."
+            ])->with('error', "Stock insuffisant pour la taille {$request->size}");
+        }
+
         // Si connecté → ajouter en DB
         if (Auth::check()) {
             $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
@@ -221,6 +235,15 @@ $shippingAddress = $user->addresses
                 ->first();
 
             if ($item) {
+                  // 🔥 VÉRIFIER QUE LA NOUVELLE QUANTITÉ TOTALE NE DÉPASSE PAS LE STOCK
+                $nouvelleQuantite = $item->quantity + $request->quantity;
+                
+                if ($nouvelleQuantite > $stockDisponible) {
+                    return back()->withErrors([
+                        'quantity' => "Stock insuffisant. Vous avez déjà {$item->quantity} article(s) dans votre panier. Maximum disponible : {$stockDisponible}."
+                    ])->with('error', "Vous avez déjà {$item->quantity} article(s) dans votre panier.");
+                }
+                
                 $item->increment('quantity', $request->quantity);
             } else {
                 $cart->items()->create([
@@ -247,6 +270,15 @@ $shippingAddress = $user->addresses
                 ($sessionItem['nom'] ?? null) == $nom &&
                 ($sessionItem['numero'] ?? null) == $numero
             ) {
+                // 🔥 VÉRIFIER QUE LA NOUVELLE QUANTITÉ TOTALE NE DÉPASSE PAS LE STOCK
+                $nouvelleQuantite = $sessionItem['quantity'] + $request->quantity;
+                
+                if ($nouvelleQuantite > $stockDisponible) {
+                    return back()->withErrors([
+                        'quantity' => "Stock insuffisant. Vous avez déjà {$sessionItem['quantity']} article(s) dans votre panier. Maximum disponible : {$stockDisponible}."
+                    ])->with('error', "Vous avez déjà {$sessionItem['quantity']} article(s) dans votre panier.");
+                }
+
                 $sessionItem['quantity'] += $request->quantity;
                 $found = true;
                 break;

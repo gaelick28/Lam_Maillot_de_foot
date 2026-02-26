@@ -224,7 +224,26 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                  onInput={(e) => {
     e.target.value = e.target.value.replace(/^0+/, '') || '1';
   }}
-                onChange={e => setQte(e.target.value)}
+                onChange={(e) => {
+  const value = e.target.value;
+  const numValue = parseInt(value, 10);
+  
+  // Si vide, mettre 1
+  if (value === '' || isNaN(numValue)) {
+    setQte(1);
+    return;
+  }
+  
+  // Limiter entre 1 et le stock disponible
+  if (numValue < 1) {
+    setQte(1);
+  } else if (numValue > stockDisponible) {
+    setQte(stockDisponible);
+    alert(`Stock maximum disponible : ${stockDisponible} pour la taille ${taille}`);
+  } else {
+    setQte(numValue);
+  }
+}}
                 className="ml-2 border rounded px-2 py-1 w-16"
                 disabled={stockDisponible === 0}
               />
