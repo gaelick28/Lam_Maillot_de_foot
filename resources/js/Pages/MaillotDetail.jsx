@@ -19,10 +19,10 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [mobileZoom, setMobileZoom] = useState(false);
 
-  // ✅ Obtenir le stock disponible pour la taille sélectionnée
+  //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
 
-  // ✅ Gérer le changement de taille
+  //  Gérer le changement de taille
   const handleTailleChange = (nouvelleTaille) => {
     setTaille(nouvelleTaille);
     const nouveauStock = stocks[nouvelleTaille] || 0;
