@@ -25,7 +25,7 @@ export default function Panier() {
 );
 
   // --- Validation utilitaires ---
-  const validateNom = useCallback((val) => /^[A-Z'ÇÉÈÊËÏÄÜÖÔ\s-]*$/.test(val), []);
+  const validateNom = useCallback((val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\s-]*$/.test(val), []);
   const validateNumero = useCallback((val) => {
     if (val === "") return true;
     if (/^\d+$/.test(val)) {
@@ -34,6 +34,8 @@ export default function Panier() {
     }
     return false;
   }, []);
+
+  const [focusedNomId, setFocusedNomId] = useState(null);
 
   // --- Calcul des totaux d'une ligne ---
   const computeItemTotals = useCallback(
@@ -319,21 +321,30 @@ useEffect(() => {
                       <label htmlFor={`nom-${item.id}`} className="text-xs font-medium text-gray-600">
                         Nom
                       </label>
-                      <input
-                        id={`nom-${item.id}`}
-                        type="text"
-                        value={item.nom || ""}
-                        onChange={(e) => {
-                          const val = e.target.value.toUpperCase();
-                          if (validateNom(val)) {
-                            handleEdit(item.id, "nom", val);
-                          }
-                        }}
-                        onKeyDown={(e) => handleKeyDown(e, item)}
-                        placeholder="MAJUSCULES, espaces, -"
-                        className="col-span-1 border rounded px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
-                      />
-
+                      <div className="col-span-1 flex flex-col">
+                        <input
+                          id={`nom-${item.id}`}
+                          type="text"
+                          value={item.nom || ""}
+                          onChange={(e) => {
+                            const val = e.target.value.toUpperCase();
+                            if (validateNom(val) && val.length <= 25) {
+                              handleEdit(item.id, "nom", val);
+                            }
+                          }}
+                          onFocus={() => setFocusedNomId(item.id)}
+                          onBlur={() => setFocusedNomId(null)}
+                          onKeyDown={(e) => handleKeyDown(e, item)}
+                          placeholder="MAJUSCULES, espaces, -"
+                          maxLength={25}
+                          className="border rounded px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
+                        />
+                        {focusedNomId === item.id && (
+                          <span className={`text-xs mt-0.5 ${(item.nom?.length || 0) >= 23 ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+                            {item.nom?.length || 0}/25
+                          </span>
+                        )}
+                      </div>
                       {/* Numéro */}
                       <label htmlFor={`numero-${item.id}`} className="text-xs font-medium text-gray-600">
                         Numéro
@@ -477,21 +488,31 @@ useEffect(() => {
                         </td>
 
                         {/* Nom */}
-                        <td className="p-3 lg:p-4">
-                          <label htmlFor={`nom-d-${item.id}`} className="sr-only">Nom</label>
-                          <input
-                            id={`nom-d-${item.id}`}
-                            type="text"
-                            value={item.nom || ""}
-                            onChange={(e) => {
-                              const val = e.target.value.toUpperCase();
-                              if (validateNom(val)) handleEdit(item.id, "nom", val);
-                            }}  
-                            onKeyDown={(e) => handleKeyDown(e, item)}
-                            placeholder="NOM"
-                            className="ml-0 lg:ml-2 border rounded px-2 py-1 w-28 lg:w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
-                          />
-                        </td>
+                       <td className="p-3 lg:p-4">
+  <label htmlFor={`nom-d-${item.id}`} className="sr-only">Nom</label>
+  <div className="flex flex-col">
+    <input
+      id={`nom-d-${item.id}`}
+      type="text"
+      value={item.nom || ""}
+      onChange={(e) => {
+        const val = e.target.value.toUpperCase();
+        if (validateNom(val) && val.length <= 25) handleEdit(item.id, "nom", val);
+      }}
+      onFocus={() => setFocusedNomId(item.id)}
+      onBlur={() => setFocusedNomId(null)}
+      onKeyDown={(e) => handleKeyDown(e, item)}
+      placeholder="NOM"
+      maxLength={25}
+      className="ml-0 lg:ml-2 border rounded px-2 py-1 w-28 lg:w-32 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
+    />
+    {focusedNomId === item.id && (
+      <span className={`text-xs mt-0.5 ml-0 lg:ml-2 ${(item.nom?.length || 0) >= 23 ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+        {item.nom?.length || 0}/25
+      </span>
+    )}
+  </div>
+</td>
 
                         {/* Numéro */}
                         <td className="p-3 lg:p-4">

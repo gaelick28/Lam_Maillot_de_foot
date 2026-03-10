@@ -18,6 +18,8 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [mobileZoom, setMobileZoom] = useState(false);
+  const [showTooltipNom, setShowTooltipNom] = useState(false);
+  const [showTooltipNumero, setShowTooltipNumero] = useState(false);
 
   //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
@@ -54,12 +56,12 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   };
 
     // Validation identique à Panier.jsx
-    const validateNom = (val) => /^[A-ZÀÇÉÈÊËÏÄÜÖÔ'\s-]*$/.test(val);
+    const validateNom = (val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\s-]*$/.test(val);
   
     // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
     const val = e.target.value.toUpperCase();
-    if (validateNom(val)) {
+    if (validateNom(val)&& val.length <= 25) {
       setNom(val);
     }
   };
@@ -249,8 +251,9 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
               />
             </div>
             
+            {/* NUMÉRO */}
             <div className="mb-2">
-              <label>
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={personnalisation.numero}
@@ -258,12 +261,42 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                   className="mr-2"
                 />
                 Ajouter un numéro (+{prix_numero} €)
-          </label>
-          {personnalisation.numero && (
-            <input
+
+                <span
+                  className="relative inline-block"
+                  onMouseEnter={() => setShowTooltipNumero(true)}
+                  onMouseLeave={() => setShowTooltipNumero(false)}
+                >
+                 {/* i entouré d'un cercle pour numérotation */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 cursor-pointer text-blue-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
+                    <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
+                  </svg>
+                  
+                  {showTooltipNumero && (
+                    <div className="absolute left-6 top-0 z-20 w-52 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700">
+                      <ul className="list-disc list-inside space-y-1">
+                       
+                        Numérotation entre <strong>1</strong> et <strong>99</strong>
+                      </ul>
+                    </div>
+                  )}
+                </span>
+              </label>
+
+              {personnalisation.numero && (
+                <input
                   type="text"
-  inputMode="numeric"
-  pattern="[0-9]*"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={numero}
                   onChange={handleNumeroChange}
                   placeholder="Numéro (1-99)"
@@ -271,8 +304,10 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                 />
               )}
             </div>
+
+            {/* NOM */}
             <div className="mb-2">
-              <label>
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={personnalisation.nom}
@@ -280,16 +315,53 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                   className="mr-2"
                 />
                 Ajouter un nom (+{prix_nom} €)
-          </label>
-          {personnalisation.nom && (
-            <input
-                  type="text"
-                  value={nom}
-                  onChange={handleNomChange}
-                  placeholder="NOM"
-                  className="ml-2 border rounded px-2 py-1 w-32"
-                />
 
+                <span
+                  className="relative inline-block"
+                  onMouseEnter={() => setShowTooltipNom(true)}
+                  onMouseLeave={() => setShowTooltipNom(false)}
+                >
+                  {/* i entouré d'un cercle pour nom */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 cursor-pointer text-blue-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
+                    <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
+                  </svg>
+
+                  {showTooltipNom && (
+                    <div className="absolute left-6 top-0 z-20 w-64 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700">
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Lettres majuscules uniquement</li>
+                        <li>Accents autorisés (É,Ë,Ï, Ñ, Ø…)</li>
+                        <li>Tiret <strong>-</strong> et apostrophe <strong>'</strong> acceptés</li>
+                        <li>Maximum : <strong>25 caractères</strong></li>
+                      </ul>
+                    </div>
+                  )}
+                </span>
+              </label>
+
+              {personnalisation.nom && (
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    value={nom}
+                    onChange={handleNomChange}
+                    placeholder="NOM"
+                    maxLength={25}
+                    className="ml-2 border rounded px-2 py-1 w-48"
+                  />
+                  <span className={`ml-2 text-sm ${nom.length >= 23 ? 'text-red-500 font-semibold' : 'text-gray-400'}`}>
+                    {nom.length}/25
+                  </span>
+                </div>
               )}
             </div>
             
