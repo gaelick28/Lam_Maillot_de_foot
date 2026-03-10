@@ -267,7 +267,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                   onMouseEnter={() => setShowTooltipNumero(true)}
                   onMouseLeave={() => setShowTooltipNumero(false)}
                 >
-                 {/* i entouré d'un cercle pour numérotation */}
+                 {/* i entouré d'un cercle pour information numérotation */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4 cursor-pointer text-blue-500"
@@ -280,7 +280,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                     <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
                     <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
                   </svg>
-                  
+
                   {showTooltipNumero && (
                     <div className="absolute left-6 top-0 z-20 w-52 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700">
                       <ul className="list-disc list-inside space-y-1">
@@ -321,7 +321,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                   onMouseEnter={() => setShowTooltipNom(true)}
                   onMouseLeave={() => setShowTooltipNom(false)}
                 >
-                  {/* i entouré d'un cercle pour nom */}
+                  {/* i entouré d'un cercle pour information nom */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4 cursor-pointer text-blue-500"
