@@ -110,6 +110,7 @@ class AdminMaillotController extends Controller
             'nom' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+            'image_dos' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048', 
             'stock_s' => 'required|integer|min:0',
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
@@ -120,6 +121,11 @@ class AdminMaillotController extends Controller
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('maillots', 'public');
             $validated['image'] = 'storage/' . $imagePath;
+        }
+
+        if ($request->hasFile('image_dos')) {
+            $imageDosPath = $request->file('image_dos')->store('maillots', 'public');
+            $validated['image_dos'] = 'storage/' . $imageDosPath;
         }
 
         Maillot::create($validated);
@@ -138,6 +144,7 @@ class AdminMaillotController extends Controller
             'nom' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+            'image_dos' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'stock_s' => 'required|integer|min:0',
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
@@ -157,6 +164,17 @@ class AdminMaillotController extends Controller
             unset($validated['image']);
         }
 
+        if ($request->hasFile('image_dos')) {
+            if ($maillot->image_dos && file_exists(public_path($maillot->image_dos))) {
+                unlink(public_path($maillot->image_dos));
+            }
+            
+            $imageDosPath = $request->file('image_dos')->store('maillots', 'public');
+            $validated['image_dos'] = 'storage/' . $imageDosPath;
+        } else {
+            unset($validated['image_dos']);
+        }
+
         $maillot->update($validated);
 
         return redirect()->route('admin.maillots.index')
@@ -172,6 +190,10 @@ class AdminMaillotController extends Controller
         if ($maillot->image && file_exists(public_path($maillot->image))) {
             unlink(public_path($maillot->image));
         }
+
+        if ($maillot->image_dos && file_exists(public_path($maillot->image_dos))) {
+        unlink(public_path($maillot->image_dos));
+    }
 
         $maillot->delete();
 

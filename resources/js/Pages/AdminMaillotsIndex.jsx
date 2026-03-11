@@ -22,6 +22,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     stock_l: 10,
     stock_xl: 10,
     image: null,
+    image_dos: null,
   })
 
   const handleSearch = (e) => {
@@ -40,6 +41,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_l: 10,
       stock_xl: 10,
       image: null,
+      image_dos: null,
     })
     setEditingMaillot(null)
     setShowModal(true)
@@ -55,6 +57,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_l: maillot.stock_l || 0,
       stock_xl: maillot.stock_xl || 0,
       image: null,
+      image_dos: null,
     })
     setEditingMaillot(maillot)
     setShowModal(true)
@@ -441,6 +444,31 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                     <img
                       src={`/${editingMaillot.image}`}
                       alt={editingMaillot.nom}
+                      className="w-32 h-32 object-cover mt-1 rounded"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Image dos */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image dos <span className="text-gray-400 text-xs">(optionnelle)</span>
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setData('image_dos', e.target.files[0])}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.image_dos && <div className="text-red-500 text-sm mt-1">{errors.image_dos}</div>}
+
+                {editingMaillot && editingMaillot.image_dos && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-600">Image dos actuelle :</p>
+                    <img
+                      src={`/${editingMaillot.image_dos}`}
+                      alt={`${editingMaillot.nom} - dos`}
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />
                   </div>

@@ -10,6 +10,7 @@ class Maillot extends Model
         'club_id',
         'nom',
         'image',
+        'image_dos', 
         'price',
         'stock_s',
         'stock_m',

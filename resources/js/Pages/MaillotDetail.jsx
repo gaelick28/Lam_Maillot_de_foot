@@ -20,6 +20,8 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [mobileZoom, setMobileZoom] = useState(false);
   const [showTooltipNom, setShowTooltipNom] = useState(false);
   const [showTooltipNumero, setShowTooltipNumero] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
+  const images = [maillot.image, ...(maillot.image_dos ? [maillot.image_dos] : [])];
 
   //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
@@ -104,57 +106,102 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
         <div className="container mx-auto py-8 flex flex-col md:flex-row gap-8">
           
           {/* Section image avec bouton wishlist */}
-          <div className="flex-1 flex justify-center md:justify-start">
-              <div
-                className="relative w-full max-w-md overflow-hidden"
-                onMouseEnter={() => setShowZoom(true)}
-                onMouseLeave={() => setShowZoom(false)}
-                onMouseMove={handleMouseMove}
-              >
-                {/* Image normale */}
-                <img
-                  src={`/${maillot.image}`}
-                  alt={maillot.nom}
-                  className="w-full rounded shadow"
-                  onClick={() => setMobileZoom(true)}
-                />
+          <div className="flex-1 flex flex-col justify-center md:justify-start">
+            <div
+              className="relative w-full max-w-md overflow-hidden"
+              onMouseEnter={() => setShowZoom(true)}
+              onMouseLeave={() => setShowZoom(false)}
+              onMouseMove={handleMouseMove}
+            >
+              {/* Image active */}
+              <img
+                src={`/${images[currentImage]}`}
+                alt={currentImage === 0 ? maillot.nom : `${maillot.nom} - dos`}
+                className="w-full rounded shadow"
+                onClick={() => setMobileZoom(true)}
+              />
 
-                {/* Effet loupe */}
-                {showZoom && (
-                  <div
-                    className="absolute inset-0 rounded"
-                    style={{
-                      backgroundImage: `url(/${maillot.image})`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "200%",
-                      backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    }}
-                  />
-                )}
-                
-                {/* Version mobile de l'effet zoom */}
-            {mobileZoom && (
-              <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center md:hidden">
-                <img
-                  src={`/${maillot.image}`}
-                  alt={maillot.nom}
-                  className="max-w-full max-h-full"
+              {/* Effet loupe */}
+              {showZoom && (
+                <div
+                  className="absolute inset-0 rounded"
+                  style={{
+                    backgroundImage: `url(/${images[currentImage]})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "200%",
+                    backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                  }}
                 />
-                <button
-                  className="absolute top-4 right-4 text-white text-3xl"
-                  onClick={() => setMobileZoom(false)}
-                >
-                  ✕
-                </button>
+              )}
+
+              {/* Wishlist */}
+              <div className="absolute top-2 right-2 z-10">
+                <WishlistButton maillotId={maillot.id} />
               </div>
-            )}
 
-            {/* Wishlist */}
-            <div className="absolute top-2 right-2 z-10">
-              <WishlistButton maillotId={maillot.id} />
+              {/* Flèches carrousel — uniquement si image_dos existe */}
+              {maillot.image_dos && (
+                <>
+                  <button
+                    onClick={() => setCurrentImage(prev => prev === 0 ? images.length - 1 : prev - 1)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10"
+                    aria-label="Image précédente"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setCurrentImage(prev => prev === images.length - 1 ? 0 : prev + 1)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10"
+                    aria-label="Image suivante"
+                  >
+                    ›
+                  </button>
+
+                 
+                </>
+              )}
+
+              {/* Zoom mobile */}
+              {mobileZoom && (
+                <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center md:hidden">
+                  <img
+                    src={`/${images[currentImage]}`}
+                    alt={maillot.nom}
+                    className="max-w-full max-h-full"
+                  />
+                  <button
+                    className="absolute top-4 right-4 text-white text-3xl"
+                    onClick={() => setMobileZoom(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </div>
+            {/* Miniatures de navigation */}
+              {maillot.image_dos && (
+                <div className="flex gap-2 mt-3 justify-center w-full max-w-md">
+                  {images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImage(index)}
+                      className={`border-2 rounded overflow-hidden transition ${
+                        currentImage === index ? 'border-blue-500' : 'border-transparent hover:border-gray-400'
+                      }`}
+                      aria-label={index === 0 ? 'Face' : 'Dos'}
+                    >
+                      <img
+                        src={`/${img}`}
+                        alt={index === 0 ? `${maillot.nom} - face` : `${maillot.nom} - dos`}
+                        className="w-16 h-16 object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
           </div>
-        </div>
+
+
 
           <div className="flex-1">
   <div className="flex items-center gap-4 mb-2">
