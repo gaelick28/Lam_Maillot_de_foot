@@ -65,11 +65,12 @@ private function getCategoriesData()
         // ✅ CHANGEMENT : Charger les clubs basé sur la catégorie en BDD
         $clubs = Club::where('category', $slug)
             ->orderBy('name', 'asc')
-            ->get(['name', 'slug'])
+            ->get(['name', 'slug', 'logo'])
             ->map(function($club) {
                 return [
                     'name' => $club->name,
-                    'href' => "/clubs/{$club->slug}/maillots"
+                    'href' => "/clubs/{$club->slug}/maillots",
+                    'logo' => $club->logo,
                 ];
             })
             ->toArray();

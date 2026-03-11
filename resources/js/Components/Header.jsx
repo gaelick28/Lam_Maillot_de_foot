@@ -212,15 +212,24 @@ export default function Header() {
   >
     <div className="p-2">
       {league.clubs.map((club) => (
-        <Link 
-          key={club.name} 
-          href={club.href} 
-          className="block rounded-md px-3 py-2 text-sm hover:bg-blue-50 transition-colors" 
-          role="menuitem"
-        >
-          {club.name}
-        </Link>
-      ))}
+  <Link 
+    key={club.name} 
+    href={club.href} 
+    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-blue-50 transition-colors" 
+    role="menuitem"
+  >
+    {club.logo ? (
+      <img
+        src={`/${club.logo}`}
+        alt={`Logo ${club.name}`}
+        className="w-6 h-6 object-contain flex-shrink-0"
+      />
+    ) : (
+      <div className="w-6 h-6 flex-shrink-0" />
+    )}
+    {club.name}
+  </Link>
+))}
     </div>
   </div>
 )}
@@ -283,10 +292,19 @@ export default function Header() {
               {activeMobileLeague === league.name && (
                 <div className="pl-5 py-1" id={`mobile-league-${league.name.replace(/\s+/g, "-").toLowerCase()}`}>
                   {league.clubs.map((club) => (
-                    <Link key={club.name} href={club.href} className="block px-2 py-2 text-sm rounded hover:bg-white/10" onClick={() => setMobileMenuOpen(false)}>
-                      {club.name}
-                    </Link>
-                  ))}
+  <Link key={club.name} href={club.href} className="flex items-center gap-2 px-2 py-2 text-sm rounded hover:bg-white/10" onClick={() => setMobileMenuOpen(false)}>
+    {club.logo ? (
+      <img
+        src={`/${club.logo}`}
+        alt={`Logo ${club.name}`}
+        className="w-6 h-6 object-contain flex-shrink-0"
+      />
+    ) : (
+      <div className="w-6 h-6 flex-shrink-0" />
+    )}
+    {club.name}
+  </Link>
+))}
                 </div>
               )}
             </div>
