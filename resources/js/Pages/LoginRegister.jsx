@@ -327,6 +327,7 @@ const handleResetSubmit = (e) => {
                   </button>
                 </div>
               )}
+
 {!isLogin && (
   <div className="space-y-3">
     <div className="flex items-start gap-2">
@@ -338,9 +339,9 @@ const handleResetSubmit = (e) => {
       />
       <label htmlFor="accept_terms" className="text-sm text-gray-600">
         J'accepte les{" "}
-        <a href="/cgv" className="text-blue-600 hover:underline">Conditions Générales de Vente</a>
+        <a href="/terms" className="text-blue-600 hover:underline">Conditions Générales de Vente</a>
         {" "}et la{" "}
-        <a href="/politique-confidentialite" className="text-blue-600 hover:underline">Politique de confidentialité</a>
+        <a href="/privacy" className="text-blue-600 hover:underline">Politique de confidentialité</a>
         {" "}*
       </label>
     </div>
@@ -348,7 +349,7 @@ const handleResetSubmit = (e) => {
     <p className="text-xs text-gray-500">
       Les données collectées (nom d'utilisateur, email) sont utilisées uniquement
       pour la gestion de votre compte et de vos commandes, conformément au{" "}
-      <a href="/mentions-legales" className="text-blue-600 hover:underline">RGPD</a>.
+      <a href="/legal" className="text-blue-600 hover:underline">RGPD</a>.
     </p>
   </div>
 )}
