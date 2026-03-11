@@ -285,7 +285,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                     <div className="absolute left-6 top-0 z-20 w-52 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700">
                       <ul className="list-disc list-inside space-y-1">
                        
-                        Numérotation entre <strong>1</strong> et <strong>99</strong>
+                        Numérotation de <strong>1</strong> à <strong>99</strong>
                       </ul>
                     </div>
                   )}
