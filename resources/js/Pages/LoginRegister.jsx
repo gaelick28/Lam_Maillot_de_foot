@@ -50,6 +50,12 @@ const {
   const handleSubmit = (e) => {
     e.preventDefault()
     
+  // Vérification acceptation CGV pour l'inscription
+    if (!isLogin && !e.target.accept_terms.checked) {
+      alert("Vous devez accepter les CGV et la politique de confidentialité pour vous inscrire.")
+      return
+    }
+
     // Récupérer la wishlist du localStorage
     const localWishlist = localStorage.getItem('wishlist');
     const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
@@ -321,7 +327,31 @@ const handleResetSubmit = (e) => {
                   </button>
                 </div>
               )}
+{!isLogin && (
+  <div className="space-y-3">
+    <div className="flex items-start gap-2">
+      <input
+        id="accept_terms"
+        type="checkbox"
+        required
+        className="h-4 w-4 mt-1 text-blue-600 border-gray-300 rounded"
+      />
+      <label htmlFor="accept_terms" className="text-sm text-gray-600">
+        J'accepte les{" "}
+        <a href="/cgv" className="text-blue-600 hover:underline">Conditions Générales de Vente</a>
+        {" "}et la{" "}
+        <a href="/politique-confidentialite" className="text-blue-600 hover:underline">Politique de confidentialité</a>
+        {" "}*
+      </label>
+    </div>
 
+    <p className="text-xs text-gray-500">
+      Les données collectées (nom d'utilisateur, email) sont utilisées uniquement
+      pour la gestion de votre compte et de vos commandes, conformément au{" "}
+      <a href="/mentions-legales" className="text-blue-600 hover:underline">RGPD</a>.
+    </p>
+  </div>
+)}
               <button
                 type="submit"
                 disabled={processing}
