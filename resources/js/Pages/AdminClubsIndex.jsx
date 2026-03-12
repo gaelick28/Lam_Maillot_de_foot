@@ -230,7 +230,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
       {/* Modal Créer/Éditer */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {editingClub ? 'Modifier le club' : 'Créer un club'}
             </h2>

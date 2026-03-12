@@ -115,20 +115,37 @@ if ($request->hasFile('image')) {
     }
 
     if ($request->hasFile('logo')) {
-        if ($club->logo && file_exists(public_path($club->logo))) {
-            unlink(public_path($club->logo));
-        }
+    try {
+    if ($club->logo && file_exists(public_path($club->logo))) {
+        unlink(public_path($club->logo));
+    }
+} catch (\Exception $e) {
+    // Fichier verrouillé sur Windows, on continue
+}
         $logoPath = $request->file('logo')->store('clubs', 'public');
         $validated['logo'] = 'storage/' . $logoPath;
     }
 
+else {
+    unset($validated['logo']);
+}
+
     if ($request->hasFile('image')) {
-        if ($club->image && file_exists(public_path($club->image))) {
+        
+    try {
+    if ($club->image && file_exists(public_path($club->image))) {
             unlink(public_path($club->image));
         }
+} catch (\Exception $e) {
+    // Fichier verrouillé sur Windows, on continue
+}
         $imagePath = $request->file('image')->store('clubs', 'public');
         $validated['image'] = 'storage/' . $imagePath;
     }
+
+ else {
+    unset($validated['image']); // ← ajouter
+}
 
     $club->update($validated);
 
