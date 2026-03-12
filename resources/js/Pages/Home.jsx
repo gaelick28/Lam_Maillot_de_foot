@@ -46,10 +46,10 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
             </h2>
 
             <div className="grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-  {featuredMaillots.map((maillot) => (
-    <MaillotCard key={maillot.id} maillot={maillot} />
-  ))}
-</div>
+            {featuredMaillots.map((maillot) => (
+              <MaillotCard key={maillot.id} maillot={maillot} />
+            ))}
+          </div>
           </div>
         </div>
       </section>
@@ -66,10 +66,10 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
             </h2>
 
            <div className="grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-  {newMaillots.map((maillot) => (
-    <MaillotCard key={maillot.id} maillot={maillot} />
-  ))}
-</div>
+            {newMaillots.map((maillot) => (
+              <MaillotCard key={maillot.id} maillot={maillot} />
+            ))}
+          </div>
           </div>
         </div>
       </section>
