@@ -15,6 +15,9 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
     name: '',
    category: 'ligue-1',
     logo: null,
+    image: null,
+    is_featured_home: false,
+    home_order: '',
   })
 
   const handleSearch = (e) => {
@@ -33,6 +36,9 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
       name: club.name,
       category: club.category, 
       logo: null,
+      image: null,
+      is_featured_home: club.is_featured_home || false,
+      home_order: club.home_order || '',
     })
     setEditingClub(club)
     setShowModal(true)
@@ -289,6 +295,60 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
                   </div>
                 )}
               </div>
+
+              {/* Image page d'accueil */}
+<div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Image page d'accueil {editingClub && "(laisser vide pour garder l'actuelle)"}
+    </label>
+    <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setData('image', e.target.files[0])}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    {editingClub && editingClub.image && (
+        <div className="mt-2">
+            <p className="text-sm text-gray-600">Image actuelle :</p>
+            <img
+                src={`/${editingClub.image}`}
+                alt={editingClub.name}
+                className="w-32 h-20 object-cover mt-1 rounded"
+            />
+        </div>
+    )}
+</div>
+
+{/* Afficher en page d'accueil */}
+<div className="flex items-center gap-3">
+    <input
+        id="is_featured_home"
+        type="checkbox"
+        checked={data.is_featured_home}
+        onChange={(e) => setData('is_featured_home', e.target.checked)}
+        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+    />
+    <label htmlFor="is_featured_home" className="text-sm font-medium text-gray-700">
+        Afficher dans "Nos Équipes" en page d'accueil
+    </label>
+</div>
+
+{/* Ordre d'affichage */}
+{data.is_featured_home && (
+    <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+            Ordre d'affichage
+        </label>
+        <input
+            type="number"
+            min="1"
+            value={data.home_order}
+            onChange={(e) => setData('home_order', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ex: 1, 2, 3..."
+        />
+    </div>
+)}
 
               {/* Boutons */}
               <div className="flex gap-3 pt-4">

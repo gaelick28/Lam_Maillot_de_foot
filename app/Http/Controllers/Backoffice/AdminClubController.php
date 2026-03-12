@@ -71,6 +71,9 @@ class AdminClubController extends Controller
             'name' => 'required|string|max:255|unique:clubs,name',
             'category' => 'required|string|max:100',
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+        'is_featured_home' => 'boolean',
+        'home_order' => 'nullable|integer',
         ]);
 
         // Générer le slug automatiquement
@@ -82,6 +85,11 @@ class AdminClubController extends Controller
             $validated['logo'] = 'storage/' . $logoPath;
         }
 
+if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('clubs', 'public');
+        $validated['image'] = 'storage/' . $imagePath;
+    }
+
         Club::create($validated);
 
         return redirect()->route('admin.clubs.index')
@@ -92,34 +100,41 @@ class AdminClubController extends Controller
      * Mettre à jour un club
      */
     public function update(Request $request, Club $club)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:clubs,name,' . $club->id,
-            'category' => 'required|string|max:100',
-            'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:clubs,name,' . $club->id,
+        'category' => 'required|string|max:100',
+        'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+        'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
+        'is_featured_home' => 'boolean',
+        'home_order' => 'nullable|integer',
+    ]);
 
-        // Mettre à jour le slug si le nom change
-        if ($validated['name'] !== $club->name) {
-            $validated['slug'] = Str::slug($validated['name']);
-        }
-
-        // Gérer l'upload du nouveau logo
-        if ($request->hasFile('logo')) {
-            // Supprimer l'ancien logo si existe
-            if ($club->logo && file_exists(public_path($club->logo))) {
-                unlink(public_path($club->logo));
-            }
-
-            $logoPath = $request->file('logo')->store('clubs', 'public');
-            $validated['logo'] = 'storage/' . $logoPath;
-        }
-
-        $club->update($validated);
-
-        return redirect()->route('admin.clubs.index')
-            ->with('success', 'Club modifié avec succès.');
+    if ($validated['name'] !== $club->name) {
+        $validated['slug'] = Str::slug($validated['name']);
     }
+
+    if ($request->hasFile('logo')) {
+        if ($club->logo && file_exists(public_path($club->logo))) {
+            unlink(public_path($club->logo));
+        }
+        $logoPath = $request->file('logo')->store('clubs', 'public');
+        $validated['logo'] = 'storage/' . $logoPath;
+    }
+
+    if ($request->hasFile('image')) {
+        if ($club->image && file_exists(public_path($club->image))) {
+            unlink(public_path($club->image));
+        }
+        $imagePath = $request->file('image')->store('clubs', 'public');
+        $validated['image'] = 'storage/' . $imagePath;
+    }
+
+    $club->update($validated);
+
+    return redirect()->route('admin.clubs.index')
+        ->with('success', 'Club modifié avec succès.');
+}
 
     /**
      * Supprimer un club
@@ -137,6 +152,11 @@ class AdminClubController extends Controller
             unlink(public_path($club->logo));
         }
 
+        // Supprimer l'image si existe
+        if ($club->image && file_exists(public_path($club->image))) {
+            unlink(public_path($club->image));
+        }
+        
         $club->delete();
 
         return redirect()->route('admin.clubs.index')

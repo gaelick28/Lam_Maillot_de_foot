@@ -115,6 +115,10 @@ class AdminMaillotController extends Controller
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
             'stock_xl' => 'required|integer|min:0',
+            'is_featured' => 'boolean',
+            'is_new' => 'boolean',
+            'badge' => 'nullable|string|max:50',
+            'home_order' => 'nullable|integer',
         ]);
 
         // Upload de l'image
@@ -149,6 +153,10 @@ class AdminMaillotController extends Controller
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
             'stock_xl' => 'required|integer|min:0',
+            'is_featured' => 'boolean',
+            'is_new' => 'boolean',
+            'badge' => 'nullable|string|max:50',
+            'home_order' => 'nullable|integer',
         ]);
 
         // Upload de la nouvelle image si fournie

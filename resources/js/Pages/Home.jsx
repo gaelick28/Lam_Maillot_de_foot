@@ -4,16 +4,7 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import WishlistButton from "@/Components/WishlistButton"
 
-const BADGES = {
-  1: "Champions Edition",
-  2: "Champions Edition",
-  187: "Limited Edition",
-  390: "Nouveauté",
-  185: "Limited Edition",
-  382: "Nouveauté",
-  367: "Limited Edition",
-  363: "Nouveauté",
-}
+
 
 export default function Homepage({ featuredMaillots = [], newMaillots = [], featuredClubs = [] }) {
   
@@ -94,25 +85,16 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
               Nos Équipes
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {featuredClubs.length > 0 ? (
-                featuredClubs.map((club) => (
-                  <TeamCard 
-                    key={club.slug}
-                    team={club.name} 
-                    slug={club.slug}
-                    image={club.image} 
-                    count={club.maillots_count} 
-                  />
-                ))
-              ) : (
-                // Fallback si pas de données dynamiques (pour rétrocompatibilité)
-                <>
-                  <TeamCard team="Girondins de Bordeaux" slug="girondins-de-bordeaux" image="/images/maillot/images_maillot/girondins.jfif" count={0} />
-                  <TeamCard team="Olympique Lyonnais" slug="olympique-lyonnais" image="/images/maillot/images_maillot/lyon_75ans.jfif" count={0} />
-                  <TeamCard team="France" slug="france" image="/images/maillot/images_maillot/france.jpg" count={0} />
-                </>
-              )}
-            </div>
+              {featuredClubs.map((club) => (
+        <TeamCard 
+            key={club.slug}
+            team={club.name} 
+            slug={club.slug}
+            image={club.image} 
+            count={club.maillots_count} 
+        />
+    ))}
+</div>
           </div>
         </div>
       </section>
@@ -152,13 +134,13 @@ const MaillotCard = React.memo(function MaillotCard({ maillot }) {
           </div>
         </div>
       </Link>
-      {BADGES[maillot.id] && (
-  <span 
-    className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
-    aria-label={`Badge ${BADGES[maillot.id]}`}
-  >
-    {BADGES[maillot.id]}
-  </span>
+      {maillot.badge && (
+    <span 
+        className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
+        aria-label={`Badge ${maillot.badge}`}
+    >
+        {maillot.badge}
+    </span>
 )}
 
       <div className="absolute top-2 right-2 z-10">

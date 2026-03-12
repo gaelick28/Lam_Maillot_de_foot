@@ -16,6 +16,10 @@ class Maillot extends Model
         'stock_m',
         'stock_l',
         'stock_xl',
+        'is_featured',
+        'is_new', 
+        'badge', 
+        'home_order',
     ];
 
     protected $casts = [

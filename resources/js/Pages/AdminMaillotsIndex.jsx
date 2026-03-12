@@ -23,6 +23,10 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     stock_xl: 10,
     image: null,
     image_dos: null,
+    is_featured: false,
+    is_new: false,
+    badge: '',
+    home_order: '',
   })
 
   const handleSearch = (e) => {
@@ -42,6 +46,10 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_xl: 10,
       image: null,
       image_dos: null,
+       is_featured: false, 
+       is_new: false, 
+       badge: '', 
+       home_order: '',
     })
     setEditingMaillot(null)
     setShowModal(true)
@@ -58,6 +66,10 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_xl: maillot.stock_xl || 0,
       image: null,
       image_dos: null,
+      is_featured: maillot.is_featured || false,
+        is_new: maillot.is_new || false,
+        badge: maillot.badge || '',
+        home_order: maillot.home_order || '',
     })
     setEditingMaillot(maillot)
     setShowModal(true)
@@ -474,6 +486,68 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                   </div>
                 )}
               </div>
+
+              {/* Page d'accueil */}
+<div className="border-t pt-4 space-y-4">
+    <p className="text-sm font-semibold text-gray-700">Page d'accueil</p>
+
+    <div className="flex items-center gap-3">
+        <input
+            id="is_featured"
+            type="checkbox"
+            checked={data.is_featured}
+            onChange={(e) => setData('is_featured', e.target.checked)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+        />
+        <label htmlFor="is_featured" className="text-sm text-gray-700">
+            Afficher dans "Nos Maillots Phares"
+        </label>
+    </div>
+
+    <div className="flex items-center gap-3">
+        <input
+            id="is_new"
+            type="checkbox"
+            checked={data.is_new}
+            onChange={(e) => setData('is_new', e.target.checked)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+        />
+        <label htmlFor="is_new" className="text-sm text-gray-700">
+            Afficher dans "Nos nouveaux Maillots"
+        </label>
+    </div>
+
+    {(data.is_featured || data.is_new) && (
+        <>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Badge <span className="text-gray-400 text-xs">(optionnel)</span>
+                </label>
+                <input
+                    type="text"
+                    value={data.badge}
+                    onChange={(e) => setData('badge', e.target.value)}
+                    placeholder="Ex: Nouveauté, Limited Edition..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ordre d'affichage
+                </label>
+                <input
+                    type="number"
+                    min="1"
+                    value={data.home_order}
+                    onChange={(e) => setData('home_order', e.target.value)}
+                    placeholder="Ex: 1, 2, 3..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+        </>
+    )}
+</div>
 
               {/* Boutons */}
               <div className="flex gap-3 pt-4">

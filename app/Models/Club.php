@@ -11,6 +11,9 @@ protected $fillable = [
         'slug',
         'category',
         'logo',
+        'image',
+        'is_featured_home',
+         'home_order',
     ];
 
 
