@@ -17,6 +17,7 @@ class MaillotController extends Controller
             'M' => $maillot->stock_m,
             'L' => $maillot->stock_l,
             'XL' => $maillot->stock_xl,
+            'XXL' => $maillot->stock_xxl,
         ];
 
         // ✅ Filtrer les tailles disponibles (uniquement celles en stock)

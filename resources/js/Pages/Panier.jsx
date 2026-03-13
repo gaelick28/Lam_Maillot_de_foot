@@ -292,7 +292,7 @@ useEffect(() => {
                         onKeyDown={(e) => handleKeyDown(e, item)}
                         className="col-span-1 border rounded-md px-2 py-1 bg-blue-50 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                       >
-                        {["S", "M", "L", "XL"].map((sz) => (
+                        {["S", "M", "L", "XL", "XXL"].map((sz) => (
                           <option key={sz} value={sz}>
                             {sz}
                           </option>
@@ -463,7 +463,7 @@ useEffect(() => {
                             onKeyDown={(e) => handleKeyDown(e, item)}
                             className="border-none rounded-md px-2 py-1 bg-blue-100 text-blue-800 font-semibold focus:ring-2 focus:ring-blue-300"
                           >
-                            {["S", "M", "L", "XL"].map((sz) => (
+                            {["S", "M", "L", "XL", "XXL"].map((sz) => (
                               <option key={sz} value={sz}>{sz}</option>
                             ))}
                           </select>

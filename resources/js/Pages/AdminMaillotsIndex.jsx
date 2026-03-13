@@ -21,6 +21,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     stock_m: 10,
     stock_l: 10,
     stock_xl: 10,
+    stock_xxl: 10,
     image: null,
     image_dos: null,
     is_featured: false,
@@ -44,6 +45,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_m: 10,
       stock_l: 10,
       stock_xl: 10,
+      stock_xxl: 10,
       image: null,
       image_dos: null,
        is_featured: false, 
@@ -64,6 +66,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_m: maillot.stock_m || 0,
       stock_l: maillot.stock_l || 0,
       stock_xl: maillot.stock_xl || 0,
+      stock_xxl: maillot.stock_xxl || 0,
       image: null,
       image_dos: null,
       is_featured: maillot.is_featured || false,
@@ -202,6 +205,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">M</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">L</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">XL</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">XXL</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Total</th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -257,6 +261,11 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       <td className="px-6 py-4 text-center text-sm">
                         <span className={maillot.stock_xl === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_xl}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center text-sm">
+                        <span className={maillot.stock_xxl === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
+                          {maillot.stock_xxl}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center text-sm font-bold text-gray-900">
@@ -430,9 +439,20 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       required
                     />
                   </div>
+                  <div>
+    <label className="block text-xs text-gray-600 mb-1">XXL</label>
+    <input
+        type="number"
+        min="0"
+        value={data.stock_xxl}
+        onChange={(e) => setData('stock_xxl', parseInt(e.target.value) || 0)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+    />
+</div>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Stock total: {data.stock_s + data.stock_m + data.stock_l + data.stock_xl}
+                  Stock total: {data.stock_s + data.stock_m + data.stock_l + data.stock_xl + data.stock_xxl}
                 </p>
               </div>
 

@@ -16,6 +16,7 @@ class Maillot extends Model
         'stock_m',
         'stock_l',
         'stock_xl',
+        'stock_xxl',
         'is_featured',
         'is_new', 
         'badge', 
@@ -28,6 +29,7 @@ class Maillot extends Model
         'stock_m' => 'integer',
         'stock_l' => 'integer',
         'stock_xl' => 'integer',
+        'stock_xxl', 'integer',
     ];
 
     /**
@@ -43,7 +45,7 @@ class Maillot extends Model
      */
     public function getTotalStockAttribute()
     {
-        return $this->stock_s + $this->stock_m + $this->stock_l + $this->stock_xl;
+        return $this->stock_s + $this->stock_m + $this->stock_l + $this->stock_xl + $this->stock_xxl;
     }
 
     /**

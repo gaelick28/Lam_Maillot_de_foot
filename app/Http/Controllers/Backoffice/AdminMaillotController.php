@@ -39,20 +39,22 @@ class AdminMaillotController extends Controller
                     $query->where('stock_s', 0)
                           ->where('stock_m', 0)
                           ->where('stock_l', 0)
-                          ->where('stock_xl', 0);
+                          ->where('stock_xl', 0)
+                          ->where('stock_xxl', 0);
                 } elseif ($stockFilter === 'partial') {
                     //  Rupture partielle (au moins une taille à 0, mais pas toutes)
                     $query->where(function($q) {
                         $q->where('stock_s', 0)
                           ->orWhere('stock_m', 0)
                           ->orWhere('stock_l', 0)
-                          ->orWhere('stock_xl', 0);
+                          ->orWhere('stock_xl', 0)
+                          ->orWhere('stock_xxl', 0);
                     })
-                    ->whereRaw('(stock_s + stock_m + stock_l + stock_xl) > 0');
+                    ->whereRaw('(stock_s + stock_m + stock_l + stock_xl + stock_xxl) > 0');
                 } elseif ($stockFilter === 'low') {
                     //  Stock faible total (total < 10 et > 0)
-                    $query->whereRaw('(stock_s + stock_m + stock_l + stock_xl) < 10')
-                          ->whereRaw('(stock_s + stock_m + stock_l + stock_xl) > 0');
+                    $query->whereRaw('(stock_s + stock_m + stock_l + stock_xl + stock_xxl) < 10')
+                          ->whereRaw('(stock_s + stock_m + stock_l + stock_xl + stock_xxl) > 0');
                 } elseif ($stockFilter === 'low_partial') {
                     // Stock faible partiel (au moins une taille < 5)
                     $query->where(function($q) {
@@ -67,7 +69,10 @@ class AdminMaillotController extends Controller
                         })
                         ->orWhere(function($subQ) {
                             $subQ->where('stock_xl', '<', 5)->where('stock_xl', '>', 0);
-                        });
+                        })
+                        ->orWhere(function($subQ) {
+                        $subQ->where('stock_xxl', '<', 5)->where('stock_xxl', '>', 0);
+                    });
                     });
                 }
             })
@@ -80,7 +85,7 @@ class AdminMaillotController extends Controller
 
         // Ajouter le stock total pour chaque maillot
         $maillots->getCollection()->transform(function ($maillot) {
-            $maillot->total_stock = $maillot->stock_s + $maillot->stock_m + $maillot->stock_l + $maillot->stock_xl;
+            $maillot->total_stock = $maillot->stock_s + $maillot->stock_m + $maillot->stock_l + $maillot->stock_xl+ $maillot->stock_xxl;
             return $maillot;
         });
 
@@ -115,6 +120,7 @@ class AdminMaillotController extends Controller
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
             'stock_xl' => 'required|integer|min:0',
+            'stock_xxl' => 'required|integer|min:0',
             'is_featured' => 'boolean',
             'is_new' => 'boolean',
             'badge' => 'nullable|string|max:50',
@@ -153,6 +159,7 @@ class AdminMaillotController extends Controller
             'stock_m' => 'required|integer|min:0',
             'stock_l' => 'required|integer|min:0',
             'stock_xl' => 'required|integer|min:0',
+            'stock_xxl' => 'required|integer|min:0',
             'is_featured' => 'boolean',
             'is_new' => 'boolean',
             'badge' => 'nullable|string|max:50',
