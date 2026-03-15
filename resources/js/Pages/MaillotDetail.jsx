@@ -431,7 +431,20 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
               </button>
             )}
           </div>
+          
         </div>
+        {/* Description auto-générée */}
+<div className="mb-4 text-sm text-gray-600 leading-relaxed text-right">
+  {[
+    `Maillot ${maillot.nom}`,
+    maillot.club?.name ? `de l'équipe de ${maillot.club.name}` : null,
+    maillot.badge ? `— ${maillot.badge}` : null,
+  ].filter(Boolean).join(' ')}
+  {'. '}
+  {tailles.length > 0
+    ? `Disponible en ${tailles.join(', ')}.`
+    : 'Actuellement en rupture de stock.'}
+</div>
       </main>
       <Footer />
     </>
