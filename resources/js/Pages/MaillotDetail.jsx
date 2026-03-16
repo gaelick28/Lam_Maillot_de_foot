@@ -22,6 +22,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [showTooltipNumero, setShowTooltipNumero] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const images = [maillot.image, ...(maillot.image_dos ? [maillot.image_dos] : [])];
+  const [activeTab, setActiveTab] = useState('description');
 
   //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
@@ -430,21 +431,62 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                 RUPTURE DE STOCK - TAILLE {taille}
               </button>
             )}
-          </div>
           
-        </div>
-        {/* Description auto-générée */}
-<div className="mb-4 text-sm text-gray-600 leading-relaxed text-right">
-  {[
-    `Maillot ${maillot.nom}`,
-    maillot.club?.name ? `de l'équipe de ${maillot.club.name}` : null,
-    maillot.badge ? `— ${maillot.badge}` : null,
-  ].filter(Boolean).join(' ')}
-  {'. '}
-  {tailles.length > 0
-    ? `Disponible en ${tailles.join(', ')}.`
-    : 'Actuellement en rupture de stock.'}
+
+        {/* Description */}
+      {/* Onglets */}
+<div className="mt-14">
+    {/* Navigation onglets */}
+    <div className="flex border-b border-gray-300" role="tablist">
+        <button
+        role="tab"
+        aria-selected={activeTab === 'description'}
+            onClick={() => setActiveTab('description')}
+            className={`px-4 py-2 text-base font-medium ${activeTab === 'description' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+        >
+            Description
+        </button>
+        <button
+        role="tab"
+        aria-selected={activeTab === 'infos'}
+            onClick={() => setActiveTab('infos')}
+            className={`px-4 py-2 text-base font-medium ${activeTab === 'infos' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+        >
+            Informations complémentaires
+        </button>
+    </div>
+
+    {/* Contenu onglets */}
+    <div role="tabpanel" className="pt-4 text-base text-gray-700">
+        {activeTab === 'description' && (
+            <p className="leading-relaxed text-justify">
+                {maillot.description ? maillot.description : (
+                    <>
+                        {[
+                            `Maillot ${maillot.nom}`,
+                            maillot.club?.name ? `de l'équipe de ${maillot.club.name}` : null,
+                            maillot.badge ? `— ${maillot.badge}` : null,
+                        ].filter(Boolean).join(' ')}
+                        {'. '}
+                        {tailles.length > 0 ? `Disponible en ${tailles.join(', ')}.` : 'Actuellement en rupture de stock.'}
+                    </>
+                )}
+            </p>
+        )}
+        {activeTab === 'infos' && (
+            <table className="w-full">
+                <tbody>
+                    <tr className="border-b border-gray-200">
+                        <td className="py-2 font-medium text-gray-700 w-1/3">Poids</td>
+                        <td className="py-2">0.25 kg</td>
+                    </tr>
+                </tbody>
+            </table>
+        )}
+    </div>
 </div>
+      </div>
+      </div>
       </main>
       <Footer />
     </>

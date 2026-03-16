@@ -125,6 +125,7 @@ class AdminMaillotController extends Controller
             'is_new' => 'boolean',
             'badge' => 'nullable|string|max:50',
             'home_order' => 'nullable|integer',
+            'description' => 'nullable|string',
         ]);
 
         // Upload de l'image
@@ -164,6 +165,7 @@ class AdminMaillotController extends Controller
             'is_new' => 'boolean',
             'badge' => 'nullable|string|max:50',
             'home_order' => 'nullable|integer',
+            'description' => 'nullable|string',
         ]);
 
         // Upload de la nouvelle image si fournie

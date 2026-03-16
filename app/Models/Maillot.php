@@ -9,6 +9,7 @@ class Maillot extends Model
     protected $fillable = [
         'club_id',
         'nom',
+        'description',
         'image',
         'image_dos', 
         'price',

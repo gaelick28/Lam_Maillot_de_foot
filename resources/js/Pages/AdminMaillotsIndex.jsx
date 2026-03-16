@@ -28,6 +28,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     is_new: false,
     badge: '',
     home_order: '',
+    description: '',
   })
 
   const handleSearch = (e) => {
@@ -48,10 +49,11 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       stock_xxl: 10,
       image: null,
       image_dos: null,
-       is_featured: false, 
-       is_new: false, 
-       badge: '', 
-       home_order: '',
+      is_featured: false, 
+      is_new: false, 
+      badge: '', 
+      home_order: '',
+     description: '',
     })
     setEditingMaillot(null)
     setShowModal(true)
@@ -73,6 +75,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
         is_new: maillot.is_new || false,
         badge: maillot.badge || '',
         home_order: maillot.home_order || '',
+        description: maillot.description || '',
     })
     setEditingMaillot(maillot)
     setShowModal(true)
@@ -567,6 +570,21 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             </div>
         </>
     )}
+</div>
+
+{/* Description */}
+<div className="border-t pt-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Description <span className="text-gray-400 text-xs">(optionnelle)</span>
+    </label>
+    <textarea
+        value={data.description}
+        onChange={(e) => setData('description', e.target.value)}
+        rows={4}
+        placeholder="Description du maillot..."
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+   
 </div>
 
               {/* Boutons */}
