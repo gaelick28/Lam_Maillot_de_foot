@@ -2,7 +2,8 @@ import React from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Head, Link } from "@inertiajs/react";
-import WishlistButton from "@/Components/WishlistButton";
+// import WishlistButton from "@/Components/WishlistButton";
+import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
 export default function MaillotsList({ club, maillots }) {
   return (
@@ -53,68 +54,14 @@ export default function MaillotsList({ club, maillots }) {
           {maillots.length > 0 ? (
             <div 
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              role="grid"
-              aria-label={`Liste des maillots ${club.name}`}
             >
               {maillots.map((maillot, index) => (
-                <article 
+                <MaillotCardCarousel
                   key={maillot.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 focus-within:ring-2 focus-within:ring-blue-500"
-                  role="gridcell"
-                  aria-rowindex={Math.floor(index / 4) + 1}
-                  aria-colindex={(index % 4) + 1}
-                >
-                  <Link
-                    href={`/maillots/${maillot.id}`}
-                    className="block group"
-                    aria-label={`Voir les détails du maillot ${maillot.nom}`}
-                  >
-                    <div className="relative aspect-square overflow-hidden">
-                      <img
-                        src={`/${maillot.image}`}
-                        alt={`Maillot ${maillot.nom} - ${club.name}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      
-                      {/* 🔥 Bouton Wishlist */}
-                      <div className="absolute top-2 right-2 z-10">
-                        <WishlistButton maillotId={maillot.id} />
-                      </div>
-                    </div>
-                    
-                    <div className="p-4">
-                      <h2 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                        {maillot.nom}
-                      </h2>
-                      
-                      {maillot.type && (
-                        <p className="text-sm text-gray-600 mb-2">
-                          {maillot.type}
-                        </p>
-                      )}
-                      
-                      {maillot.prix && (
-                        <p className="text-lg font-bold text-green-600">
-                          {maillot.prix} €
-                        </p>
-                      )}
-                      
-                      <div className="mt-3 flex items-center text-sm text-blue-600 group-hover:text-blue-800">
-                        <span>Voir les détails</span>
-                        <svg 
-                          className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </Link>
-                </article>
+                  maillot={maillot}
+                  href={`/maillots/${maillot.id}`}
+                  maillotName={maillot.nom}
+                />
               ))}
             </div>
           ) : (

@@ -3,7 +3,7 @@ import { Head, Link } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import WishlistButton from "@/Components/WishlistButton"
-
+import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
 
 export default function Homepage({ featuredMaillots = [], newMaillots = [], featuredClubs = [] }) {
@@ -47,7 +47,7 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
 
             <div className="grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {featuredMaillots.map((maillot) => (
-              <MaillotCard key={maillot.id} maillot={maillot} />
+              <MaillotCardCarousel key={maillot.id} maillot={maillot} />
             ))}
           </div>
           </div>
@@ -67,7 +67,7 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
 
            <div className="grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {newMaillots.map((maillot) => (
-              <MaillotCard key={maillot.id} maillot={maillot} />
+              <MaillotCardCarousel key={maillot.id} maillot={maillot} />
             ))}
           </div>
           </div>
@@ -103,52 +103,52 @@ export default function Homepage({ featuredMaillots = [], newMaillots = [], feat
   )
 }
 
-const MaillotCard = React.memo(function MaillotCard({ maillot }) {
-  return (
-    <article 
-      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative"
-      aria-label={`Maillot ${maillot.nom}`}
-    >
-      <Link 
-        href={`/maillots/${maillot.id}`} 
-        className="block w-full"
-        aria-label={`Voir les détails du maillot ${maillot.nom} à ${Number(maillot.price).toFixed(2)} euros`}
-      >
-        <div className="relative w-full">
-          <img
-            src={`/${maillot.image}`}
-            alt={`Maillot ${maillot.nom}`}
-            className="w-full h-48 sm:h-56 object-contain bg-white cursor-pointer"
-            loading="lazy"
-          />
-          <div className="p-4">
-            <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
-              {maillot.nom}
-            </h3>
-            <div className="flex justify-between items-center w-full">
-              <span className="text-lg font-bold text-blue-800">
-                <span className="sr-only">Prix : </span>
-                {Number(maillot.price).toFixed(2)}€
-              </span>
-            </div>
-          </div>
-        </div>
-      </Link>
-      {maillot.badge && (
-    <span 
-        className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
-        aria-label={`Badge ${maillot.badge}`}
-    >
-        {maillot.badge}
-    </span>
-)}
+// const MaillotCard = React.memo(function MaillotCard({ maillot }) {
+//   return (
+//     <article 
+//       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative"
+//       aria-label={`Maillot ${maillot.nom}`}
+//     >
+//       <Link 
+//         href={`/maillots/${maillot.id}`} 
+//         className="block w-full"
+//         aria-label={`Voir les détails du maillot ${maillot.nom} à ${Number(maillot.price).toFixed(2)} euros`}
+//       >
+//         <div className="relative w-full">
+//           <img
+//             src={`/${maillot.image}`}
+//             alt={`Maillot ${maillot.nom}`}
+//             className="w-full h-48 sm:h-56 object-contain bg-white cursor-pointer"
+//             loading="lazy"
+//           />
+//           <div className="p-4">
+//             <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
+//               {maillot.nom}
+//             </h3>
+//             <div className="flex justify-between items-center w-full">
+//               <span className="text-lg font-bold text-blue-800">
+//                 <span className="sr-only">Prix : </span>
+//                 {Number(maillot.price).toFixed(2)}€
+//               </span>
+//             </div>
+//           </div>
+//         </div>
+//       </Link>
+//       {maillot.badge && (
+//     <span 
+//         className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium"
+//         aria-label={`Badge ${maillot.badge}`}
+//     >
+//         {maillot.badge}
+//     </span>
+// )}
 
-      <div className="absolute top-2 right-2 z-10">
-        <WishlistButton maillotId={maillot.id} />
-      </div>
-    </article>
-  )
-})
+//       <div className="absolute top-2 right-2 z-10">
+//         <WishlistButton maillotId={maillot.id} />
+//       </div>
+//     </article>
+//   )
+// })
 
 const TeamCard = React.memo(function TeamCard({ team, slug, image, count }) {
   return (

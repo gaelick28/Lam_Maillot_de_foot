@@ -5,6 +5,7 @@ import { Head, Link } from "@inertiajs/react";
 import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
 import WishlistButton from "@/Components/WishlistButton";
+import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
 export default function CategoryPage({ featuredMaillots, title, description, categorySlug }) {
   const formatPrice = new Intl.NumberFormat("fr-FR", {
@@ -68,64 +69,13 @@ export default function CategoryPage({ featuredMaillots, title, description, cat
                 role="list"
               >
                 {featuredMaillots.map((maillot) => (
-                  <article 
-                    key={maillot.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2"
-                    role="listitem"
-                  >
-                    <Link
-                      href={maillot.href}
-                      className="block group focus:outline-none"
-                      aria-label={`Voir tous les maillots ${maillot.club_name} - À partir de ${formatPrice.format(maillot.price)}`}
-                    >
-                      {/* Image du maillot */}
-                      <div className="relative aspect-square overflow-hidden bg-gray-50">
-                        <img
-                          src={`/${maillot.image}`}
-                          alt={`Maillot ${maillot.club_name}`}
-                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                    
-                    {/* 🔥 Bouton Wishlist */}
-                        <div className="absolute top-2 right-2 z-10">
-                          <WishlistButton maillotId={maillot.id} />
-                        </div>
-                      </div>
-
-                      {/* Informations */}
-                      <div className="p-4 sm:p-4">
-                        <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-blue-600 transition-colors truncate">
-                          {maillot.club_name}
-                        </h3>
-                        
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                          {maillot.maillot_name}
-                        </p>
-                        
-                        <div className="flex flex-col xs:flex-row sm:flex-row items-start xs:items-center sm:items-center xs:justify-between sm:justify-between gap-2">
-                          <span className="text-base sm:text-lg font-bold text-blue-700">
-                            À partir de {formatPrice.format(maillot.price)}
-                          </span>
-                          
-                          <span 
-                            className="text-xs sm:text-sm text-blue-600 group-hover:text-blue-800 flex items-center gap-1"
-                            aria-hidden="true"
-                          >
-                            Voir tout
-                            <svg 
-                              className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </article>
+                 <MaillotCardCarousel
+    key={maillot.id}
+    maillot={maillot}
+    href={maillot.href}
+    clubName={maillot.club_name}
+    maillotName={maillot.maillot_name}
+/>
                 ))}
               </div>
             </section>

@@ -6,6 +6,8 @@ import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
 import WelcomeMessage from "@/Components/WelcomeMessage"
+import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
+
 // Icônes SVG
 const HeartIcon = ({ className, filled = false }) => (
   <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
@@ -129,71 +131,28 @@ export default function Wishlist({ wishlistItems = [], user }) {
               /* Liste des articles */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {wishlistItems.map((item) => (
-                  <div
+                  <MaillotCardCarousel
                     key={item.id}
-                    className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 ${
-                      removingItem === item.maillot.id ? "opacity-50 scale-95" : "hover:shadow-md"
-                    }`}
-                  >
-                    {/* Image du produit */}
-                    <div className="relative">
-                      <Link href={`/maillots/${item.maillot.id}`} aria-label={`Voir le produit ${item.maillot.nom}`}>
-                        <img
-                          src={`/${item.maillot.image}`}
-                          alt={item.maillot.nom}
-                          className="w-full h-48 object-cover"
-                        />
-                      </Link>
-
-                      {/* Bouton supprimer */}
-                      <button
-                        onClick={() => handleRemoveFromWishlist(item.maillot.id)}
-                        disabled={removingItem === item.maillot.id}
-                        className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
-                        aria-label={`Supprimer ${item.maillot.nom} de la liste de souhaits`}
-                      >
-                        <TrashIcon className="w-4 h-4 text-red-500" aria-hidden="true" />
-                      </button>
-                    </div>
-
-                    {/* Informations du produit */}
-                    <div className="p-4">
-                      {/* Nom du produit */}
-                      <Link
-                        href={`/maillots/${item.maillot.id}`}
-                        className="block font-semibold text-gray-900 hover:text-blue-600 transition-colors mb-2 line-clamp-2"
-                        aria-label={`Voir les détails de ${item.maillot.nom}`}
-                      >
-                        {item.maillot.nom}
-                      </Link>
-
-                      {/* Club */}
-                      <p className="text-sm text-gray-500 mb-2">{item.maillot.club_name}</p>
-
-                      {/* Prix */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <span className="text-lg font-bold text-gray-900">
-                          {item.maillot.price}€
-                        </span>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="space-y-2">
-                        <Link
-                          href={`/maillots/${item.maillot.id}`}
-                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center block"
-                          aria-label={`Voir les détails de ${item.maillot.nom}`}
+                    maillot={item.maillot}
+                    href={`/maillots/${item.maillot.id}`}
+                    maillotName={item.maillot.nom}
+                    footer={
+                      <>
+                        <button
+                          onClick={() => handleRemoveFromWishlist(item.maillot.id)}
+                          disabled={removingItem === item.maillot.id}
+                          className="w-full flex items-center justify-center gap-2 bg-red-100 text-red-700 py-2 px-4 rounded-lg hover:bg-red-200 transition-colors"
+                          aria-label={`Supprimer ${item.maillot.nom} de la liste de souhaits`}
                         >
-                          Voir le produit
-                        </Link>
-                      </div>
-
-                      {/* Date d'ajout */}
-                      <p className="text-xs text-gray-400 mt-3">
-                        Ajouté le {new Date(item.created_at).toLocaleDateString("fr-FR")}
-                      </p>
-                    </div>
-                  </div>
+                          <TrashIcon className="w-4 h-4" aria-hidden="true" />
+                          Supprimer
+                        </button>
+                        <p className="text-xs text-gray-400 mt-2 text-center">
+                          Ajouté le {new Date(item.created_at).toLocaleDateString("fr-FR")}
+                        </p>
+                      </>
+                    }
+                  />
                 ))}
               </div>
             )}

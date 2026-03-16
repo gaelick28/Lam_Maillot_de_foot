@@ -120,6 +120,7 @@ class CategoryController extends Controller
                 'club_slug' => $club->slug,
                 'maillot_name' => $maillot->nom,
                 'image' => $maillot->image,
+                'image_dos' => $maillot->image_dos,
                 'price' => $maillot->price ?? 20.00,
                 'href' => "/clubs/{$club->slug}/maillots"
             ];

@@ -34,6 +34,7 @@ class WishlistController extends Controller
                         'id' => $item->maillot->id,
                         'nom' => $item->maillot->nom,
                         'image' => $item->maillot->image,
+                        'image_dos' => $item->maillot->image_dos,
                         'price' => $item->maillot->price,
                         'club_name' => $item->maillot->club->name ?? 'Club inconnu',
                         'slug' => $item->maillot->id,
