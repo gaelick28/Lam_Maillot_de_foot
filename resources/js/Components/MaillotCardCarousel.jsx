@@ -19,15 +19,15 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
     const formatPrice = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
     return (
-        <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative">
+        <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative group">
             <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
                 <Link href={href || `/maillots/${maillot.id}`}>
                     <img
-                        src={`/${images[currentImage]}`}
-                        alt={`Maillot ${clubName || maillot.nom}`}
-                        className="w-full h-full object-contain"
-                        loading="lazy"
-                    />
+    src={`/${images[currentImage]}`}
+    alt={`Maillot ${clubName || maillot.nom}`}
+    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+    loading="lazy"
+/>
                 </Link>
 
                 {/* Flèches — uniquement si image_dos existe */}
