@@ -55,15 +55,20 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
                 <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
                     {clubName || maillot.nom}
                 </h3>
-                {maillotName && (
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-1">{maillotName}</p>
-                )}
+                
                 {showPrice && (
                     <span className="text-lg font-bold text-blue-800">
                         {clubName ? `À partir de ${formatPrice.format(maillot.price)}` : `${Number(maillot.price).toFixed(2)}€`}
                     </span>
                 )}
+                <div className="mt-3 flex items-center text-sm text-blue-600 group-hover:text-blue-800">
+                <span>Voir les détails</span>
+                <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
             </Link>
+
 
             {maillot.badge && (
                 <span className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
