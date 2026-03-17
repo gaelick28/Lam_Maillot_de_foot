@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         $featuredMaillots = Maillot::where('is_featured', true)
             ->orderBy('home_order')
-            ->get(['id', 'nom', 'price', 'image', 'image_dos', 'badge'])
+            ->get(['id', 'nom', 'price', 'image', 'image_dos', 'badge', 'club_id'])
             ->map(fn($m) => [
                 'id' => $m->id,
                 'nom' => $m->nom,
@@ -20,11 +20,12 @@ class HomeController extends Controller
                 'image' => $m->image,
                 'image_dos' => $m->image_dos,
                 'badge' => $m->badge,
+                'club_name' => $m->club->name ?? null,
             ]);
 
         $newMaillots = Maillot::where('is_new', true)
             ->orderBy('home_order')
-            ->get(['id', 'nom', 'price', 'image','image_dos', 'badge'])
+            ->get(['id', 'nom', 'price', 'image','image_dos', 'badge', 'club_id'])
             ->map(fn($m) => [
                 'id' => $m->id,
                 'nom' => $m->nom,
@@ -32,6 +33,7 @@ class HomeController extends Controller
                 'image' => $m->image,
                 'image_dos' => $m->image_dos,
                 'badge' => $m->badge,
+                'club_name' => $m->club->name ?? null,
             ]);
 
         $featuredClubs = Club::where('is_featured_home', true)

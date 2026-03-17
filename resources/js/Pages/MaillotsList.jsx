@@ -61,6 +61,7 @@ export default function MaillotsList({ club, maillots }) {
                   maillot={maillot}
                   href={`/maillots/${maillot.id}`}
                   maillotName={maillot.nom}
+                  clubName={club.name}
                 />
               ))}
             </div>
