@@ -46,7 +46,7 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
                     </>
                 )}
 
-                <div className="absolute top-2 right-2 z-10">
+                <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                     <WishlistButton maillotId={maillot.id} />
                 </div>
             </div>

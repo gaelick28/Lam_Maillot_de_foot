@@ -136,7 +136,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
               )}
 
               {/* Wishlist */}
-              <div className="absolute top-2 right-2 z-10">
+              <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                 <WishlistButton maillotId={maillot.id} />
               </div>
 
