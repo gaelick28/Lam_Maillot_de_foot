@@ -52,7 +52,7 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
             </div>
 
             <Link href={href || `/maillots/${maillot.id}`} className="block p-4">
-              <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-3 truncate">
+              <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-3 line-clamp-2">
     {clubName && maillotName ? `${clubName} - ${maillotName}` : clubName || maillot.nom}
 </h3>
                 
