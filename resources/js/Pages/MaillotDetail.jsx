@@ -109,7 +109,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
           {/* Section image avec bouton wishlist */}
           <div className="flex-1 flex flex-col justify-center md:justify-start">
             <div
-              className="relative w-full max-w-md overflow-hidden"
+              className="relative w-full max-w-md overflow-hidden group"
               onMouseEnter={() => setShowZoom(true)}
               onMouseLeave={() => setShowZoom(false)}
               onMouseMove={handleMouseMove}
@@ -145,14 +145,14 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                 <>
                   <button
                     onClick={() => setCurrentImage(prev => prev === 0 ? images.length - 1 : prev - 1)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-40 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10 opacity-0 group-hover:opacity-100"
                     aria-label="Image précédente"
                   >
                     ‹
                   </button>
                   <button
                     onClick={() => setCurrentImage(prev => prev === images.length - 1 ? 0 : prev + 1)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-40 hover:bg-opacity-100 rounded-full w-8 h-8 flex items-center justify-center shadow transition z-10 opacity-0 group-hover:opacity-100"
                     aria-label="Image suivante"
                   >
                     ›

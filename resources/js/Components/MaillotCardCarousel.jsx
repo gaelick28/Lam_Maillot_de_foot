@@ -20,7 +20,7 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
 
     return (
         <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full relative group">
-            <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
+            <div className="relative w-full aspect-square overflow-hidden bg-gray-50 group">
                 <Link href={href || `/maillots/${maillot.id}`}>
                     <img
     src={`/${images[currentImage]}`}
@@ -34,15 +34,15 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
                 {maillot.image_dos && (
                     <>
                         <button
-                            onClick={prev}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-7 h-7 flex items-center justify-center shadow transition z-10"
-                            aria-label="Image précédente"
-                        >‹</button>
-                        <button
-                            onClick={next}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-7 h-7 flex items-center justify-center shadow transition z-10"
-                            aria-label="Image suivante"
-                        >›</button>
+    onClick={prev}
+    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-100 rounded-full w-7 h-7 flex items-center justify-center shadow transition z-10 opacity-0 group-hover:opacity-100"
+    aria-label="Image précédente"
+>‹</button>
+<button
+    onClick={next}
+    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-100 rounded-full w-7 h-7 flex items-center justify-center shadow transition z-10 opacity-0 group-hover:opacity-100"
+    aria-label="Image suivante"
+>›</button>
                     </>
                 )}
 
@@ -52,15 +52,23 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
             </div>
 
             <Link href={href || `/maillots/${maillot.id}`} className="block p-4">
-              <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 truncate">
+              <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-3 truncate">
     {clubName && maillotName ? `${clubName} - ${maillotName}` : clubName || maillot.nom}
 </h3>
                 
                 {showPrice && (
-                    <span className="text-lg font-bold text-blue-800">
-                        {clubName ? `À partir de ${formatPrice.format(maillot.price)}` : `${Number(maillot.price).toFixed(2)}€`}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+    <span className="text-lg font-bold text-blue-800">
+        {clubName ? ` ${formatPrice.format(maillot.price)}` : `${Number(maillot.price).toFixed(2)}€`}
+    </span>
+    {maillot.badge && (
+        <span className="ml-auto bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            {maillot.badge}
+        </span>
+    )}
+</div>
                 )}
+                
                 <div className="mt-3 flex items-center text-sm text-blue-600 group-hover:text-blue-800">
                 <span>Voir les détails</span>
                 <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -69,12 +77,6 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
             </div>
             </Link>
 
-
-            {maillot.badge && (
-                <span className="absolute bottom-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                    {maillot.badge}
-                </span>
-            )}
             {footer && (
     <div className="px-4 pb-4">
         {footer}
