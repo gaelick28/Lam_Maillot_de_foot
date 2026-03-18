@@ -121,6 +121,7 @@ class CategoryController extends Controller
                 'maillot_name' => $maillot->nom,
                 'image' => $maillot->image,
                 'image_dos' => $maillot->image_dos,
+                'badge' => $maillot->badge,
                 'price' => $maillot->price ?? 20.00,
                 'href' => "/clubs/{$club->slug}/maillots"
             ];

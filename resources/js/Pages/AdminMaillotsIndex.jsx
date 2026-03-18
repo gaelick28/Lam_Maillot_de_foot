@@ -510,6 +510,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                 )}
               </div>
 
+
               {/* Page d'accueil */}
 <div className="border-t pt-4 space-y-4">
     <p className="text-sm font-semibold text-gray-700">Page d'accueil</p>
@@ -539,21 +540,12 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             Afficher dans "Nos nouveaux Maillots"
         </label>
     </div>
-
+<div>
+               
+            </div>
     {(data.is_featured || data.is_new) && (
         <>
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Badge <span className="text-gray-400 text-xs">(optionnel)</span>
-                </label>
-                <input
-                    type="text"
-                    value={data.badge}
-                    onChange={(e) => setData('badge', e.target.value)}
-                    placeholder="Ex: Nouveauté, Limited Edition..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
+            
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -571,6 +563,18 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
         </>
     )}
 </div>
+
+{/* Badge */}
+ <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Badge <span className="text-gray-400 text-xs">(optionnel)</span>
+                </label>
+                <input
+                    type="text"
+                    value={data.badge}
+                    onChange={(e) => setData('badge', e.target.value)}
+                    placeholder="Ex: Nouveauté, Limited Edition..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
 {/* Description */}
 <div className="border-t pt-4">
