@@ -264,7 +264,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                 ))}
               </select>
               <span
-    className="relative inline-block ml-5"
+    className="relative inline-block ml-2"
     onMouseEnter={() => setShowTooltipTaille(true)}
     onMouseLeave={() => setShowTooltipTaille(false)}
   >
