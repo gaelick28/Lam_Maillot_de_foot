@@ -23,6 +23,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [currentImage, setCurrentImage] = useState(0);
   const images = [maillot.image, ...(maillot.image_dos ? [maillot.image_dos] : [])];
   const [activeTab, setActiveTab] = useState('description');
+  const [showTooltipTaille, setShowTooltipTaille] = useState(false);
 
   //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
@@ -262,6 +263,35 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                   </option>
                 ))}
               </select>
+              <span
+    className="relative inline-block ml-5"
+    onMouseEnter={() => setShowTooltipTaille(true)}
+    onMouseLeave={() => setShowTooltipTaille(false)}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4 cursor-pointer text-blue-500"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
+      <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
+    </svg>
+    {showTooltipTaille && (
+      <div className="absolute left-6 top-0 z-20 w-56 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700">
+        <ul className="space-y-1">
+          <li>S – 168 / 173 cm</li>
+          <li>M – 173 / 178 cm</li>
+          <li>L – 178 / 183 cm</li>
+          <li>XL – 183 / 188 cm</li>
+          <li>XXL – 188 / 193 cm</li>
+        </ul>
+      </div>
+    )}
+  </span>
             </div>
             
             <div className="mb-2">
