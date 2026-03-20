@@ -21,4 +21,9 @@ protected $fillable = [
     {
         return $this->hasMany(Maillot::class);
     }
+
+    public function patches()
+{
+    return $this->belongsToMany(Patch::class);
+}
 }

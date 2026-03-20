@@ -18,8 +18,12 @@ class CartItem extends Model
         'quantity',
         'numero',
         'nom',
+        'patches',
     ];
 
+    protected $casts = [
+    'patches' => 'array',
+];
     public function cart()
     {
         return $this->belongsTo(Cart::class);

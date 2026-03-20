@@ -5,7 +5,7 @@ import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
 
 
 
-export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
+export default function AdminClubsIndex({ clubs, filters, categories, patches, auth }) {
   const [search, setSearch] = useState(filters.search || '')
   const [showModal, setShowModal] = useState(false)
   const [editingClub, setEditingClub] = useState(null)
@@ -18,6 +18,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
     image: null,
     is_featured_home: false,
     home_order: '',
+    patch_ids: [],
   })
 
   const handleSearch = (e) => {
@@ -39,6 +40,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
       image: null,
       is_featured_home: club.is_featured_home || false,
       home_order: club.home_order || '',
+      patch_ids: club.patches ? club.patches.map(p => p.id) : [],
     })
     setEditingClub(club)
     setShowModal(true)
@@ -349,6 +351,32 @@ export default function AdminClubsIndex({ clubs, filters, categories, auth }) {
         />
     </div>
 )}
+
+{/* Patches disponibles */}
+<div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+        Patches disponibles
+    </label>
+    <div className="space-y-2">
+        {patches.map(patch => (
+            <label key={patch.id} className="flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    checked={data.patch_ids.includes(patch.id)}
+                    onChange={(e) => {
+                        if (e.target.checked) {
+                            setData('patch_ids', [...data.patch_ids, patch.id])
+                        } else {
+                            setData('patch_ids', data.patch_ids.filter(id => id !== patch.id))
+                        }
+                    }}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">{patch.nom} (+{patch.prix} €)</span>
+            </label>
+        ))}
+    </div>
+</div>
 
               {/* Boutons */}
               <div className="flex gap-3 pt-4">

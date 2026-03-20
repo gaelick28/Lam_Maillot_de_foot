@@ -30,7 +30,7 @@ class Maillot extends Model
         'stock_m' => 'integer',
         'stock_l' => 'integer',
         'stock_xl' => 'integer',
-        'stock_xxl', 'integer',
+        'stock_xxl' => 'integer',
     ];
 
     /**

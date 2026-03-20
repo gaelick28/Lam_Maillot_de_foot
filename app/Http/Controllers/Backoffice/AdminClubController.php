@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backoffice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Club;
+use App\Models\Patch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -38,6 +39,7 @@ class AdminClubController extends Controller
                       ->orWhere('category', 'like', "%{$search}%");
             })
             ->withCount('maillots')
+            ->with('patches')
             ->orderBy('name', 'asc')
             ->paginate(20)
             ->withQueryString();
@@ -58,7 +60,8 @@ class AdminClubController extends Controller
             'categories' => $this->getCategories(),
             'auth' => [
                 'user' => auth('web')->user()
-            ]
+            ],
+            'patches' => Patch::all(),
         ]);
     }
 
@@ -72,8 +75,10 @@ class AdminClubController extends Controller
             'category' => 'required|string|max:100',
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
-        'is_featured_home' => 'boolean',
-        'home_order' => 'nullable|integer',
+            'is_featured_home' => 'boolean',
+            'home_order' => 'nullable|integer',
+            'patch_ids' => 'nullable|array',
+            'patch_ids.*' => 'exists:patches,id',
         ]);
 
         // Générer le slug automatiquement
@@ -91,6 +96,8 @@ if ($request->hasFile('image')) {
     }
 
         Club::create($validated);
+        $club = Club::where('slug', $validated['slug'])->first();
+        $club->patches()->sync($request->input('patch_ids', []));
 
         return redirect()->route('admin.clubs.index')
             ->with('success', 'Club créé avec succès.');
@@ -108,6 +115,8 @@ if ($request->hasFile('image')) {
         'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
         'is_featured_home' => 'boolean',
         'home_order' => 'nullable|integer',
+        'patch_ids' => 'nullable|array',
+        'patch_ids.*' => 'exists:patches,id',
     ]);
 
     if ($validated['name'] !== $club->name) {
@@ -148,6 +157,7 @@ else {
 }
 
     $club->update($validated);
+    $club->patches()->sync($request->input('patch_ids', []));
 
     return redirect()->route('admin.clubs.index')
         ->with('success', 'Club modifié avec succès.');

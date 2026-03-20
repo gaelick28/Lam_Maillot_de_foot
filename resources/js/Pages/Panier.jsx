@@ -12,6 +12,7 @@ export default function Panier() {
   // Prix fixes pour les suppléments
   const nomPrix = 3;
   const numeroPrix = 2;
+  const patchPrix = 3;
 
   // Etat local
   const [cartItems, setCartItems] = useState(initialCartItems);
@@ -45,6 +46,8 @@ export default function Panier() {
       let supplement = 0;
       if (item.nom) supplement += nomPrix;
       if (item.numero) supplement += numeroPrix;
+      const patches = item.patches || [];
+      supplement += patches.length * patchPrix;
       return {
         ...item,
         priceNum: base,
@@ -52,13 +55,18 @@ export default function Panier() {
         total: (base + supplement) * qte,
       };
     },
-    [nomPrix, numeroPrix]
+    [nomPrix, numeroPrix, patchPrix]
   );
 
   // Initialisation : normaliser les items 
- useEffect(() => {
-  setCartItems(initialCartItems.map(computeItemTotals));
-}, [initialCartItems, computeItemTotals]);
+const [initialized, setInitialized] = useState(false);
+
+useEffect(() => {
+  if (!initialized) {
+    setCartItems(initialCartItems.map(computeItemTotals));
+    setInitialized(true);
+  }
+}, [initialCartItems]);
 
   //  Total panier + format monétaire 
   const prixTotal = useMemo(
@@ -115,6 +123,7 @@ export default function Panier() {
             quantity: item.quantity,
             nom: item.nom,
             numero: item.numero,
+            patches: item.patches || [],
         },
         {
             preserveScroll: true,
@@ -385,6 +394,11 @@ useEffect(() => {
                         ) : (
                           <span>-</span>
                         )}
+                        {item.patches?.length > 0 && (
+    <div className="text-xs text-gray-500 mt-1">
+        Patchs : {item.patches.join(', ')}
+    </div>
+)}
                       </div>
                       <div className="font-bold text-blue-600">
                         Total : {formatPrice.format(item.total)}
@@ -420,18 +434,18 @@ useEffect(() => {
               <div className="hidden lg:block">
                 <table className="w-full table-auto">
                   <thead>
-                    <tr className="bg-gray-100 border-b border-gray-300">
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Maillot</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Taille</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Quantité</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Nom</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Numéro</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Prix maillot</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Suppléments</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Total ligne</th>
-                      <th className="p-3 lg:p-4 text-left text-xs lg:text-sm font-semibold">Actions</th>
-                    </tr>
-                  </thead>
+    <tr className="bg-gray-100 border-b border-gray-300">
+        <th className="p-2 text-left text-xs font-semibold">Maillot</th>
+        <th className="p-2 text-left text-xs font-semibold">Taille</th>
+        <th className="p-2 text-left text-xs font-semibold">Qté</th>
+        <th className="p-2 text-left text-xs font-semibold">Nom</th>
+        <th className="p-2 text-left text-xs font-semibold">N°</th>
+        <th className="p-2 text-left text-xs font-semibold">Patchs</th>
+       <th className="p-2 text-left text-xs font-semibold">Prix + Suppl.</th>
+        <th className="p-2 text-left text-xs font-semibold">Total</th>
+        <th className="p-2 text-left text-xs font-semibold">Actions</th>
+    </tr>
+</thead>
                   <tbody>
                     {cartItems.map((item) => (
                       <tr key={item.id} className="border-b border-gray-200 hover:bg-gray-50">
@@ -541,16 +555,41 @@ useEffect(() => {
                             className="border-none w-16 px-2 py-1 bg-green-100 text-green-800 rounded-md font-semibold focus:ring-2 focus:ring-green-300"
                           />
                         </td>
+              
+              {/* Patchs */}
+<td className="p-3 lg:p-4">
+    <div className="flex flex-col gap-1">
+        {(item.available_patches || []).map(patch => (
+            <label key={patch.id} className="flex items-center gap-1 text-xs">
+                <input
+                    type="checkbox"
+                    checked={(item.patches || []).map(Number).includes(Number(patch.id))}
+                    onChange={(e) => {
+                        const current = item.patches || [];
+                        const updated = e.target.checked
+                            ? [...current, patch.id]
+                            : current.filter(id => id !== patch.id);
+                        handleEdit(item.id, 'patches', updated);
+                    }}
+                    className="w-3 h-3"
+                />
+                {patch.nom}
+            </label>
+        ))}
+        {(!item.available_patches || item.available_patches.length === 0) && (
+            <span className="text-gray-400">—</span>
+        )}
+    </div>
+</td>
 
-                        {/* Prix, supplément, total */}
-                        <td className="p-3 lg:p-4 text-sm lg:text-base">
-                          {formatPrice.format(item.priceNum)}
-                        </td>
-                        <td className="p-3 lg:p-4 text-sm lg:text-base">
-                          {item.supplement > 0 ? (
-                            <span className="text-orange-600">{formatPrice.format(item.supplement)}</span>
-                          ) : ("-")}
-                        </td>
+{/* Prix, supplément */}
+<td className="p-2 text-xs lg:text-sm">
+    <div>{formatPrice.format(item.priceNum)}</div>
+    {item.supplement > 0 && (
+        <div className="p-1 text-orange-600 text-xs">+{formatPrice.format(item.supplement)}</div>
+    )}
+</td>
+
                         <td className="p-3 lg:p-4 font-bold text-blue-600 text-sm lg:text-base">
                           {formatPrice.format(item.total)}
                         </td>
@@ -584,6 +623,8 @@ useEffect(() => {
                   </tbody>
                 </table>
               </div>
+
+
 
               {/* Total & adresse */}
               <div className="p-4 sm:p-5 lg:p-6 bg-gray-50 border-t">

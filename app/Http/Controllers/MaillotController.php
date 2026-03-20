@@ -9,7 +9,7 @@ class MaillotController extends Controller
 {
     public function show($id)
     {
-        $maillot = Maillot::with('club')->findOrFail($id);
+        $maillot = Maillot::with('club.patches')->findOrFail($id);
 
         // ✅ Créer un tableau des stocks par taille
         $stocks = [
@@ -26,7 +26,7 @@ class MaillotController extends Controller
         });
 
         // ✅ Si aucune taille en stock, on retourne toutes les tailles mais avec stock à 0
-        $tailles = !empty($taillesDisponibles) ? array_keys($taillesDisponibles) : ['S', 'M', 'L', 'XL'];
+        $tailles = !empty($taillesDisponibles) ? array_keys($taillesDisponibles) : ['S', 'M', 'L', 'XL', 'XXL'];
         
         // ✅ Calculer la quantité totale disponible
         $quantite = array_sum($stocks);

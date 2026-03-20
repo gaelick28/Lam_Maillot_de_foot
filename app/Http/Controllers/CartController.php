@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use App\Helpers\CountryHelper;
+use App\Models\Patch;
 
 class CartController extends Controller
 {
@@ -42,6 +43,7 @@ class CartController extends Controller
                 ->where('size', $sessionItem['size'])
                 ->where('nom', $nom)
                 ->where('numero', $numero)
+                ->where('patches', json_encode($sessionItem['patches'] ?? []))
                 ->first();
 
             if ($existingItem) {
@@ -55,6 +57,7 @@ class CartController extends Controller
                     'quantity' => $sessionItem['quantity'],
                     'nom' => $nom,
                     'numero' => $numero,
+                    'patches' => $sessionItem['patches'] ?? [],
                 ]);
             }
         }
@@ -109,7 +112,7 @@ class CartController extends Controller
         $sessionCart = Session::get('cart', []);
         
         foreach ($sessionCart as $sessionItem) {
-            $maillot = Maillot::with('club')->find($sessionItem['maillot_id']);
+            $maillot = Maillot::with('club.patches')->find($sessionItem['maillot_id']);
             
             if (!$maillot) {
                 continue;
@@ -118,7 +121,9 @@ class CartController extends Controller
             $price = $maillot->price ?? 0;
             $suppNom = ($sessionItem['nom'] ?? null) ? 3 : 0;
             $suppNumero = ($sessionItem['numero'] ?? null) ? 2 : 0;
-            $supplement = $suppNom + $suppNumero;
+            $patches = $sessionItem['patches'] ?? [];
+            $suppPatches = count($patches) * 3;
+            $supplement = $suppNom + $suppNumero + $suppPatches;
             $quantity = $sessionItem['quantity'] ?? 1;
             $total = ($price + $supplement) * $quantity;
 
@@ -138,13 +143,15 @@ class CartController extends Controller
                 'supplement' => $supplement,
                 'total' => $total,
                 'is_session' => true, // Marquer comme item de session
-            ]);
+                'patches' => $sessionItem['patches'] ?? [],
+                'available_patches' => $maillot->club?->patches?->map(fn($p) => ['id' => $p->id, 'nom' => $p->nom, 'prix' => $p->prix])->toArray() ?? [],
+                ]);
         }
 
         // Si connecté, récupérer aussi les items de la DB
         if (Auth::check()) {
             $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-            $cart->load('items.maillot.club');
+            $cart->load('items.maillot.club.patches');
 
             $user = \App\Models\User::with(['addresses' => function ($query) {
     $query->where('is_archived', false) // 🔥 FILTRER les archivées
@@ -163,7 +170,9 @@ $shippingAddress = $user->addresses
                 $price = $maillot ? $maillot->price : 0;
                 $suppNom = $item->nom ? 3 : 0;
                 $suppNumero = $item->numero ? 2 : 0;
-                $supplement = $suppNom + $suppNumero;
+                $patches = $item->patches ?? [];
+                $suppPatches = count($patches) * 3;
+                $supplement = $suppNom + $suppNumero + $suppPatches;
                 $total = ($price + $supplement) * $item->quantity;
 
                 $cartItems->push([
@@ -174,7 +183,7 @@ $shippingAddress = $user->addresses
                     'image' => $maillot->image,
                     'size' => $item->size,
                     'is_session' => false,
-'stock' => $maillot ? $maillot->getStockForSize($item->size) : 0,  
+                    'stock' => $maillot ? $maillot->getStockForSize($item->size) : 0,  
                     'quantity' => $item->quantity,
                     'price' => $price,
                     'nom' => $item->nom,
@@ -182,7 +191,9 @@ $shippingAddress = $user->addresses
                     'supplement' => $supplement,
                     'total' => $total,
                     'is_session' => false, // Item de la DB
-                ]);
+                    'patches' => $item->patches ?? [],
+                    'available_patches' => $maillot->club?->patches?->map(fn($p) => ['id' => $p->id, 'nom' => $p->nom, 'prix' => $p->prix])->toArray() ?? [],
+                    ]);
             }
         }
 
@@ -236,6 +247,7 @@ $shippingAddress = $user->addresses
                 ->where('size', $request->size)
                 ->where('numero', $numero)
                 ->where('nom', $nom)
+                ->where('patches', json_encode($request->input('patches', [])))
                 ->first();
 
             if ($item) {
@@ -256,7 +268,8 @@ $shippingAddress = $user->addresses
                     'quantity' => $request->quantity,
                     'numero' => $numero,
                     'nom' => $nom,
-                ]);
+                    'patches' => $request->input('patches', []),
+                                ]);
             }
 
             return back()->with('success', 'Article ajouté au panier');
@@ -272,7 +285,8 @@ $shippingAddress = $user->addresses
                 $sessionItem['maillot_id'] == $request->maillot_id &&
                 $sessionItem['size'] == $request->size &&
                 ($sessionItem['nom'] ?? null) == $nom &&
-                ($sessionItem['numero'] ?? null) == $numero
+                ($sessionItem['numero'] ?? null) == $numero &&
+                ($sessionItem['patches'] ?? []) == $request->input('patches', [])
             ) {
                 
                 // 🔥 VÉRIFIER QUE LA NOUVELLE QUANTITÉ TOTALE NE DÉPASSE PAS LE STOCK
@@ -298,6 +312,7 @@ $shippingAddress = $user->addresses
                 'quantity' => $request->quantity,
                 'nom' => $nom,
                 'numero' => $numero,
+                'patches' => $request->input('patches', []),
             ];
         }
 
@@ -316,10 +331,12 @@ $shippingAddress = $user->addresses
             'quantity' => 'required|integer|min:1',
             'nom'      => 'nullable|string|max:50',
             'numero'   => 'nullable|string|max:3',
+            'patches' => 'nullable|array',
         ]);
 
         $data['nom'] = $request->filled('nom') ? $request->nom : null;
         $data['numero'] = $request->filled('numero') ? $request->numero : null;
+        $data['patches'] = $request->input('patches', []);
 
 // ✅ VÉRIFICATION DU STOCK AVANT MISE À JOUR
 if (str_starts_with($itemId, 'session_')) {
@@ -361,6 +378,7 @@ if ($maillotId) {
                     $sessionItem['quantity'] = $data['quantity'];
                     $sessionItem['nom'] = $data['nom'];
                     $sessionItem['numero'] = $data['numero'];
+                    $sessionItem['patches'] = $data['patches'];
                     break;
                 }
             }
@@ -384,6 +402,7 @@ if ($maillotId) {
             ->where('size', $data['size'])
             ->where('nom', $data['nom'])
             ->where('numero', $data['numero'])
+            ->where('patches', json_encode($data['patches']))
             ->first();
 
         if ($duplicate) {

@@ -14,7 +14,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const [qte, setQte] = useState(1);
   const [numero, setNumero] = useState("");
   const [nom, setNom] = useState("");
-  const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false });
+  const [personnalisation, setPersonnalisation] = useState({ numero: false, nom: false, ligue1: false, champions: false, uefa: false });
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
   const [mobileZoom, setMobileZoom] = useState(false);
@@ -71,9 +71,16 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   };
 
   // Calcul du supplément pour personnalisation
-  const supplement =
+  const patchSupplement = maillot.club?.patches
+    ? maillot.club.patches.reduce((acc, patch) => {
+        return acc + (personnalisation[`patch_${patch.id}`] ? Number(patch.prix) : 0);
+    }, 0)
+    : 0;
+
+const supplement =
     (personnalisation.numero && numero ? prixNumeroNum : 0) +
-    (personnalisation.nom && nom ? prixNomNum : 0);
+    (personnalisation.nom && nom ? prixNomNum : 0) +
+    patchSupplement;
 
   // Multiplie bien par la quantité choisie
   const quantiteNumerique = parseInt(qte, 10) || 1;
@@ -86,6 +93,9 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
       quantity: qte,
       numero: personnalisation.numero ? numero : null,
       nom: personnalisation.nom ? nom : null,
+      patches: maillot.club.patches
+          .filter(patch => personnalisation[`patch_${patch.id}`])
+          .map(patch => patch.id),
     }, {
       onSuccess: () => alert("Maillot ajouté au panier !"), 
     });
@@ -442,7 +452,25 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
                 </div>
               )}
             </div>
-            
+
+          {/* PATCHS */}
+{maillot.club?.patches?.length > 0 && (
+    <div className="mb-2 mt-3 border-t pt-3">
+        <p className="font-medium mb-2">Ajouter un patch :</p>
+        {maillot.club.patches.map(patch => (
+            <label key={patch.id} className="flex items-center gap-2 mb-1">
+                <input
+                    type="checkbox"
+                    checked={personnalisation[`patch_${patch.id}`] || false}
+                    onChange={e => setPersonnalisation(p => ({ ...p, [`patch_${patch.id}`]: e.target.checked }))}
+                    className="mr-2"
+                />
+                {patch.nom} (+{patch.prix} €)
+            </label>
+        ))}
+    </div>
+)}
+
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
             
             {/* ✅ Bouton conditionnel selon le stock */}
