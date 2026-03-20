@@ -22,6 +22,7 @@ class OrderController extends Controller
             ->where('user_id', $user->id)
             ->firstOrFail();
 
+            $allPatches = \App\Models\Patch::all()->keyBy('id');
         return Inertia::render('OrderConfirmation', [
             'auth' => ['user' => $user->only(['id', 'username', 'email'])],
             'order' => [
@@ -34,8 +35,7 @@ class OrderController extends Controller
                 'payment_method_label' => $order->payment_method_label,
                 'order_status' => $order->order_status,
                 'status_label' => $order->status_label,
-                'created_at' => $order->created_at->format('d/m/Y H:i'),
-                'items' => $order->items->map(function ($item) {
+                'items' => $order->items->map(function ($item) use ($allPatches) {
                     return [
                         'id' => $item->id,
                         'maillot_name' => $item->maillot_name,
@@ -49,6 +49,11 @@ class OrderController extends Controller
                         'unit_price' => $item->unit_price,
                         'personalization_cost' => $item->personalization_cost,
                         'subtotal' => $item->subtotal,
+                        'patch_names' => collect($item->patches ?? [])
+                        ->map(fn($id) => $allPatches[$id]?->nom)
+                        ->filter()
+                        ->values()
+                        ->toArray(),
                     ];
                 }),
                 'shippingAddress' => $order->shippingAddress ? [

@@ -72,6 +72,11 @@ export default function OrderConfirmation({ auth, order }) {
                         {item.personalization_text}
                       </p>
                     )}
+                    {item.patch_names?.length > 0 && (
+    <p className="text-sm text-blue-600 font-medium">
+        Patches: {item.patch_names.join(', ')}
+    </p>
+)}
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">

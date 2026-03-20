@@ -17,6 +17,7 @@ class OrderItem extends Model
         'quantity',
         'numero',
         'nom',
+        'patches',
         'personalization_cost',
         'subtotal',
     ];
@@ -26,6 +27,7 @@ class OrderItem extends Model
         'personalization_cost' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'quantity' => 'integer',
+        'patches' => 'array',
     ];
 
     /**

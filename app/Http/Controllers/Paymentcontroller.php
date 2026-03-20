@@ -66,6 +66,9 @@ class PaymentController extends Controller
             if (!empty($item->nom)) $suppUnit += $nomPrix;
             if (!empty($item->numero)) $suppUnit += $numeroPrix;
 
+            $patches = $item->patches ?? [];
+            $suppUnit += count($patches) * 3.0;
+
             $lineSupp = $suppUnit * $qty;
             $lineTotal = ($price * $qty) + $lineSupp;
 
@@ -82,6 +85,7 @@ class PaymentController extends Controller
                 'quantity' => $qty,
                 'nom' => $item->nom,
                 'numero' => $item->numero,
+                'patches' => $patches,
                 'price' => $price,
                 'supplement_line' => $lineSupp,
                 'total' => $lineTotal,
@@ -209,6 +213,9 @@ class PaymentController extends Controller
                 if (!empty($item->nom)) $suppUnit += $nomPrix;
                 if (!empty($item->numero)) $suppUnit += $numeroPrix;
 
+                $patches = $item->patches ?? [];
+                $suppUnit += count($patches) * 3.0;
+
                 $subtotal += ($price + $suppUnit) * $qty;
             }
 
@@ -238,6 +245,9 @@ class PaymentController extends Controller
                 $suppUnit = 0.0;
                 if (!empty($item->nom)) $suppUnit += $nomPrix;
                 if (!empty($item->numero)) $suppUnit += $numeroPrix;
+                
+                $patches = $item->patches ?? [];
+                $suppUnit += count($patches) * 3.0;
 
                 $personalizationCost = $suppUnit * $qty;
                 $subtotalLine = ($price * $qty) + $personalizationCost;
@@ -251,6 +261,7 @@ class PaymentController extends Controller
                     'size' => $item->size,
                     'quantity' => $qty,
                     'numero' => $item->numero,
+                    'patches' => $item->patches ?? [],
                     'nom' => $item->nom,
                     'personalization_cost' => $personalizationCost,
                     'subtotal' => $subtotalLine,

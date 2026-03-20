@@ -209,19 +209,22 @@ export default function AdminOrdersShow({ order, auth }) {
                 {quantity}
               </td>
               <td className="px-6 py-4 text-sm text-gray-600">
-                {item.nom || item.numero ? (
-                  <div className="space-y-1">
-                    {item.nom && (
-                      <p className="font-medium">Nom: <span className="text-gray-900">{item.nom}</span></p>
-                    )}
-                    {item.numero && (
-                      <p className="font-medium">N°: <span className="text-gray-900">{item.numero}</span></p>
-                    )}
-                  </div>
-                ) : (
-                  <span className="text-gray-400 italic">Aucune</span>
-                )}
-              </td>
+    {item.nom || item.numero || (item.patches?.length > 0) ? (
+        <div className="space-y-1">
+            {item.nom && (
+                <p className="font-medium">Nom: <span className="text-gray-900">{item.nom}</span></p>
+            )}
+            {item.numero && (
+                <p className="font-medium">N°: <span className="text-gray-900">{item.numero}</span></p>
+            )}
+            {item.patches?.length > 0 && (
+                <p className="font-medium">Patchs: <span className="text-gray-900">{item.patch_names?.join(', ')}</span></p>
+            )}
+        </div>
+    ) : (
+        <span className="text-gray-400 italic">Aucune</span>
+    )}
+</td>
               <td className="px-6 py-4 text-sm text-gray-900">
                 {persoPrice > 0 ? `${persoPrice.toFixed(2)} €` : '-'}
               </td>

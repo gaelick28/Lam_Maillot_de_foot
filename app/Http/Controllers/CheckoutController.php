@@ -74,7 +74,7 @@ class CheckoutController extends Controller
         $numeroPrix = 2.0;
 
         // Panier + relations (adapte si besoin)
-        $cart = Cart::with(['items.maillot'])->firstOrCreate(['user_id' => $user->id]);
+        $cart = Cart::with(['items.maillot.club.patches'])->firstOrCreate(['user_id' => $user->id]);
 
         // ✅ VÉRIFICATION DES STOCKS
         $stockIssues = $this->checkStockAvailability($cart);
@@ -100,6 +100,13 @@ class CheckoutController extends Controller
             $suppUnit = 0.0;
             if (!empty($it->nom))    $suppUnit += $nomPrix;
             if (!empty($it->numero)) $suppUnit += $numeroPrix;
+
+            $patchSuppUnit = 0.0;
+            $patches = $it->patches ?? [];
+            foreach ($patches as $patchId) {
+                $patchSuppUnit += 3.0;
+            }
+            $suppUnit += $patchSuppUnit;
 
             $club = $it->club_name
                 ?? optional(optional($it->maillot)->club)->name
@@ -145,6 +152,8 @@ class CheckoutController extends Controller
                 'supplement_unit'  => $suppUnit,
                 'supplement_line'  => $lineSupp,
                 'total'            => $lineTotal,
+                'patches' => $patches,
+                'available_patches' => optional($it->maillot->club)->patches?->map(fn($p) => ['id' => $p->id, 'nom' => $p->nom])->toArray() ?? [],
             ];
         }
 
@@ -220,7 +229,7 @@ class CheckoutController extends Controller
         ]);
 
         // Vérifier que le panier n'est pas vide
-        $cart = Cart::with('items')->where('user_id', $user->id)->first();
+        $cart = Cart::with('items.maillot')->where('user_id', $user->id)->first();
         
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.show')

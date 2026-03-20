@@ -71,6 +71,16 @@ class AdminOrderController extends Controller
     {
         $order->load(['user', 'items.maillot', 'shippingAddress', 'billingAddress']);
 
+        // Résoudre les noms des patches
+        $allPatches = \App\Models\Patch::all()->keyBy('id');
+        foreach ($order->items as $item) {
+            $item->patch_names = collect($item->patches ?? [])
+        ->map(fn($id) => $allPatches[$id]?->nom)
+        ->filter()
+        ->values()
+        ->toArray();
+}
+
         // Formater les noms de pays
     if ($order->shippingAddress) {
         $order->shippingAddress->country_name = CountryHelper::name($order->shippingAddress->country);
