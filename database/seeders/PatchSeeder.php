@@ -22,6 +22,8 @@ class PatchSeeder extends Seeder
         ['nom' => 'Premier League', 'prix' => 3.00],
         ['nom' => 'UEFA Nations League', 'prix' => 3.00],
         ['nom' => 'FIFA World Cup', 'prix' => 3.00],
+        ['nom' => 'CAN', 'prix' => 3.00],
+        ['nom' => 'CONMEBOL Copa América', 'prix' => 3.00],
     ];
 
     foreach ($patches as $patch) {
