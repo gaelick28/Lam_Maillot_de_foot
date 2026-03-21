@@ -56,6 +56,7 @@ class PaymentController extends Controller
         $supplements = 0.0;
 
         $items = [];
+        $allPatches = \App\Models\Patch::all()->keyBy('id');
 
         foreach ($cart->items as $item) {
             $price = (float) ($item->price ?? $item->maillot->price ?? 0);
@@ -86,6 +87,7 @@ class PaymentController extends Controller
                 'nom' => $item->nom,
                 'numero' => $item->numero,
                 'patches' => $patches,
+                'patch_names' => collect($patches)->map(fn($id) => $allPatches[$id]?->nom)->filter()->values()->toArray(),
                 'price' => $price,
                 'supplement_line' => $lineSupp,
                 'total' => $lineTotal,
