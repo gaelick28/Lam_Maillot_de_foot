@@ -133,6 +133,11 @@ export default function OrderHistory({ user, orders = [] }) {
                                       {item.nom && item.nom.toUpperCase()}
                                     </p>
                                   )}
+                                  {item.patch_names?.length > 0 && (
+    <p className="text-xs text-blue-600 mt-1">
+        Patchs: {item.patch_names.join(', ')}
+    </p>
+)}
                                   <p className="text-sm font-semibold text-gray-900 mt-2">
                                     {Number(item.price).toFixed(2)}€
                                   </p>

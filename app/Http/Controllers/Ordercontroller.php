@@ -88,9 +88,10 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        $allPatches = \App\Models\Patch::all()->keyBy('id');    
         return Inertia::render('Order', [
             'user' => $user->only(['id', 'username', 'email']),
-            'orders' => $orders->map(function ($order) {
+            'orders' => $orders->map(function ($order) use ($allPatches) {
                 return [
                     'id' => $order->order_number,
                     'date' => $order->created_at->format('d F Y'),
@@ -98,7 +99,7 @@ class OrderController extends Controller
                     'total' => $order->total_amount,
                     'status' => $order->status_label,
                     'trackingNumber' => null,
-                    'itemsDetails' => $order->items->map(function ($item) {
+                    'itemsDetails' => $order->items->map(function ($item) use ($allPatches) {
                         return [
                             'name' => $item->maillot_name,
                             'club_name' => $item->club_name,
@@ -108,6 +109,11 @@ class OrderController extends Controller
                             'numero' => $item->numero,
                             'nom' => $item->nom,
                             'price' => $item->subtotal,
+                            'patch_names' => collect($item->patches ?? [])
+                                ->map(fn($id) => $allPatches[$id]?->nom)
+                                ->filter()
+                                ->values()
+                                ->toArray(),
                         ];
                     }),
                     'shippingAddress' => $order->shippingAddress ? 
