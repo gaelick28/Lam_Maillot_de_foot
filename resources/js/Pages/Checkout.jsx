@@ -205,15 +205,15 @@ export default function Checkout() {
                 <table className="w-full table-auto text-sm">
                   <thead>
                     <tr className="bg-gray-100 text-sm">
-                     <th className="text-left p-3 w-36">Article</th>
-<th className="text-left p-3">Taille</th>
-<th className="text-left p-3">Quantité</th>
-<th className="text-left p-3">Nom</th>
-<th className="text-left p-3">Numéro</th>
-<th className="text-left p-3">Patchs</th>
-<th className="text-left p-3">Prix</th>
-<th className="text-left p-3">Supplément</th>
-<th className="text-left p-3 ">Total ligne</th>
+                      <th className="text-left p-3 w-36">Article</th>
+                      <th className="text-left p-3">Taille</th>
+                      <th className="text-left p-3">Quantité</th>
+                      <th className="text-left p-3">Nom</th>
+                      <th className="text-left p-3">Numéro</th>
+                      <th className="text-left p-3">Patchs</th>
+                      <th className="text-left p-3">Prix</th>
+                      <th className="text-left p-3">Supplément</th>
+                      <th className="text-left p-3 ">Total ligne</th>
                     </tr>
                   </thead>
                   <tbody>
