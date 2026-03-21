@@ -103,6 +103,8 @@ class CheckoutController extends Controller
 
             $patchSuppUnit = 0.0;
             $patches = $it->patches ?? [];
+            $allPatches = \App\Models\Patch::all()->keyBy('id');
+            $patchNames = collect($patches)->map(fn($id) => $allPatches[$id]?->nom)->filter()->values()->toArray();
             foreach ($patches as $patchId) {
                 $patchSuppUnit += 3.0;
             }
@@ -154,7 +156,8 @@ class CheckoutController extends Controller
                 'total'            => $lineTotal,
                 'patches' => $patches,
                 'available_patches' => optional($it->maillot->club)->patches?->map(fn($p) => ['id' => $p->id, 'nom' => $p->nom])->toArray() ?? [],
-            ];
+                'patch_names' => $patchNames,
+                ];
         }
 
         // Charger les adresses de livraison ET de facturation

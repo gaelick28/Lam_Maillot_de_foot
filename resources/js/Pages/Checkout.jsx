@@ -200,19 +200,20 @@ export default function Checkout() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Récap produits */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden overflow-x-auto">
                 <div className="px-4 py-3 border-b font-semibold">Récapitulatif des articles</div>
-                <table className="w-full table-auto">
+                <table className="w-full table-auto text-sm">
                   <thead>
                     <tr className="bg-gray-100 text-sm">
-                      <th className="text-left p-3">Article</th>
-                      <th className="text-left p-3">Taille</th>
-                      <th className="text-left p-3">Quantité</th>
-                      <th className="text-left p-3">Nom</th>
-                      <th className="text-left p-3">Numéro</th>
-                      <th className="text-left p-3">Prix</th>
-                      <th className="text-left p-3">Supplément</th>
-                      <th className="text-left p-3">Total ligne</th>
+                     <th className="text-left p-3 w-36">Article</th>
+<th className="text-left p-3">Taille</th>
+<th className="text-left p-3">Quantité</th>
+<th className="text-left p-3">Nom</th>
+<th className="text-left p-3">Numéro</th>
+<th className="text-left p-3">Patchs</th>
+<th className="text-left p-3">Prix</th>
+<th className="text-left p-3">Supplément</th>
+<th className="text-left p-3 ">Total ligne</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -245,6 +246,9 @@ export default function Checkout() {
                           <td className="p-3">{qty}</td>
                           <td className="p-3">{it.nom || "-"}</td>
                           <td className="p-3">{it.numero || "-"}</td>
+                          <td className="p-3 text-xs">
+                              {it.patch_names?.length > 0 ? it.patch_names.join(', ') : '-'}
+                          </td>
                           <td className="p-3">{fmt.format(unit)}</td>
                           <td className="p-3">{suppU ? fmt.format(suppU) : "-"}</td>
                           <td className="p-3 font-semibold text-blue-700">{fmt.format(line)}</td>
