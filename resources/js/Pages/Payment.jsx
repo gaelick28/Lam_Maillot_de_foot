@@ -221,7 +221,6 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
                         {item.personalization_text && (
                           <p className="text-xs text-blue-600">{item.personalization_text}</p>
                         )}
-
                                             
                       {(item.nom || item.numero) && (
                           <p className="text-xs text-blue-600">
