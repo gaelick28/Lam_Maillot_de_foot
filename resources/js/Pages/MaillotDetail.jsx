@@ -218,13 +218,15 @@ const supplement =
           <div className="flex-1">
   <div className="flex items-center gap-4 mb-2">
     {maillot.club?.logo && (
-      <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
+     <a href={`/clubs/${maillot.club.slug}/maillots`}>
+    <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
         <img
-          src={`/${maillot.club.logo}`}
-          alt={`Logo ${maillot.club.name}`}
-          className="w-full h-full object-contain"
+            src={`/${maillot.club.logo}`}
+            alt={`Logo ${maillot.club.name}`}
+            className="w-full h-full object-contain"
         />
-      </div>
+    </div>
+</a>
     )}
 
  {/* //Ou versiontransparente avec le mix-blend-multiply//      */}
