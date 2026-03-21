@@ -247,7 +247,7 @@ $shippingAddress = $user->addresses
                 ->where('size', $request->size)
                 ->where('numero', $numero)
                 ->where('nom', $nom)
-                ->where('patches', json_encode($request->input('patches', [])))
+                ->whereRaw("JSON_UNQUOTE(patches) = ?", [json_encode($request->input('patches', []))])
                 ->first();
 
             if ($item) {
@@ -402,7 +402,7 @@ if ($maillotId) {
             ->where('size', $data['size'])
             ->where('nom', $data['nom'])
             ->where('numero', $data['numero'])
-            ->where('patches', json_encode($data['patches']))
+           ->whereRaw("JSON_UNQUOTE(patches) = ?", [json_encode($data['patches'])])
             ->first();
 
         if ($duplicate) {

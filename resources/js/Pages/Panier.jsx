@@ -59,13 +59,8 @@ export default function Panier() {
   );
 
   // Initialisation : normaliser les items 
-const [initialized, setInitialized] = useState(false);
-
 useEffect(() => {
-  if (!initialized) {
-    setCartItems(initialCartItems.map(computeItemTotals));
-    setInitialized(true);
-  }
+  setCartItems(initialCartItems.map(computeItemTotals));
 }, [initialCartItems]);
 
   //  Total panier + format monétaire 
