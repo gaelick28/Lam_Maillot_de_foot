@@ -222,7 +222,16 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
                           <p className="text-xs text-blue-600">{item.personalization_text}</p>
                         )}
 
-                        {item.patch_names?.length > 0 && (
+                                            
+                      {(item.nom || item.numero) && (
+                          <p className="text-xs text-blue-600">
+                              {item.numero && `N°${item.numero}`}
+                              {item.numero && item.nom && ' - '}
+                              {item.nom && item.nom}
+                          </p>
+                      )}
+
+                          {item.patch_names?.length > 0 && (
                           <p className="text-xs text-blue-600">Patchs : {item.patch_names.join(', ')}</p>
                       )}
 
