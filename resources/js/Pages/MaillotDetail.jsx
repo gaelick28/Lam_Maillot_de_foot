@@ -95,7 +95,8 @@ const supplement =
       nom: personnalisation.nom ? nom : null,
       patches: maillot.club.patches
           .filter(patch => personnalisation[`patch_${patch.id}`])
-          .map(patch => patch.id),
+          .map(patch => patch.id)
+          .sort((a, b) => a - b),
     }, {
       onSuccess: () => alert("Maillot ajouté au panier !"), 
     });

@@ -223,6 +223,8 @@ $shippingAddress = $user->addresses
     {
         $nom = $request->filled('nom') ? $request->nom : null;
         $numero = $request->filled('numero') ? $request->numero : null;
+        $patches = $request->input('patches', []);
+        sort($patches);
 
         // 🔥 RÉCUPÉRER LE MAILLOT POUR VÉRIFIER LE STOCK
         $maillot = Maillot::findOrFail($request->maillot_id);
@@ -247,7 +249,14 @@ $shippingAddress = $user->addresses
                 ->where('size', $request->size)
                 ->where('numero', $numero)
                 ->where('nom', $nom)
-                ->whereRaw("JSON_UNQUOTE(patches) = ?", [json_encode($request->input('patches', []))])
+                ->where(function($q) use ($patches) {
+                $sorted = $patches;
+                sort($sorted);
+                $q->whereRaw("JSON_LENGTH(patches) = ?", [count($sorted)]);
+                foreach ($sorted as $patchId) {
+                    $q->whereRaw("JSON_CONTAINS(patches, ?)", [(string)$patchId]);
+                }
+            })
                 ->first();
 
             if ($item) {
@@ -402,7 +411,14 @@ if ($maillotId) {
             ->where('size', $data['size'])
             ->where('nom', $data['nom'])
             ->where('numero', $data['numero'])
-           ->whereRaw("JSON_UNQUOTE(patches) = ?", [json_encode($data['patches'])])
+          ->where(function($q) use ($data) {
+                    $sorted = $data['patches'];
+                    sort($sorted);
+                    $q->whereRaw("JSON_LENGTH(patches) = ?", [count($sorted)]);
+                    foreach ($sorted as $patchId) {
+                        $q->whereRaw("JSON_CONTAINS(patches, ?)", [(string)$patchId]);
+                    }
+                })
             ->first();
 
         if ($duplicate) {
