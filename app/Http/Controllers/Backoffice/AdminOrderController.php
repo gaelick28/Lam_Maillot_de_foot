@@ -75,7 +75,7 @@ class AdminOrderController extends Controller
         $allPatches = \App\Models\Patch::all()->keyBy('id');
         foreach ($order->items as $item) {
             $item->patch_names = collect($item->patches ?? [])
-        ->map(fn($id) => $allPatches[$id]?->nom)
+         ->map(fn($id) => $allPatches->get((int)$id)?->nom)
         ->filter()
         ->values()
         ->toArray();
