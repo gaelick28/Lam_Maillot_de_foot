@@ -224,6 +224,7 @@ $shippingAddress = $user->addresses
         $nom = $request->filled('nom') ? $request->nom : null;
         $numero = $request->filled('numero') ? $request->numero : null;
         $patches = $request->input('patches', []);
+        $patches = \App\Models\Patch::whereIn('id', $patches)->pluck('id')->toArray();
         sort($patches);
 
         // 🔥 RÉCUPÉRER LE MAILLOT POUR VÉRIFIER LE STOCK
