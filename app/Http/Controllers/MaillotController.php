@@ -31,6 +31,24 @@ class MaillotController extends Controller
         // ✅ Calculer la quantité totale disponible
         $quantite = array_sum($stocks);
 
+        $autresMaillots = Maillot::with('club')
+    ->where('club_id', $maillot->club_id)
+    ->where('id', '!=', $maillot->id)
+    ->inRandomOrder()
+    ->limit(4)
+    ->get()
+    ->map(fn($m) => [
+        'id' => $m->id,
+        'nom' => $m->nom,
+        'image' => $m->image,
+        'image_dos' => $m->image_dos,
+        'price' => $m->price,
+        'badge' => $m->badge,
+        'club_name' => $m->club->name ?? null,
+        'is_new' => $m->is_new,
+        'is_featured' => $m->is_featured,
+    ]);
+
         return Inertia::render('MaillotDetail', [
             'maillot' => $maillot,
             'tailles' => $tailles,
@@ -41,6 +59,7 @@ class MaillotController extends Controller
             'prix' => $maillot->price,  // ✅ Prix réel de la BDD
             'prix_nom' => 3,
             'prix_numero' => 2,
+            'autresMaillots' => $autresMaillots,
         ]);
     }
 }

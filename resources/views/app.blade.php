@@ -7,7 +7,7 @@
     @viteReactRefresh
     @vite('resources/js/app.jsx')
 </head>
-<body>
+<body class="bg-gradient-to-r from-blue-800 to-red-500">
     @inertia
 </body>
 </html>

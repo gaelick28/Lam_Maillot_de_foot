@@ -3,8 +3,9 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { router } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
+import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
-export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix, prix_numero, prix_nom }) {
+export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix, prix_numero, prix_nom, autresMaillots = [] }) {
 // FORCER la conversion en nombres
   const prixNum = Number(prix);
   const prixNumeroNum = Number(prix_numero);
@@ -545,10 +546,31 @@ const supplement =
             </table>
         )}
     </div>
+    
 </div>
       </div>
       </div>
       </main>
+    {autresMaillots.length > 0 && (
+        <div className="bg-gradient-to-r from-purple-200 to-blue-100">
+          <div className="container mx-auto py-8 px-8">
+            <h2 className="text-2xl font-bold mb-6">
+                Autres Maillots de {maillot.club?.name}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {autresMaillots.map(m => (
+                    <MaillotCardCarousel
+                        key={m.id}
+                        maillot={m}
+                        clubName={m.club_name}
+                        maillotName={m.nom} 
+                    />
+                ))}
+            </div>
+          </div>
+        </div>
+      )}
+ 
       <Footer />
     </>
   );
