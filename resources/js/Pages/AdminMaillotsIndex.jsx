@@ -165,16 +165,16 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             </select>
 
             <select
-              value={stockFilter}
-              onChange={(e) => setStockFilter(e.target.value)}
-              className="bg-yellow-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Tous les stocks</option>
-              <option value="partial">Rupture partielle (au moins 1 taille)</option>
-              <option value="out">Rupture totale (toutes les tailles)</option>
-              <option value="low_partial">Stock faible partiel (au moins 1 taille &lt; 5)</option>
-              <option value="low">Stock faible total (&lt; 10)</option>
-            </select>
+  value={stockFilter}
+  onChange={(e) => setStockFilter(e.target.value)}
+  className="bg-yellow-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+>
+  <option value="">Tous les stocks</option>
+  <option value="partial">Rupture partielle</option>
+  <option value="out">Rupture totale</option>
+  <option value="low_partial">Stock faible partiel</option>
+  <option value="low">Stock faible total</option>
+</select>
 
             <button
               type="submit"
@@ -201,17 +201,17 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Club</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">S</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">M</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">L</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">XL</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">XXL</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Total</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Club</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">S</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">M</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">L</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">XL</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">XXL</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Total</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -237,60 +237,60 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-4">
                         <div className="font-medium text-gray-900">{maillot.nom}</div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-3 py-4 text-sm text-gray-600">
                         {maillot.club?.name || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                      <td className="px-3 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
                         {Number(maillot.price).toFixed(2)}&nbsp;€
                       </td>
-                      <td className="px-6 py-4 text-center text-sm">
+                      <td className="px-3 py-4 text-center text-sm">
                         <span className={maillot.stock_s === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_s}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm">
+                      <td className="px-3 py-4 text-center text-sm">
                         <span className={maillot.stock_m === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_m}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm">
+                      <td className="px-3 py-4 text-center text-sm">
                         <span className={maillot.stock_l === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_l}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm">
+                      <td className="px-3 py-4 text-center text-sm">
                         <span className={maillot.stock_xl === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_xl}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm">
+                      <td className="px-3 py-4 text-center text-sm">
                         <span className={maillot.stock_xxl === 0 ? 'text-red-600 font-bold' : 'text-gray-900'}>
                           {maillot.stock_xxl}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm font-bold text-gray-900">
+                      <td className="px-3 py-4 text-center text-sm font-bold text-gray-900">
                         {maillot.total_stock}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 py-4 text-center">
                         {getStockBadge(maillot.total_stock)}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-4">
                         <div className="flex gap-2">
-                          <button
-                            onClick={() => openEditModal(maillot)}
-                            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors text-sm"
-                          >
-                            ✏️ Modifier
-                          </button>
-                          <button
-                            onClick={() => handleDelete(maillot)}
-                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
-                          >
-                            🗑️ Supprimer
-                          </button>
+                         <button onClick={() => openEditModal(maillot)}
+  className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+  title="Modifier"
+>
+  ✏️
+</button>
+<button onClick={() => handleDelete(maillot)}
+  className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+  title="Supprimer"
+>
+  🗑️
+</button>
                         </div>
                       </td>
                     </tr>
