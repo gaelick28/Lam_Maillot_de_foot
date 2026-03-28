@@ -90,6 +90,12 @@
             font-weight: 500;
             margin-top: 5px;
         }
+        .item-patches {
+            color: #7c3aed;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
         .total-section {
             margin: 20px 0;
             padding: 20px;
@@ -193,24 +199,37 @@
                 <h2>Articles commandés</h2>
                 @foreach($items as $item)
                 <div class="item">
-                    <div class="item-name">{{ $item->maillot_name }}</div>
-                    @if($item->club_name)
-                    <div class="item-details">Club : {{ $item->club_name }}</div>
+                    <div class="item-name">{{ $item['maillot_name'] }}</div>
+
+                    @if(!empty($item['club_name']))
+                    <div class="item-details">Club : {{ $item['club_name'] }}</div>
                     @endif
+
                     <div class="item-details">
-                        Taille : {{ $item->size }} • Quantité : {{ $item->quantity }} • 
-                        Prix unitaire : {{ number_format($item->unit_price, 2, ',', ' ') }} €
+                        Taille : {{ $item['size'] }} • Quantité : {{ $item['quantity'] }} •
+                        Prix unitaire : {{ number_format($item['unit_price'], 2, ',', ' ') }} €
                     </div>
-                    @if($item->numero || $item->nom)
+
+                    {{-- Personnalisation : numéro et/ou nom --}}
+                    @if(!empty($item['numero']) || !empty($item['nom']))
                     <div class="item-personalization">
-                        Personnalisation : 
-                        @if($item->numero)N°{{ $item->numero }}@endif
-                        @if($item->numero && $item->nom) - @endif
-                        @if($item->nom){{ strtoupper($item->nom) }}@endif
+                        Personnalisation :
+                        @if(!empty($item['numero']))N°{{ $item['numero'] }}@endif
+                        @if(!empty($item['numero']) && !empty($item['nom'])) - @endif
+                        @if(!empty($item['nom'])){{ strtoupper($item['nom']) }}@endif
                     </div>
                     @endif
+
+                    {{-- Patches --}}
+                    @if(!empty($item['patch_names']))
+                    <div class="item-patches">
+                        🏷 Patch{{ count($item['patch_names']) > 1 ? 's' : '' }} :
+                        {{ implode(', ', $item['patch_names']) }}
+                    </div>
+                    @endif
+
                     <div class="item-details">
-                        <strong>Sous-total : {{ number_format($item->subtotal, 2, ',', ' ') }} €</strong>
+                        <strong>Sous-total : {{ number_format($item['subtotal'], 2, ',', ' ') }} €</strong>
                     </div>
                 </div>
                 @endforeach
