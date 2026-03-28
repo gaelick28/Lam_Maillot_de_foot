@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 use App\Helpers\CountryHelper;
 use App\Models\OrderActivity;
 use App\Mail\OrderStatusChanged;
+use App\Services\PricingService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
 class AdminOrderController extends Controller
 {
+    public function __construct(private PricingService $pricing) {}
+
     /**
      * Afficher la liste des commandes
      */
@@ -27,40 +30,31 @@ class AdminOrderController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('order_number', 'like', "%{$search}%")
                       ->orWhereHas('user', function ($q) use ($search) {
-    $q->where('username', 'like', "%{$search}%")
-      ->orWhere('email', 'like', "%{$search}%")
-      ->orWhere('first_name', 'like', "%{$search}%")
-      ->orWhere('last_name', 'like', "%{$search}%")
-      // Recherche sur le nom complet
-      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
-});
+                          $q->where('username', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                      });
             })
-            ->when($status, function ($query, $status) {
-                $query->where('order_status', $status);
-            })
+            ->when($status, fn($query, $status) => $query->where('order_status', $status))
             ->orderBy('created_at', 'desc')
             ->paginate(20)
             ->withQueryString();
 
-        // Statistiques par statut
         $stats = [
-            'all' => Order::count(),
-            'pending' => Order::where('order_status', 'pending')->count(),
-            'shipped' => Order::where('order_status', 'shipped')->count(),
+            'all'       => Order::count(),
+            'pending'   => Order::where('order_status', 'pending')->count(),
+            'shipped'   => Order::where('order_status', 'shipped')->count(),
             'delivered' => Order::where('order_status', 'delivered')->count(),
             'cancelled' => Order::where('order_status', 'cancelled')->count(),
         ];
 
         return Inertia::render('AdminOrdersIndex', [
-            'orders' => $orders,
-            'stats' => $stats,
-            'filters' => [
-                'search' => $search,
-                'status' => $status,
-            ],
-            'auth' => [
-                'user' => auth('web')->user()
-            ]
+            'orders'  => $orders,
+            'stats'   => $stats,
+            'filters' => ['search' => $search, 'status' => $status],
+            'auth'    => ['user' => auth('web')->user()],
         ]);
     }
 
@@ -71,29 +65,21 @@ class AdminOrderController extends Controller
     {
         $order->load(['user', 'items.maillot', 'shippingAddress', 'billingAddress']);
 
-        // Résoudre les noms des patches
-        $allPatches = \App\Models\Patch::all()->keyBy('id');
         foreach ($order->items as $item) {
-            $item->patch_names = collect($item->patches ?? [])
-         ->map(fn($id) => $allPatches->get((int)$id)?->nom)
-        ->filter()
-        ->values()
-        ->toArray();
-}
+            $item->patch_names = $this->pricing->resolvePatchNames($item->patches ?? []);
+        }
 
-        // Formater les noms de pays
-    if ($order->shippingAddress) {
-        $order->shippingAddress->country_name = CountryHelper::name($order->shippingAddress->country);
-    }
-    
-    if ($order->billingAddress) {
-        $order->billingAddress->country_name = CountryHelper::name($order->billingAddress->country);
-    }
+        if ($order->shippingAddress) {
+            $order->shippingAddress->country_name = CountryHelper::name($order->shippingAddress->country);
+        }
+
+        if ($order->billingAddress) {
+            $order->billingAddress->country_name = CountryHelper::name($order->billingAddress->country);
+        }
+
         return Inertia::render('AdminOrdersShow', [
             'order' => $order,
-            'auth' => [
-                'user' => auth('web')->user()
-            ]
+            'auth'  => ['user' => auth('web')->user()],
         ]);
     }
 
@@ -101,38 +87,35 @@ class AdminOrderController extends Controller
      * Changer le statut d'une commande
      */
     public function updateStatus(Order $order, Request $request)
-{
-    $validated = $request->validate([
-        'status' => 'required|in:pending,shipped,delivered,cancelled'
-    ]);
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,shipped,delivered,cancelled',
+        ]);
 
-    $oldStatus = $order->order_status;
-    $newStatus = $validated['status'];
+        $oldStatus = $order->order_status;
+        $newStatus = $validated['status'];
 
-    // ✅ AJOUTER CETTE LIGNE
-    OrderActivity::recordStatusChange($order, $oldStatus, $newStatus);
+        OrderActivity::recordStatusChange($order, $oldStatus, $newStatus);
 
-    $order->order_status = $newStatus;
-    $order->save();
-// ✅ Charger les relations
-$order->load(['user', 'shippingAddress']);
+        $order->order_status = $newStatus;
+        $order->save();
 
-// ✅ Envoyer l'email
-try {
-    Mail::to($order->user->email)->send(new OrderStatusChanged($order, $oldStatus, $newStatus));
-    Log::info("Email envoyé pour commande {$order->order_number}");
-} catch (\Exception $e) {
-    Log::error("Erreur envoi email: " . $e->getMessage());
-}
+        $order->load(['user', 'shippingAddress']);
 
+        try {
+            Mail::to($order->user->email)->send(new OrderStatusChanged($order, $oldStatus, $newStatus));
+            Log::info("Email envoyé pour commande {$order->order_number}");
+        } catch (\Exception $e) {
+            Log::error("Erreur envoi email : " . $e->getMessage());
+        }
 
-    $statusLabels = [
-        'pending' => 'En attente',
-        'shipped' => 'Expédiée',
-        'delivered' => 'Livrée',
-        'cancelled' => 'Annulée',
-    ];
+        $statusLabels = [
+            'pending'   => 'En attente',
+            'shipped'   => 'Expédiée',
+            'delivered' => 'Livrée',
+            'cancelled' => 'Annulée',
+        ];
 
-    return back()->with('success', "Commande #{$order->order_number} : statut changé de '{$statusLabels[$oldStatus]}' à '{$statusLabels[$newStatus]}'");
-}
+        return back()->with('success', "Commande #{$order->order_number} : statut changé de '{$statusLabels[$oldStatus]}' à '{$statusLabels[$newStatus]}'");
+    }
 }
