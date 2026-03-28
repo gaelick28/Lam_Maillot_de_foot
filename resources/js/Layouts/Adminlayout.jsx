@@ -1,9 +1,23 @@
 import { Link, usePage } from "@inertiajs/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function AdminLayout({ children }) {
-  const { auth } = usePage().props
+  const { auth, flash } = usePage().props
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [flashMessage, setFlashMessage] = useState(null)
+
+  useEffect(() => {
+    if (flash?.success || flash?.error) {
+      setFlashMessage({
+        type: flash.success ? 'success' : 'error',
+        text: flash.success || flash.error,
+      })
+
+      // Auto-disparition après 4 secondes
+      const timer = setTimeout(() => setFlashMessage(null), 4000)
+      return () => clearTimeout(timer)
+    }
+  }, [flash])
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -111,7 +125,7 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="bg-white shadow-sm">
           <div className="flex items-center justify-between px-6 py-4">
@@ -133,6 +147,26 @@ export default function AdminLayout({ children }) {
             </div>
           </div>
         </header>
+
+        {/* Flash messages */}
+        {flashMessage && (
+          <div className={`mx-6 mt-4 px-4 py-3 rounded-lg flex items-center justify-between shadow ${
+            flashMessage.type === 'success'
+              ? 'bg-green-100 border border-green-400 text-green-800'
+              : 'bg-red-100 border border-red-400 text-red-800'
+          }`}>
+            <span>
+              {flashMessage.type === 'success' ? '✅ ' : '❌ '}
+              {flashMessage.text}
+            </span>
+            <button
+              onClick={() => setFlashMessage(null)}
+              className="ml-4 text-lg font-bold opacity-60 hover:opacity-100"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Page Content */}
         <main className="flex-1 p-6 overflow-auto">
