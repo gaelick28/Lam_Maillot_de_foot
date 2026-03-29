@@ -129,10 +129,17 @@ export default function AdminStatistics({ stats, auth }) {
         {/* Graphique d'évolution des revenus */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Évolution des revenus (12 derniers mois)</h2>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={350}>
             <LineChart data={revenueData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
+              <XAxis 
+                dataKey="month"
+                tick={{ fontSize: 10 }}
+                interval={0}
+                angle={-35}
+                textAnchor="end"
+                height={50}
+              />
               <YAxis />
               <Tooltip 
                 formatter={(value) => fmt.format(value)}

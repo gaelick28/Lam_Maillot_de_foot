@@ -139,7 +139,7 @@ class DashboardController extends Controller
         $revenues = [];
 
         for ($i = 11; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
+            $date = Carbon::now()->startOfMonth()->subMonths($i);
             $monthName = $date->locale('fr')->isoFormat('MMM YYYY');
             
             $revenue = Order::whereYear('created_at', $date->year)
