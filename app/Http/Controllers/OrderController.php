@@ -31,6 +31,7 @@ class OrderController extends Controller
             'unit_price'           => $item->unit_price,
             'personalization_cost' => $item->personalization_cost,
             'subtotal'             => $item->subtotal,
+            'price'                => $item->subtotal,
             'patch_names'          => $this->pricing->resolvePatchNames($item->patches ?? []),
         ];
     }
