@@ -73,22 +73,22 @@ export default function UsersIndex({ users, filters, auth }) {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commandes</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Inscription</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commandes</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Inscription</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {users.data.length > 0 ? (
                 users.data.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">#{user.id}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4 text-sm text-gray-900">#{user.id}</td>
+                    <td className="px-3 py-4">
                       <div>
                         <p className="text-sm font-medium text-gray-900">{user.username}</p>
                         {user.first_name && (
@@ -96,8 +96,8 @@ export default function UsersIndex({ users, filters, auth }) {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4 text-sm text-gray-600">{user.email}</td>
+                    <td className="px-3 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         user.role === 'admin' 
                           ? 'bg-purple-100 text-purple-800' 
@@ -106,10 +106,10 @@ export default function UsersIndex({ users, filters, auth }) {
                         {user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold text-center">
+                    <td className="px-3 py-4 text-sm text-gray-900 font-semibold text-center">
                       {user.orders_count}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         user.is_active 
                           ? 'bg-green-100 text-green-800' 
@@ -118,10 +118,10 @@ export default function UsersIndex({ users, filters, auth }) {
                         {user.is_active ? 'Actif' : 'Bloqué'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-3 py-4 text-sm text-gray-600">
                       {new Date(user.created_at).toLocaleDateString('fr-FR')}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4">
                       <div className="flex gap-2">
                         {/* Bouton Bloquer/Activer */}
                         {user.role !== 'admin' && user.id !== auth.user.id && (
