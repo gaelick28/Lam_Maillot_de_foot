@@ -178,7 +178,7 @@ export default function AdminOrdersIndex({ orders, stats, filters, auth }) {
                       {Number(order.total_amount).toFixed(2)} €
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[order.order_status]}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${statusColors[order.order_status]}`}>
                         {statusLabels[order.order_status]}
                       </span>
                     </td>
