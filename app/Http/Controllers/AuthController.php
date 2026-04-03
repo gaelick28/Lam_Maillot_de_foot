@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules\Password;
 
 
 class AuthController extends Controller
@@ -37,7 +38,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'username'     => 'required|string|max:50|unique:users',
             'email'        => 'required|email|unique:users',
-            'password'     => 'required|string|min:6|confirmed',
+            'password'     => 'required|string|min:8|confirmed',
             'first_name'   => 'nullable|string|max:100',
             'last_name'    => 'nullable|string|max:100',
             'phone'        => 'nullable|string|max:20',
@@ -117,7 +118,11 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'login' => 'required|string',
-            'password' => 'required|string',
+            'password' => ['required', 'confirmed', Password::min(8)
+    ->mixedCase()    // majuscule + minuscule
+    ->numbers()      // au moins un chiffre
+    ->symbols()      // au moins un caractère spécial
+],
         ]);
 
         $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';

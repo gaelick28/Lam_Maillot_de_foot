@@ -273,6 +273,11 @@ const handleResetSubmit = (e) => {
                   <EyeIcon show={showPassword} />
                 </button>
               </div>
+              {!isLogin && (
+  <p className="text-xs text-gray-500 mt-1">
+    8 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial
+  </p>
+)}
               {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
             </div>
 

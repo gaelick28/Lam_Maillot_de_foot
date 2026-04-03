@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\UserAddress;
+use Illuminate\Validation\Rules\Password;
 
 class AccountDetailController extends Controller
 {
@@ -112,7 +113,11 @@ return Inertia::render('AccountDetails', [
 
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'password' => ['required', 'confirmed', Password::min(8)
+    ->mixedCase()    // majuscule + minuscule
+    ->numbers()      // au moins un chiffre
+    ->symbols()      // au moins un caractère spécial
+],
         ]);
 
         if (!Hash::check($request->current_password, $user->password)) {
