@@ -69,7 +69,6 @@ export default function SearchBar({ className = "", placeholder = "Rechercher un
           setShowNoResults(true);
         }
       } catch (error) {
-        console.error("Erreur de recherche:", error);
         setSuggestions([]);
         setIsOpen(false);
         setShowNoResults(true);
