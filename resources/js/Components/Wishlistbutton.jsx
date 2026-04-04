@@ -43,9 +43,9 @@ export default function WishlistButton({ maillotId, className = "" }) {
       const data = await response.json();
       const isIn = Array.isArray(data.wishlist_ids) && data.wishlist_ids.includes(maillotId);
       setIsInWishlist(isIn);
-      console.log('✅ Wishlist status:', { maillotId, isIn, ids: data.wishlist_ids });
+  
     } catch (error) {
-      console.error('❌ Erreur checkWishlistStatus:', error);
+     
     }
   };
 
@@ -55,7 +55,7 @@ export default function WishlistButton({ maillotId, className = "" }) {
       const stored = localStorage.getItem('wishlist');
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      console.error('Erreur lecture localStorage:', error);
+     
       return [];
     }
   };
@@ -65,7 +65,7 @@ export default function WishlistButton({ maillotId, className = "" }) {
     try {
       localStorage.setItem('wishlist', JSON.stringify(wishlist));
     } catch (error) {
-      console.error('Erreur écriture localStorage:', error);
+      
     }
   };
 
@@ -87,7 +87,7 @@ export default function WishlistButton({ maillotId, className = "" }) {
         toggleWishlistLocal();
       }
     } catch (error) {
-      console.error('Erreur toggle wishlist:', error);
+
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +98,7 @@ export default function WishlistButton({ maillotId, className = "" }) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
     
     if (!csrfToken) {
-      console.error('❌ CSRF token manquant !');
+
       alert('Erreur: CSRF token manquant. Rechargez la page.');
       return;
     }
@@ -106,7 +106,7 @@ export default function WishlistButton({ maillotId, className = "" }) {
     try {
       if (isInWishlist) {
         // Retirer
-        console.log('🗑️ Suppression de la wishlist:', maillotId);
+       
         const response = await fetch(`/api/wishlist/remove/${maillotId}`, {
           method: 'DELETE',
           headers: {
@@ -116,19 +116,17 @@ export default function WishlistButton({ maillotId, className = "" }) {
           },
         });
 
-        console.log('📡 Response remove:', response.status);
-
         if (response.ok) {
           setIsInWishlist(false);
-          console.log('✅ Retiré de la wishlist');
+        
         } else {
           const error = await response.json();
-          console.error('❌ Erreur remove:', error);
+         
           alert('Erreur lors de la suppression');
         }
       } else {
         // Ajouter
-        console.log('➕ Ajout à la wishlist:', maillotId);
+
         const response = await fetch('/api/wishlist/add', {
           method: 'POST',
           headers: {
@@ -139,19 +137,18 @@ export default function WishlistButton({ maillotId, className = "" }) {
           body: JSON.stringify({ maillot_id: maillotId }),
         });
 
-        console.log('📡 Response add:', response.status);
 
         if (response.ok) {
           setIsInWishlist(true);
-          console.log('✅ Ajouté à la wishlist');
+  
         } else {
           const error = await response.json();
-          console.error('❌ Erreur add:', error);
+     
           alert('Erreur lors de l\'ajout');
         }
       }
     } catch (error) {
-      console.error('❌ Erreur API:', error);
+
       alert('Erreur de connexion');
     }
   };
@@ -165,13 +162,13 @@ export default function WishlistButton({ maillotId, className = "" }) {
       const newWishlist = localWishlist.filter(id => id !== maillotId);
       saveLocalWishlist(newWishlist);
       setIsInWishlist(false);
-      console.log('✅ Retiré du localStorage');
+
     } else {
       // Ajouter
       const newWishlist = [...localWishlist, maillotId];
       saveLocalWishlist(newWishlist);
       setIsInWishlist(true);
-      console.log('✅ Ajouté au localStorage (connectez-vous pour sauvegarder)');
+   
     }
   };
 
@@ -210,12 +207,12 @@ export default function WishlistButton({ maillotId, className = "" }) {
  * À appeler côté client après une connexion réussie
  */
 export const syncWishlistOnLogin = async () => {
-  console.log('🔄 Tentative de synchronisation wishlist...');
+  
   
   const localWishlist = localStorage.getItem('wishlist');
   
   if (!localWishlist) {
-    console.log('ℹ️ Pas de wishlist locale à synchroniser');
+ 
     return;
   }
 
@@ -223,16 +220,16 @@ export const syncWishlistOnLogin = async () => {
     const maillotIds = JSON.parse(localWishlist);
     
     if (!Array.isArray(maillotIds) || maillotIds.length === 0) {
-      console.log('ℹ️ Wishlist locale vide');
+   
       return;
     }
 
-    console.log('📤 Synchronisation de', maillotIds.length, 'maillots...');
+    
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
     
     if (!csrfToken) {
-      console.error('❌ CSRF token manquant');
+     
       return;
     }
 
@@ -248,15 +245,15 @@ export const syncWishlistOnLogin = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('✅ Synchronisation réussie:', data);
+
       
       // Vider le localStorage après synchronisation
       localStorage.removeItem('wishlist');
-      console.log('🗑️ localStorage vidé');
+
     } else {
-      console.error('❌ Erreur synchronisation:', response.status);
+      
     }
   } catch (error) {
-    console.error('❌ Erreur de synchronisation wishlist:', error);
+  
   }
 };
