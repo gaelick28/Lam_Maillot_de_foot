@@ -26,9 +26,7 @@ import WelcomeMessage from "@/Components/WelcomeMessage"
 
 
 export default function OrderHistory({ user, orders = [] }) {
-  console.log('Orders reçus:', orders);
-  console.log('Premier order:', orders[0]);
-  
+   
   return (
     <>
       <Header />
