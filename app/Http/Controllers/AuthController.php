@@ -38,7 +38,11 @@ class AuthController extends Controller
         $validated = $request->validate([
             'username'     => 'required|string|max:50|unique:users',
             'email'        => 'required|email|unique:users',
-            'password'     => 'required|string|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->mixedCase()    // majuscule + minuscule
+                ->numbers()      // au moins un chiffre
+                ->symbols()      // au moins un caractère spécial
+            ],
             'first_name'   => 'nullable|string|max:100',
             'last_name'    => 'nullable|string|max:100',
             'phone'        => 'nullable|string|max:20',
@@ -118,11 +122,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'login' => 'required|string',
-            'password' => ['required', 'confirmed', Password::min(8)
-    ->mixedCase()    // majuscule + minuscule
-    ->numbers()      // au moins un chiffre
-    ->symbols()      // au moins un caractère spécial
-],
+           'password' => ['required', 'string'],
         ]);
 
         $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
