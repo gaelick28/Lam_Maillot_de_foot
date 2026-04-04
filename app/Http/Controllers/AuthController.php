@@ -7,7 +7,6 @@ use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -38,7 +37,11 @@ class AuthController extends Controller
         $validated = $request->validate([
             'username'     => 'required|string|max:50|unique:users',
             'email'        => 'required|email|unique:users',
-            'password'     => 'required|string|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->mixedCase()    // majuscule + minuscule
+                ->numbers()      // au moins un chiffre
+                ->symbols()      // au moins un caractère spécial
+            ],
             'first_name'   => 'nullable|string|max:100',
             'last_name'    => 'nullable|string|max:100',
             'phone'        => 'nullable|string|max:20',
@@ -60,69 +63,32 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // 🔥 SYNCHRONISER LA WISHLIST APRÈS INSCRIPTION
-        Log::info('📝 Registration - Données reçues:', [
-            'user_id' => Auth::id(),
-            'has_wishlist_ids' => $request->has('wishlist_ids'),
-            'wishlist_ids' => $request->input('wishlist_ids', []),
-        ]);
-
         if ($request->has('wishlist_ids')) {
             $wishlistIds = $request->input('wishlist_ids', []);
-            
-            Log::info('📤 Synchronisation wishlist après inscription:', [
-                'user_id' => Auth::id(),
-                'wishlist_ids' => $wishlistIds,
-                'count' => count($wishlistIds)
-            ]);
-            
-            $syncedCount = 0;
+
             foreach ($wishlistIds as $maillotId) {
                 try {
                     $wishlist = Wishlist::firstOrCreate([
                         'user_id' => Auth::id(),
                         'maillot_id' => $maillotId,
                     ]);
-                    
-                    if ($wishlist->wasRecentlyCreated) {
-                        $syncedCount++;
-                    }
-                    
-                    Log::info('✅ Maillot ajouté:', [
-                        'maillot_id' => $maillotId,
-                        'was_new' => $wishlist->wasRecentlyCreated
-                    ]);
+                                      
                 } catch (\Exception $e) {
-                    Log::error('❌ Erreur ajout maillot:', [
-                        'maillot_id' => $maillotId,
-                        'error' => $e->getMessage()
-                    ]);
+                   
                 }
             }
-            
-            Log::info('🎉 Synchronisation terminée après inscription:', [
-                'user_id' => Auth::id(),
-                'synced_count' => $syncedCount,
-                'total' => count($wishlistIds)
-            ]);
-        } else {
-            Log::warning('⚠️ Pas de wishlist_ids dans la requête d\'inscription');
-        }
-
+        
+        } 
         return redirect()->route('dashboard')->with('success', 'Inscription réussie');
     }
-
-   
+  
     //  Connexion
     public function login(Request $request)
     {
         $credentials = $request->validate([
             'login' => 'required|string',
-            'password' => ['required', 'confirmed', Password::min(8)
-    ->mixedCase()    // majuscule + minuscule
-    ->numbers()      // au moins un chiffre
-    ->symbols()      // au moins un caractère spécial
-],
+            'password' => ['required', 'string'],
+
         ]);
 
         $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -136,24 +102,9 @@ class AuthController extends Controller
             )) {
             $request->session()->regenerate();
 
-            // 🔥 DEBUG + Synchroniser la wishlist du localStorage
-            Log::info('🔑 Login - Données reçues:', [
-                'user_id' => Auth::id(),
-                'has_wishlist_ids' => $request->has('wishlist_ids'),
-                'wishlist_ids' => $request->input('wishlist_ids', []),
-                'all_request' => $request->all()
-            ]);
-
             if ($request->has('wishlist_ids')) {
-                $wishlistIds = $request->input('wishlist_ids', []);
-                
-                Log::info('📤 Tentative synchronisation wishlist:', [
-                    'user_id' => Auth::id(),
-                    'wishlist_ids' => $wishlistIds,
-                    'count' => count($wishlistIds)
-                ]);
-                
-                $syncedCount = 0;
+                $wishlistIds = $request->input('wishlist_ids', []);               
+              
                 foreach ($wishlistIds as $maillotId) {
                     try {
                         $wishlist = Wishlist::firstOrCreate([
@@ -161,30 +112,10 @@ class AuthController extends Controller
                             'maillot_id' => $maillotId,
                         ]);
                         
-                        if ($wishlist->wasRecentlyCreated) {
-                            $syncedCount++;
-                        }
-                        
-                        Log::info('✅ Maillot ajouté:', [
-                            'maillot_id' => $maillotId,
-                            'was_new' => $wishlist->wasRecentlyCreated
-                        ]);
                     } catch (\Exception $e) {
-                        Log::error('❌ Erreur ajout maillot:', [
-                            'maillot_id' => $maillotId,
-                            'error' => $e->getMessage()
-                        ]);
                     }
                 }
-                
-                Log::info('🎉 Synchronisation terminée:', [
-                    'user_id' => Auth::id(),
-                    'synced_count' => $syncedCount,
-                    'total' => count($wishlistIds)
-                ]);
-            } else {
-                Log::warning('⚠️ Pas de wishlist_ids dans la requête');
-            }
+            } 
 
             return redirect()->route('dashboard')->with('success', 'Connexion réussie');
         }

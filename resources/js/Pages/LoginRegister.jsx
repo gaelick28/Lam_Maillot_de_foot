@@ -38,7 +38,6 @@ const {
     const wishlistIds = localWishlist ? JSON.parse(localWishlist) : [];
     setData('wishlist_ids', wishlistIds);
     
-    console.log('🛒 Wishlist chargée depuis localStorage:', wishlistIds);
   }, []);
 
   const handleChange = (e) => {
@@ -62,40 +61,35 @@ const {
     
     if (isLogin) {
       // CONNEXION
-      console.log('🔑 Tentative de connexion avec wishlist:', wishlistIds);
-      
+
       // Mettre à jour data.wishlist_ids AVANT d'envoyer
       data.wishlist_ids = wishlistIds;
       
       post('/login', {
         onSuccess: () => {
-          console.log('✅ Connexion réussie');
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
           //  Reload complet de la page pour rafraîchir le CSRF token
           window.location.href = '/dashboard';
         },
         onError: (errors) => {
-          console.error('❌ Erreur de connexion:', errors);
         }
       });
     } else {
       //  INSCRIPTION - CORRECTION ICI
-      console.log('📝 Tentative d\'inscription avec wishlist:', wishlistIds);
-      
+
       // Mettre à jour data.wishlist_ids AVANT d'envoyer
       data.wishlist_ids = wishlistIds;
       
       post('/register', {
         onSuccess: () => {
-          console.log('✅ Inscription réussie');
+        
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
           // Reload complet de la page
           window.location.href = '/dashboard';
         },
         onError: (errors) => {
-          console.error('❌ Erreur d\'inscription:', errors);
         }
       });
     }
@@ -274,7 +268,7 @@ const handleResetSubmit = (e) => {
                 </button>
               </div>
               {!isLogin && (
-  <p className="text-xs text-gray-500 mt-1">
+  <p className="text-sm text-gray-500 mt-1">
     8 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial
   </p>
 )}
