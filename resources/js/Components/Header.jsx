@@ -114,6 +114,9 @@ export default function Header() {
       className="sticky top-0 z-50 bg-gradient-to-r from-red-800 to-blue-500 text-white shadow-lg"
       role="banner"
     >
+    <div style={{ backgroundColor: '#facc15', color: 'black', textAlign: 'center', padding: '6px', fontSize: '14px', fontWeight: '500' }}>
+        🚧 Site de démonstration — les commandes sont factices et ne sont pas traitées. Aucun paiement réel n'est effectué.
+    </div>  
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Barre supérieure */}
         <div className="flex h-16 items-center justify-between gap-3">
