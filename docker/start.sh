@@ -11,5 +11,4 @@ php /var/www/artisan config:cache
 php /var/www/artisan view:cache
 php /var/www/artisan storage:link
 php /var/www/artisan migrate --force
-php /var/www/artisan db:seed --force
 nginx -g "daemon off;"
