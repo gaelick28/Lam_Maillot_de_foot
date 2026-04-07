@@ -109,7 +109,7 @@ Route::prefix('api/wishlist')->group(function () {
 
 
 // Routes protégées
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/compte', [PageController::class, 'account'])->name('account');
    Route::get('/order', [OrderController::class, 'history'])->name('order');
@@ -125,7 +125,7 @@ Route::fallback([PageController::class, 'page404']);
 
 
 // Routes pour la gestion des adresses
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
