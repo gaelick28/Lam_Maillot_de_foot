@@ -16,12 +16,19 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
     $middleware->web(append: [
         HandleInertiaRequests::class,
-        \App\Http\Middleware\RedirectIfAdmin::class, // ← AJOUTEZ CETTE LIGNE
+        \App\Http\Middleware\RedirectIfAdmin::class,
     ]);
     
     $middleware->alias([
         'admin' => \App\Http\Middleware\IsAdmin::class,
     ]);
+    
+    // Exclure les routes logout et login du CSRF n'est pas la solution
+    // Le vrai fix : s'assurer que le XSRF-TOKEN est bien lu
+    $middleware->validateCsrfTokens(except: []);
+        'login',
+        'logout',
+        'register',
 })
     ->withExceptions(function (Exceptions $exceptions) {
         //
