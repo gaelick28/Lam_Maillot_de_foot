@@ -7,6 +7,7 @@ mkdir -p /var/www/storage/framework/sessions
 
 php-fpm -D
 sleep 2
+php /var/www/artisan config:clear
 php /var/www/artisan config:cache
 php /var/www/artisan view:cache
 php /var/www/artisan storage:link
