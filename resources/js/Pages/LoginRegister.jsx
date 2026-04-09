@@ -70,7 +70,7 @@ const {
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
           //  Reload complet de la page pour rafraîchir le CSRF token
-          window.location.href = '/dashboard';
+          window.location.href = '/';
         },
         onError: (errors) => {
         }
@@ -87,7 +87,7 @@ const {
           // Vider le localStorage après succès
           localStorage.removeItem('wishlist');
           // Reload complet de la page
-          window.location.href = '/dashboard';
+          window.location.href = '/';
         },
         onError: (errors) => {
         }
