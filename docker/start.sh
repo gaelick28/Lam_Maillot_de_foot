@@ -11,6 +11,5 @@ php /var/www/artisan config:clear
 php /var/www/artisan config:cache
 php /var/www/artisan view:cache
 php /var/www/artisan storage:link
-
-php -d max_execution_time=300 /var/www/artisan migrate:fresh --seed --force
+php -d max_execution_time=300 /var/www/artisan migrate --force
 nginx -g "daemon off;"
