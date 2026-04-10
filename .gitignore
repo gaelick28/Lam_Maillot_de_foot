@@ -19,6 +19,3 @@ yarn-error.log
 /.idea
 /.vscode
 .env.docker
-echo "migrate_to_neon.php" >> .gitignore
-echo "neon_import.sql" >> .gitignore
-echo "fou2foot_export.sql" >> .gitignore
