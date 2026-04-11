@@ -9,6 +9,8 @@ chmod -R 775 /var/www/bootstrap/cache
 mkdir -p /var/www/storage/framework/views
 mkdir -p /var/www/storage/framework/cache
 mkdir -p /var/www/storage/framework/sessions
+chown -R www-data:www-data /var/www/storage
+chmod -R 775 /var/www/storage
 
 php-fpm -D
 sleep 2
