@@ -233,14 +233,7 @@ class CartController extends Controller
                 ->where('size', $request->size)
                 ->where('numero', $numero)
                 ->where('nom', $nom)
-                ->where(function ($q) use ($patches) {
-                    $sorted = $patches;
-                    sort($sorted);
-                    $q->whereRaw("JSON_LENGTH(patches) = ?", [count($sorted)]);
-                    foreach ($sorted as $patchId) {
-                        $q->whereRaw("JSON_CONTAINS(patches, ?)", [(string) $patchId]);
-                    }
-                })
+                ->where('patches', json_encode($patches))
                 ->first();
 
             if ($item) {
@@ -391,13 +384,10 @@ class CartController extends Controller
             ->where('nom', $data['nom'])
             ->where('numero', $data['numero'])
             ->where(function ($q) use ($data) {
-                $sorted = $data['patches'];
-                sort($sorted);
-                $q->whereRaw("JSON_LENGTH(patches) = ?", [count($sorted)]);
-                foreach ($sorted as $patchId) {
-                    $q->whereRaw("JSON_CONTAINS(patches, ?)", [(string) $patchId]);
-                }
-            })
+    $sorted = $data['patches'];
+    sort($sorted);
+    $q->where('patches', json_encode($sorted));
+})
             ->first();
 
         if ($duplicate) {
