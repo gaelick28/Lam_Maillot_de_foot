@@ -33,8 +33,8 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
   const [paymentMethod, setPaymentMethod] = useState(null)
   const [processing, setProcessing] = useState(false)
 
-  const { props } = usePage()
-const flashError = props.flash?.error
+ const { flash } = usePage().props
+const flashError = flash?.error
 
   const handlePayment = (e) => {
     e.preventDefault()
