@@ -75,10 +75,11 @@ class AdminClubController extends Controller
         $search = $request->get('search');
 
         $clubs = Club::query()
-            ->when($search, fn($query, $search) =>
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('category', 'like', "%{$search}%")
-            )
+            ->when($search, function ($query, $search) {
+    $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
+    $query->where('name', $operator, "%{$search}%")
+          ->orWhere('category', $operator, "%{$search}%");
+})
             ->withCount('maillots')
             ->with('patches')
             ->orderBy('name', 'asc')
