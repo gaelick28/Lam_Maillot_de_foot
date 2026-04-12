@@ -233,7 +233,15 @@ class CartController extends Controller
                 ->where('size', $request->size)
                 ->where('numero', $numero)
                 ->where('nom', $nom)
-                ->where('patches', json_encode($patches))
+                ->where(function ($q) use ($patches) {
+    $sorted = $patches;
+    sort($sorted);
+    if (config('database.default') === 'pgsql') {
+        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
+    } else {
+        $q->where('patches', json_encode($sorted));
+    }
+})
                 ->first();
 
             if ($item) {
@@ -386,7 +394,11 @@ class CartController extends Controller
             ->where(function ($q) use ($data) {
     $sorted = $data['patches'];
     sort($sorted);
-    $q->where('patches', json_encode($sorted));
+    if (config('database.default') === 'pgsql') {
+        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
+    } else {
+        $q->where('patches', json_encode($sorted));
+    }
 })
             ->first();
 
