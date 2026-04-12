@@ -67,8 +67,9 @@ class AdminMaillotController extends Controller
             ->with('club')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('nom', 'like', "%{$search}%")
-                      ->orWhereHas('club', fn($cq) => $cq->where('name', 'like', "%{$search}%"));
+                    $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
+$q->where('nom', $operator, "%{$search}%")
+  ->orWhereHas('club', fn($cq) => $cq->where('name', $operator, "%{$search}%"));
                 });
             })
             ->when($clubFilter, fn($query, $clubFilter) => $query->where('club_id', $clubFilter))
