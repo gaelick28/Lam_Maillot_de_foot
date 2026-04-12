@@ -1,7 +1,8 @@
 import { useState } from "react"
-import { Head, router } from "@inertiajs/react"
+import { Head, router, usePage } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
+
 
 // Icônes SVG
 const CardIcon = ({ className }) => (
@@ -31,6 +32,9 @@ const LockIcon = ({ className }) => (
 export default function Payment({ auth, items = [], subtotal, supplements, shipping_cost, total, shippingAddress, billingAddress }) {
   const [paymentMethod, setPaymentMethod] = useState(null)
   const [processing, setProcessing] = useState(false)
+
+  const { props } = usePage()
+const flashError = props.flash?.error
 
   const handlePayment = (e) => {
     e.preventDefault()
@@ -84,6 +88,15 @@ export default function Payment({ auth, items = [], subtotal, supplements, shipp
 
       <main className="min-h-screen bg-gradient-to-r from-purple-200 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
+
+{flashError && (
+  <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+    {flashError}
+  </div>
+)}
+
+{/* Breadcrumb / Stepper */}
+
           {/* Breadcrumb / Stepper */}
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
