@@ -235,7 +235,7 @@ class PaymentController extends Controller
 
         try {
             $order->load(['items.maillot', 'user', 'shippingAddress', 'billingAddress']);
-            Mail::to($order->user->email)->send(new \App\Mail\OrderConfirmationMail($order));
+            Mail::to($order->user->email)->queue(new \App\Mail\OrderConfirmationMail($order));
             Log::info('Email de confirmation envoyé pour la commande ' . $order->order_number);
         } catch (\Exception $e) {
             Log::error('Erreur envoi email confirmation : ' . $e->getMessage(), [
