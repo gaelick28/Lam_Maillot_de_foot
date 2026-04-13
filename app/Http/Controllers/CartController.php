@@ -45,7 +45,15 @@ class CartController extends Controller
                 ->where('size', $sessionItem['size'])
                 ->where('nom', $nom)
                 ->where('numero', $numero)
-                ->where('patches', json_encode($sessionItem['patches'] ?? []))
+                ->where(function ($q) use ($sessionItem) {
+    $sorted = $sessionItem['patches'] ?? [];
+    sort($sorted);
+    if (config('database.default') === 'pgsql') {
+        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
+    } else {
+        $q->where('patches', json_encode($sorted));
+    }
+})
                 ->first();
 
             if ($existingItem) {
