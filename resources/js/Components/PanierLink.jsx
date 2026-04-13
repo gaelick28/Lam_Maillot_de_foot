@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Link, usePage } from "@inertiajs/react"
+import { Link, usePage,  router } from "@inertiajs/react"
 
 export default function PanierLink() {
   const [cartCount, setCartCount] = useState(0)
@@ -55,12 +55,17 @@ export default function PanierLink() {
       fetchCartCount()
     }
 
+     const unsubscribe = router.on('finish', () => {
+      fetchCartCount()
+    })
+
     window.addEventListener("cart-updated", handleCartUpdate)
     window.addEventListener("focus", handleFocus)
 
     return () => {
       window.removeEventListener("cart-updated", handleCartUpdate)
       window.removeEventListener("focus", handleFocus)
+       unsubscribe()
     }
   }, [])
 
