@@ -22,3 +22,4 @@ yarn-error.log
 fou2foot_export.sql
 migrate_to_neon.php
 neon_import.sql
+liste_images.txt
