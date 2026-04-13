@@ -19,3 +19,6 @@ yarn-error.log
 /.idea
 /.vscode
 .env.docker
+fou2foot_export.sql
+migrate_to_neon.php
+neon_import.sql
