@@ -103,7 +103,7 @@ class AdminOrderController extends Controller
         $order->load(['user', 'shippingAddress']);
 
         try {
-            Mail::to($order->user->email)->queue(new OrderStatusChanged($order, $oldStatus, $newStatus));
+            Mail::to($order->user->email)->send(new OrderStatusChanged($order, $oldStatus, $newStatus));
             Log::info("Email envoyé pour commande {$order->order_number}");
         } catch (\Exception $e) {
             Log::error("Erreur envoi email : " . $e->getMessage());
