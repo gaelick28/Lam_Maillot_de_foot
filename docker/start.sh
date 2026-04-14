@@ -19,5 +19,5 @@ php /var/www/artisan config:cache
 php /var/www/artisan view:cache
 php /var/www/artisan storage:link
 php -d max_execution_time=300 /var/www/artisan migrate --force
-php /var/www/artisan queue:work --daemon --tries=3 --sleep=3 --timeout=60 &
+su -s /bin/sh www-data -c "php /var/www/artisan queue:work --tries=3 --sleep=3 --timeout=60" &
 nginx -g "daemon off;"
