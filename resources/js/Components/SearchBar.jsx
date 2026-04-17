@@ -174,7 +174,7 @@ export default function SearchBar({ className = "", placeholder = "Rechercher un
           {suggestions.map((club, index) => (
             <button
               key={club.id}
-              onClick={() => handleSelect(club)}
+              onMouseDown={(e) => { e.preventDefault(); handleSelect(club); }}
               className={`w-full flex items-center gap-3 p-3 hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-b-0 ${
                 index === selectedIndex ? "bg-blue-50" : ""
               }`}
