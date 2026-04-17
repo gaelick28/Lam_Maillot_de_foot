@@ -22,8 +22,8 @@ class SearchController extends Controller
 
         // Recherche approximative sur le nom du club
         $clubs = Club::where(function($q) use ($query) {
-            $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('slug', 'LIKE', "%{$query}%");
+            $q->where('name', 'ILIKE', "%{$query}%")
+            ->orWhere('slug', 'ILIKE', "%{$query}%");
         })
         ->with(['maillots' => function($q) {
             $q->orderBy('created_at', 'desc');
@@ -73,8 +73,8 @@ class SearchController extends Controller
 
         // 🔥 CORRECTION: Recherche uniquement sur name et slug (pas de colonnes pays/ligue)
         $clubs = Club::where(function($q) use ($query) {
-            $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('slug', 'LIKE', "%{$query}%");
+           $q->where('name', 'ILIKE', "%{$query}%")
+  ->orWhere('slug', 'ILIKE', "%{$query}%");
         })
         ->with(['maillots' => function($q) {
             $q->orderBy('created_at', 'desc');
@@ -98,9 +98,9 @@ class SearchController extends Controller
             return response()->json(['slug' => null]);
         }
 
-        $club = Club::where('name', 'LIKE', "%{$name}%")
-            ->orWhere('slug', 'LIKE', "%{$name}%")
-            ->first();
+        $club = Club::where('name', 'ILIKE', "%{$name}%")
+    ->orWhere('slug', 'ILIKE', "%{$name}%")
+    ->first();
 
         if ($club) {
             return response()->json(['slug' => $club->slug]);
