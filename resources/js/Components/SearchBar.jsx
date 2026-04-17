@@ -170,15 +170,18 @@ export default function SearchBar({ className = "", placeholder = "Rechercher un
 
       {/* Suggestions dropdown */}
       {isOpen && suggestions.length > 0 && (
-         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl max-h-96 overflow-y-auto z-[100]">
-          {suggestions.map((club, index) => (
-            <button
-              key={club.id}
-              onMouseDown={(e) => { e.preventDefault(); handleSelect(club); }}
-              className={`w-full flex items-center gap-3 p-3 hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-b-0 ${
-                index === selectedIndex ? "bg-blue-50" : ""
-              }`}
-            >
+         <div 
+  className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl max-h-96 overflow-y-auto z-[100]"
+  onMouseDown={(e) => e.preventDefault()}
+>
+  {suggestions.map((club, index) => (
+    <button
+      key={club.id}
+      onClick={() => handleSelect(club)}
+      className={`w-full flex items-center gap-3 p-3 hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-b-0 ${
+        index === selectedIndex ? "bg-blue-50" : ""
+      }`}
+    >
               {club.image ? (
                 <img
                   src={club.image}
