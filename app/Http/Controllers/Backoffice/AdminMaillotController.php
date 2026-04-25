@@ -40,19 +40,25 @@ class AdminMaillotController extends Controller
      * Retourne le chemin relatif ou null si pas de fichier.
      */
     private function handleImageUpload(Request $request, string $field, ?string $oldPath = null): ?string
-    {
-        if (!$request->hasFile($field)) {
-            return null;
-        }
-
-        // Supprimer l'ancienne image si elle existe
-        if ($oldPath && file_exists(public_path($oldPath))) {
-            unlink(public_path($oldPath));
-        }
-
-        $path = $request->file($field)->store('maillots', 'public');
-        return 'storage/' . $path;
+{
+    if (!$request->hasFile($field)) {
+        return null;
     }
+
+    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
+        try {
+            unlink(public_path($oldPath));
+        } catch (\Exception $e) {
+            // Fichier verrouillé sur Windows, on continue
+        }
+    }
+
+    $file     = $request->file($field);
+    $filename = $file->hashName();
+    $file->move(public_path('images/maillot/images_maillot'), $filename);
+
+   return 'images/maillot/images_maillot/' . $filename;
+}
 
     /**
      * Afficher la liste des maillots

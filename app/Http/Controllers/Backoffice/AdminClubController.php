@@ -50,22 +50,25 @@ class AdminClubController extends Controller
      * Retourne le chemin relatif ou null si pas de fichier.
      */
     private function handleImageUpload(Request $request, string $field, ?string $oldPath = null): ?string
-    {
-        if (!$request->hasFile($field)) {
-            return null;
-        }
-
-        if ($oldPath && file_exists(public_path($oldPath))) {
-            try {
-                unlink(public_path($oldPath));
-            } catch (\Exception $e) {
-                // Fichier verrouillé sur Windows, on continue
-            }
-        }
-
-        $path = $request->file($field)->store('clubs', 'public');
-        return 'storage/' . $path;
+{
+    if (!$request->hasFile($field)) {
+        return null;
     }
+
+    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
+        try {
+            unlink(public_path($oldPath));
+        } catch (\Exception $e) {
+            // Fichier verrouillé sur Windows, on continue
+        }
+    }
+
+    $file      = $request->file($field);
+    $filename  = $file->hashName();
+    $file->move(public_path('images/clubs'), $filename);
+
+    return 'images/clubs/' . $filename;
+}
 
     /**
      * Afficher la liste des clubs
