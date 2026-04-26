@@ -61,7 +61,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   };
 
     // Validation identique à Panier.jsx
-    const validateNom = (val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\s-]*$/.test(val);
+   const validateNom = (val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ''\s-]*$/.test(val);
   
     // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
