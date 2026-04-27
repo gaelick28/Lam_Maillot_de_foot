@@ -65,11 +65,13 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   
     // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
-    const val = e.target.value.toUpperCase().replace(/['']/g, "'");
-    if (validateNom(val)&& val.length <= 25) {
-      setNom(val);
-    }
-  };
+  let val = e.target.value.toUpperCase();
+  // Normaliser les apostrophes (iPhone utilise parfois ' au lieu de ')
+  val = val.replace(/[''']/g, "'");
+  if (validateNom(val) && val.length <= 25) {
+    setNom(val);
+  }
+};
 
   // Calcul du supplément pour personnalisation
   const patchSupplement = maillot.club?.patches
@@ -446,12 +448,6 @@ const supplement =
                     type="text"
                     value={nom}
                     onChange={handleNomChange}
-                    onKeyDown={(e) => {
-    if (e.key === "'" || e.key === "\u2019" || e.key === "\u2018") {
-      e.preventDefault();
-      setNom(prev => (prev + "'").toUpperCase().slice(0, 25));
-    }
-  }}
                     placeholder="NOM"
                     maxLength={25}
                     className="ml-2 border rounded px-2 py-1 w-48"
