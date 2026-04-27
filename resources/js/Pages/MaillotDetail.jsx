@@ -446,6 +446,12 @@ const supplement =
                     type="text"
                     value={nom}
                     onChange={handleNomChange}
+                    onKeyDown={(e) => {
+    if (e.key === "'" || e.key === "\u2019" || e.key === "\u2018") {
+      e.preventDefault();
+      setNom(prev => (prev + "'").toUpperCase().slice(0, 25));
+    }
+  }}
                     placeholder="NOM"
                     maxLength={25}
                     className="ml-2 border rounded px-2 py-1 w-48"
