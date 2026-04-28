@@ -65,13 +65,11 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   
     // Validation nom : lettres majuscules uniquement
   const handleNomChange = (e) => {
-  let val = e.target.value.toUpperCase();
-  // Normaliser les apostrophes (iPhone utilise parfois ' au lieu de ')
-  val = val.replace(/[''']/g, "'");
-  if (validateNom(val) && val.length <= 25) {
-    setNom(val);
-  }
-};
+    const val = e.target.value.toUpperCase();
+    if (validateNom(val)&& val.length <= 25) {
+      setNom(val);
+    }
+  };
 
   // Calcul du supplément pour personnalisation
   const patchSupplement = maillot.club?.patches
