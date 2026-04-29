@@ -182,22 +182,31 @@ public function destroy(Club $club)
             ->with('error', 'Impossible de supprimer ce club car il contient des maillots.');
     }
 
-    $cloudinary = new \Cloudinary\Cloudinary([
-        'cloud' => [
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            'api_key'    => env('CLOUDINARY_API_KEY'),
-            'api_secret' => env('CLOUDINARY_API_SECRET'),
-        ],
-    ]);
+    if (env('RENDER')) {
+        $cloudinary = new \Cloudinary\Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+        ]);
 
-    if ($club->logo && str_starts_with($club->logo, 'https://res.cloudinary.com')) {
-        $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->logo, PHP_URL_PATH), PATHINFO_FILENAME);
-        $cloudinary->uploadApi()->destroy($publicId);
-    }
+        if ($club->logo && str_starts_with($club->logo, 'https://res.cloudinary.com')) {
+            $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->logo, PHP_URL_PATH), PATHINFO_FILENAME);
+            $cloudinary->uploadApi()->destroy($publicId);
+        }
 
-    if ($club->image && str_starts_with($club->image, 'https://res.cloudinary.com')) {
-        $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->image, PHP_URL_PATH), PATHINFO_FILENAME);
-        $cloudinary->uploadApi()->destroy($publicId);
+        if ($club->image && str_starts_with($club->image, 'https://res.cloudinary.com')) {
+            $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->image, PHP_URL_PATH), PATHINFO_FILENAME);
+            $cloudinary->uploadApi()->destroy($publicId);
+        }
+    } else {
+        if ($club->logo && file_exists(public_path($club->logo))) {
+            unlink(public_path($club->logo));
+        }
+        if ($club->image && file_exists(public_path($club->image))) {
+            unlink(public_path($club->image));
+        }
     }
 
     $club->delete();
