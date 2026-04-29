@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from "@inertiajs/react"
+import { imageUrl } from "@/utils/imageUrl";
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
 import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
@@ -227,7 +228,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       <td className="px-6 py-4">
                         {maillot.image ? (
                           <img
-                            src={`/${maillot.image}`}
+                            src={imageUrl(maillot.image)}
                             alt={maillot.nom}
                             className="w-16 h-16 object-cover rounded"
                           />
@@ -477,7 +478,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                   <div className="mt-2">
                     <p className="text-sm text-gray-600">Image actuelle :</p>
                     <img
-                      src={`/${editingMaillot.image}`}
+                      src={imageUrl(editingMaillot.image)}
                       alt={editingMaillot.nom}
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />
@@ -502,7 +503,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                   <div className="mt-2">
                     <p className="text-sm text-gray-600">Image dos actuelle :</p>
                     <img
-                      src={`/${editingMaillot.image_dos}`}
+                      src={imageUrl(editingMaillot.image_dos)}
                       alt={`${editingMaillot.nom} - dos`}
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />

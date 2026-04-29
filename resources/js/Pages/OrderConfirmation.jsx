@@ -1,6 +1,7 @@
-import { Head, Link } from "@inertiajs/react"
-import Header from "@/Components/Header"
-import Footer from "@/Components/Footer"
+import { Head, Link } from "@inertiajs/react";
+import { imageUrl } from "@/utils/imageUrl";
+import Header from "@/Components/Header";
+import Footer from "@/Components/Footer";
 
 // Icônes
 const CheckCircleIcon = ({ className }) => (
@@ -55,7 +56,7 @@ export default function OrderConfirmation({ auth, order }) {
               {order.items.map((item) => (
                 <div key={item.id} className="flex gap-4 pb-4 border-b last:border-b-0">
                   <img 
-                    src={`/${item.image}`} 
+                    src={imageUrl(item.image)}
                     alt={item.maillot_name} 
                     className="w-20 h-20 object-cover rounded"
                   />

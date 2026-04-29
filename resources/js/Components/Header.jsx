@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { imageUrl } from "@/utils/imageUrl";
 import { usePage, Link, router } from "@inertiajs/react";
 import PanierLink from "@/Components/PanierLink";
 import SearchBar from "@/Components/SearchBar";
@@ -223,7 +224,7 @@ export default function Header() {
   >
     {club.logo ? (
       <img
-        src={`/${club.logo}`}
+        src={imageUrl(club.logo)}
         alt={`Logo ${club.name}`}
         className="w-6 h-6 object-contain flex-shrink-0"
       />
@@ -298,7 +299,7 @@ export default function Header() {
   <Link key={club.name} href={club.href} className="flex items-center gap-2 px-2 py-2 text-sm rounded hover:bg-white/10" onClick={() => setMobileMenuOpen(false)}>
     {club.logo ? (
       <img
-        src={`/${club.logo}`}
+        src={imageUrl(club.logo)}
         alt={`Logo ${club.name}`}
         className="w-6 h-6 object-contain flex-shrink-0"
       />

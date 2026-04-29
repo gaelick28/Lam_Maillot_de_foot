@@ -1,4 +1,5 @@
 import React from "react";
+import { imageUrl } from "@/utils/imageUrl";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Head, Link } from "@inertiajs/react";
@@ -22,7 +23,7 @@ export default function MaillotsList({ club, maillots }) {
               {club.logo && (
   <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
     <img
-      src={`/${club.logo}`}
+      src={imageUrl(club.logo)}
       alt={`Logo ${club.name}`}
       className="w-full h-full object-contain"
     />
@@ -31,7 +32,7 @@ export default function MaillotsList({ club, maillots }) {
        {/* // ou autre version en transparence avec le mix-blend-multiply// */}
               {/* {club.logo && (
                 <img
-                  src={`/${club.logo}`}
+                  src={imageUrl(club.logo)}
                   alt={`Logo ${club.name}`}
                   className="w-16 h-16 object-contain mix-blend-multiply"
                 />

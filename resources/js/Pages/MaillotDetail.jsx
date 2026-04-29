@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { imageUrl } from "@/utils/imageUrl";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { router } from "@inertiajs/react";
@@ -129,7 +130,7 @@ const supplement =
             >
               {/* Image active */}
               <img
-                src={`/${images[currentImage]}`}
+                src={imageUrl(images[currentImage])}
                 alt={currentImage === 0 ? maillot.nom : `${maillot.nom} - dos`}
                 className="w-full rounded shadow"
                 onClick={() => setMobileZoom(true)}
@@ -140,7 +141,7 @@ const supplement =
                 <div
                   className="absolute inset-0 rounded"
                   style={{
-                    backgroundImage: `url(/${images[currentImage]})`,
+                    backgroundImage: `url(${imageUrl(images[currentImage])})`,
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "200%",
                     backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
@@ -179,7 +180,7 @@ const supplement =
               {mobileZoom && (
                 <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center md:hidden">
                   <img
-                    src={`/${images[currentImage]}`}
+                    src={imageUrl(images[currentImage])}
                     alt={maillot.nom}
                     className="max-w-full max-h-full"
                   />
@@ -205,7 +206,7 @@ const supplement =
                       aria-label={index === 0 ? 'Face' : 'Dos'}
                     >
                       <img
-                        src={`/${img}`}
+                        src={imageUrl(img)}
                         alt={index === 0 ? `${maillot.nom} - face` : `${maillot.nom} - dos`}
                         className="w-16 h-16 object-cover"
                       />
@@ -223,7 +224,7 @@ const supplement =
      <a href={`/clubs/${maillot.club.slug}/maillots`}>
     <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
         <img
-            src={`/${maillot.club.logo}`}
+            src={imageUrl(maillot.club.logo)}
             alt={`Logo ${maillot.club.name}`}
             className="w-full h-full object-contain"
         />
@@ -234,7 +235,7 @@ const supplement =
  {/* //Ou versiontransparente avec le mix-blend-multiply//      */}
  {/* {maillot.club?.logo && (
     <img
-        src={`/${maillot.club.logo}`}
+        src={imageUrl(maillot.club.logo)}
         alt={`Logo ${maillot.club.name}`}
         className="w-16 h-16 object-contain mix-blend-multiply"
       /> 

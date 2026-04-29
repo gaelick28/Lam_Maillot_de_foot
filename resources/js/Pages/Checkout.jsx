@@ -1,6 +1,7 @@
 "use client";
 
 import { usePage, router, Link } from "@inertiajs/react";
+import { imageUrl } from "@/utils/imageUrl";
 import React, { useMemo, useState, useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -230,7 +231,7 @@ export default function Checkout() {
                             <div className="flex items-center gap-3">
                               {it.image && (
                                 <img
-                                  src={it.image}
+                                  src={imageUrl(it.image)}
                                   alt={it.title || [it.club_name, it.maillot_name].filter(Boolean).join(", ") || "Maillot"}
                                   className="w-12 h-12 object-cover rounded"
                                 />

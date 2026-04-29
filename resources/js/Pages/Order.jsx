@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react"
+import { imageUrl } from "@/utils/imageUrl";
 import { GiSoccerBall } from "react-icons/gi"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
@@ -105,7 +106,7 @@ export default function OrderHistory({ user, orders = [] }) {
                                 <div className="flex-shrink-0">
                                   {item.image ? (
                                     <img
-                                      src={`/${item.image}`}
+                                      src={imageUrl(item.image)}
                                       alt={item.name}
                                       className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                                     />

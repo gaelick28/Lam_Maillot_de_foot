@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm } from "@inertiajs/react"
+import { imageUrl } from "@/utils/imageUrl";
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
 import BackToDashboardButton from "@/Components/Admin/BackToDashboardButton"
@@ -158,7 +159,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                     <td className="px-6 py-4">
                       {club.logo ? (
                         <img
-                          src={`/${club.logo}`}
+                           src={imageUrl(club.logo)}
                           alt={club.name}
                           className="w-12 h-12 object-contain rounded"
                         />
@@ -290,7 +291,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                   <div className="mt-2">
                     <p className="text-sm text-gray-600">Logo actuel :</p>
                     <img
-                      src={`/${editingClub.logo}`}
+                       src={imageUrl(editingClub.logo)}
                       alt={editingClub.name}
                       className="w-20 h-20 object-contain mt-1"
                     />
@@ -313,7 +314,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
         <div className="mt-2">
             <p className="text-sm text-gray-600">Image actuelle :</p>
             <img
-                src={`/${editingClub.image}`}
+                src={imageUrl(editingClub.image)}
                 alt={editingClub.name}
                 className="w-32 h-20 object-cover mt-1 rounded"
             />

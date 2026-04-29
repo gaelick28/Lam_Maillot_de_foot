@@ -1,6 +1,7 @@
 "use client";
 
 import { usePage, router, Link } from "@inertiajs/react";
+import { imageUrl } from "@/utils/imageUrl";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -269,7 +270,7 @@ useEffect(() => {
                     <div className="flex items-center gap-3">
                       {item.image && (
                         <img
-                          src={item.image}
+                          src={imageUrl(item.image)}
                           alt={`${item.club_name}, ${item.maillot_name}`}
                           className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                         />
@@ -454,7 +455,7 @@ useEffect(() => {
                             </div>
                             {item.image && (
                               <img
-                                src={item.image}
+                                src={imageUrl(item.image)}
                                 alt={`${item.club_name}, ${item.maillot_name}`}
                                 className="w-14 h-14 lg:w-16 lg:h-16 object-cover rounded-md"
                               />

@@ -1,4 +1,5 @@
 import { Head, Link, router } from "@inertiajs/react"
+import { imageUrl } from "@/utils/imageUrl";
 import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
 
@@ -186,7 +187,7 @@ export default function AdminOrdersShow({ order, auth }) {
                 <div className="flex items-center gap-4">
                   {item.maillot?.image && (
                     <img 
-                      src={`/${item.maillot.image}`} 
+                      src={imageUrl(item.maillot.image)} 
                       alt={item.maillot_name || 'Produit'}
                       className="w-16 h-16 object-cover rounded"
                     />

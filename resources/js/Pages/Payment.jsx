@@ -1,7 +1,8 @@
-import { useState } from "react"
-import { Head, router, usePage } from "@inertiajs/react"
-import Header from "@/Components/Header"
-import Footer from "@/Components/Footer"
+import { useState } from "react";
+import { imageUrl } from "@/utils/imageUrl";
+import { Head, router, usePage } from "@inertiajs/react";
+import Header from "@/Components/Header";
+import Footer from "@/Components/Footer";
 
 
 // Icônes SVG
@@ -222,7 +223,7 @@ const flashError = flash?.error
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3">
                       <img 
-                        src={`/${item.image}`} 
+                       src={imageUrl(item.image)}
                         alt={item.title} 
                         className="w-16 h-16 object-cover rounded"
                       />
