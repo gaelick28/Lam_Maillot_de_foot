@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
+
 class AdminClubController extends Controller
 {
     /**
@@ -49,27 +50,39 @@ class AdminClubController extends Controller
      * Gère l'upload d'une image et supprime l'ancienne si elle existe.
      * Retourne le chemin relatif ou null si pas de fichier.
      */
-    private function handleImageUpload(Request $request, string $field, ?string $oldPath = null): ?string
+   private function handleImageUpload(Request $request, string $field, ?string $oldPath = null): ?string
 {
     if (!$request->hasFile($field)) {
         return null;
     }
 
-    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
-        try {
-            unlink(public_path($oldPath));
-        } catch (\Exception $e) {
-            // Fichier verrouillé sur Windows, on continue
-        }
+    if (env('RENDER')) {
+        $cloudinary = new \Cloudinary\Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+        ]);
+
+        $result = $cloudinary->uploadApi()->upload(
+            $request->file($field)->getRealPath(),
+            ['folder' => 'fou2foot/clubs']
+        );
+
+        return $result['secure_url'];
     }
 
-    $file      = $request->file($field);
-    $filename  = $file->hashName();
-    $file->move(public_path('images/clubs'), $filename);
+    // Local : stockage dans public/images/clubs
+    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
+        try { unlink(public_path($oldPath)); } catch (\Exception $e) {}
+    }
 
+    $file = $request->file($field);
+    $filename = $file->hashName();
+    $file->move(public_path('images/clubs'), $filename);
     return 'images/clubs/' . $filename;
 }
-
     /**
      * Afficher la liste des clubs
      */
@@ -162,24 +175,34 @@ class AdminClubController extends Controller
     /**
      * Supprimer un club
      */
-    public function destroy(Club $club)
-    {
-        if ($club->maillots()->count() > 0) {
-            return redirect()->route('admin.clubs.index')
-                ->with('error', 'Impossible de supprimer ce club car il contient des maillots.');
-        }
-
-        if ($club->logo && file_exists(public_path($club->logo))) {
-            unlink(public_path($club->logo));
-        }
-
-        if ($club->image && file_exists(public_path($club->image))) {
-            unlink(public_path($club->image));
-        }
-
-        $club->delete();
-
+public function destroy(Club $club)
+{
+    if ($club->maillots()->count() > 0) {
         return redirect()->route('admin.clubs.index')
-            ->with('success', 'Club supprimé avec succès.');
+            ->with('error', 'Impossible de supprimer ce club car il contient des maillots.');
     }
+
+    $cloudinary = new \Cloudinary\Cloudinary([
+        'cloud' => [
+            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => env('CLOUDINARY_API_KEY'),
+            'api_secret' => env('CLOUDINARY_API_SECRET'),
+        ],
+    ]);
+
+    if ($club->logo && str_starts_with($club->logo, 'https://res.cloudinary.com')) {
+        $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->logo, PHP_URL_PATH), PATHINFO_FILENAME);
+        $cloudinary->uploadApi()->destroy($publicId);
+    }
+
+    if ($club->image && str_starts_with($club->image, 'https://res.cloudinary.com')) {
+        $publicId = 'fou2foot/clubs/' . pathinfo(parse_url($club->image, PHP_URL_PATH), PATHINFO_FILENAME);
+        $cloudinary->uploadApi()->destroy($publicId);
+    }
+
+    $club->delete();
+
+    return redirect()->route('admin.clubs.index')
+        ->with('success', 'Club supprimé avec succès.');
+}
 }
