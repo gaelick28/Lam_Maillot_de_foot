@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { imageUrl } from "@/utils/imageUrl";
 import { Link } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
 
@@ -23,7 +24,7 @@ export default function MaillotCardCarousel({ maillot, href, clubName, maillotNa
             <div className="relative w-full aspect-square overflow-hidden bg-gray-50 group">
                 <Link href={href || `/maillots/${maillot.id}`}>
                     <img
-    src={`/${images[currentImage]}`}
+    src={imageUrl(images[currentImage])}
     alt={`Maillot ${clubName || maillot.nom}`}
     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
     loading="lazy"
