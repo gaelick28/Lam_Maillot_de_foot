@@ -45,20 +45,33 @@ class AdminMaillotController extends Controller
         return null;
     }
 
-    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
-        try {
-            unlink(public_path($oldPath));
-        } catch (\Exception $e) {
-            // Fichier verrouillé sur Windows, on continue
-        }
+    if (env('RENDER')) {
+        $cloudinary = new \Cloudinary\Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+        ]);
+
+        $result = $cloudinary->uploadApi()->upload(
+            $request->file($field)->getRealPath(),
+            ['folder' => 'fou2foot/maillots']
+        );
+
+        return $result['secure_url'];
     }
 
-    $file     = $request->file($field);
+    if ($oldPath && str_starts_with($oldPath, 'images/') && file_exists(public_path($oldPath))) {
+        try { unlink(public_path($oldPath)); } catch (\Exception $e) {}
+    }
+
+    $file = $request->file($field);
     $filename = $file->hashName();
     $file->move(public_path('images/maillot/images_maillot'), $filename);
-
-   return 'images/maillot/images_maillot/' . $filename;
+    return 'images/maillot/images_maillot/' . $filename;
 }
+
 
     /**
      * Afficher la liste des maillots
@@ -168,18 +181,37 @@ $q->where('nom', $operator, "%{$search}%")
      * Supprimer un maillot
      */
     public function destroy(Maillot $maillot)
-    {
+{
+    if (env('RENDER')) {
+        $cloudinary = new \Cloudinary\Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+        ]);
+
+        if ($maillot->image && str_starts_with($maillot->image, 'https://res.cloudinary.com')) {
+            $publicId = 'fou2foot/maillots/' . pathinfo(parse_url($maillot->image, PHP_URL_PATH), PATHINFO_FILENAME);
+            $cloudinary->uploadApi()->destroy($publicId);
+        }
+
+        if ($maillot->image_dos && str_starts_with($maillot->image_dos, 'https://res.cloudinary.com')) {
+            $publicId = 'fou2foot/maillots/' . pathinfo(parse_url($maillot->image_dos, PHP_URL_PATH), PATHINFO_FILENAME);
+            $cloudinary->uploadApi()->destroy($publicId);
+        }
+    } else {
         if ($maillot->image && file_exists(public_path($maillot->image))) {
             unlink(public_path($maillot->image));
         }
-
         if ($maillot->image_dos && file_exists(public_path($maillot->image_dos))) {
             unlink(public_path($maillot->image_dos));
         }
-
-        $maillot->delete();
-
-        return redirect()->route('admin.maillots.index')
-            ->with('success', 'Maillot supprimé avec succès.');
     }
+
+    $maillot->delete();
+
+    return redirect()->route('admin.maillots.index')
+        ->with('success', 'Maillot supprimé avec succès.');
+}
 }
