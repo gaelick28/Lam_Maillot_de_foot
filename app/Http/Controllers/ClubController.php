@@ -10,7 +10,7 @@ class ClubController extends Controller
     public function maillots($slug)
     {
         $club = Club::where('slug', $slug)->firstOrFail();
-        $maillots = $club->maillots()->get();
+        $maillots = $club->maillots()->orderBy('id', 'asc')->get();
 
         return Inertia::render('MaillotsList', [
             'club' => $club,
