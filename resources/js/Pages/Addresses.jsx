@@ -313,7 +313,7 @@ const shippingAddresses = addresses
 
                             {showTooltipBillingPhone && (
                               <div className="absolute left-6 top-0 z-20 w-64 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700 font-normal">
-                                Chiffres uniquement. Espaces, points et tirets autorisés pour la lisibilité. <strong>+</strong> autorisé en début (ex. <strong>+33</strong>).
+                                Chiffres uniquement. Espaces, points et tirets autorisés pour la lisibilité. <strong>+</strong> autorisé au début (ex. <strong>+33</strong>).
                               </div>
                             )}
                           </span>
@@ -547,7 +547,7 @@ const shippingAddresses = addresses
 
       {showTooltipShippingPhone && (
         <div className="absolute left-6 top-0 z-20 w-64 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700 font-normal">
-          Chiffres uniquement. Espaces, points et tirets autorisés pour la lisibilité. <strong>+</strong> autorisé en début (ex. <strong>+33</strong>).
+          Chiffres uniquement. Espaces, points et tirets autorisés pour la lisibilité. <strong>+</strong> autorisé au début (ex. <strong>+33</strong>).
         </div>
       )}
     </span>
