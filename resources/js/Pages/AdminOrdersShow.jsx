@@ -193,10 +193,10 @@ export default function AdminOrdersShow({ order, auth }) {
                     />
                   )}
                   <div>
-                    <p className="font-medium text-gray-900">{item.maillot_name || 'N/A'}</p>
                     {item.club_name && (
-                      <p className="text-xs text-gray-500">{item.club_name}</p>
-                    )}
+  <p className="font-medium text-gray-900">{item.club_name}</p>
+)}
+<p className="text-sm text-gray-600">{item.maillot_name || 'N/A'}</p>
                     {item.size && (
                       <p className="text-xs text-gray-500">Taille: {item.size}</p>
                     )}
