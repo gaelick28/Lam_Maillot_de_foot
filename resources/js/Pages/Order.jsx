@@ -107,7 +107,7 @@ export default function OrderHistory({ user, orders = [] }) {
                                   {item.image ? (
                                     <img
                                       src={imageUrl(item.image)}
-                                      alt={item.name}
+                                      alt={item.maillot_name}
                                       className="w-16 h-16 object-cover rounded-lg border border-gray-200"
                                     />
                                   ) : (
@@ -121,7 +121,10 @@ export default function OrderHistory({ user, orders = [] }) {
 
                                 {/* Infos produit */}
                                 <div className="flex-1">
-                                  <p className="font-medium text-gray-900">{item.name}</p>
+                                   {item.club_name && (
+    <p className="font-medium text-gray-900">{item.club_name}</p>
+  )}
+  <p className=" text-sm text-gray-600">{item.maillot_name}</p>
                                   <p className="text-sm text-gray-500 mt-1">
                                     Taille: {item.size} · Quantité: {item.quantity}
                                   </p>

@@ -61,10 +61,10 @@ export default function OrderConfirmation({ auth, order }) {
                     className="w-20 h-20 object-cover rounded"
                   />
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900">{item.maillot_name}</p>
                     {item.club_name && (
-                      <p className="text-sm text-gray-600">{item.club_name}</p>
-                    )}
+                    <p className="font-semibold text-gray-900">{item.club_name}</p>
+                  )}
+                    <p className="text-sm text-gray-600">{item.maillot_name}</p>
                     <p className="text-sm text-gray-600">
                       Taille: {item.size} • Quantité: {item.quantity}
                     </p>
