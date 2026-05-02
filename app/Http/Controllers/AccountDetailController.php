@@ -49,9 +49,11 @@ return Inertia::render('AccountDetails', [
         'first_name' => 'nullable|string|max:100',
         'last_name'  => 'nullable|string|max:100',
         'email'      => 'required|email|unique:users,email,' . $user->id,
-        'phone'      => 'nullable|string|max:20',
+        'phone'      => ['nullable', 'string', 'max:20', 'regex:/^\+?[\d\s.\-]+$/'],
         'birth_date' => 'nullable|date',
         'gender'     => 'nullable|in:male,female,other',
+    ], [
+        'phone.regex' => 'Le numéro de téléphone ne peut contenir que des chiffres, espaces, points, tirets ou un + au début.',
     ]);
 
     $user->update($validated);

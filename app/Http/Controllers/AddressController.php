@@ -26,10 +26,17 @@ class AddressController extends Controller
             'city'        => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
             'country'     => 'required|string|max:2',
-            'phone'       => 'nullable|string|max:20',
+            'phone'       => ['nullable', 'string', 'max:20', 'regex:/^\+?[\d\s.\-]+$/'],
             'is_default'  => 'boolean',
         ];
     }
+
+    private function validationMessages(): array
+{
+    return [
+        'phone.regex' => 'Le numéro de téléphone ne peut contenir que des chiffres, espaces, points, tirets ou un + au début.',
+    ];
+}
 
     /**
      * Désactive les autres adresses par défaut du même type pour cet utilisateur.
@@ -98,7 +105,7 @@ class AddressController extends Controller
     {
         Log::info('Données reçues pour création:', $request->all());
 
-        $validated = $request->validate($this->validationRules());
+       $validated = $request->validate($this->validationRules(), $this->validationMessages());
         $userId    = Auth::id();
 
         if ($validated['is_default'] ?? false) {
@@ -123,7 +130,7 @@ class AddressController extends Controller
     {
         Log::info('Données de mise à jour reçues:', $request->all());
 
-        $validated = $request->validate($this->validationRules());
+        $validated = $request->validate($this->validationRules(), $this->validationMessages());
         $userId    = Auth::id();
 
         if ($address->user_id !== $userId) {

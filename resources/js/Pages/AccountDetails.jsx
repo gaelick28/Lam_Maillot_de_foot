@@ -94,6 +94,7 @@ export default function AccountDetails({ user = {}, defaultAddress = {} }) {
 const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 const [showNewPassword, setShowNewPassword] = useState(false);
 const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const [showTooltipPhone, setShowTooltipPhone] = useState(false); 
 
   // Ajout de username dans le formulaire
   const personalInfoForm = useForm({
@@ -244,12 +245,47 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
                       </div>
                      
                       {/* Téléphone */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                     <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                          Téléphone
+                          <span
+                            className="relative inline-block"
+                            onMouseEnter={() => setShowTooltipPhone(true)}
+                            onMouseLeave={() => setShowTooltipPhone(false)}
+                          >
+                            {/* i entouré d'un cercle pour information téléphone */}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-4 cursor-pointer text-blue-500"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
+                              <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
+                            </svg>
+
+                            {showTooltipPhone && (
+                              <div className="absolute left-6 top-0 z-20 w-64 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700 font-normal">
+                                Chiffres uniquement. Espaces, points et tirets autorisés pour la lisibilité. <strong>+</strong> autorisé en début (ex. <strong>+33</strong>).
+                              </div>
+                            )}
+                          </span>
+                        </label>
                         <input
                           type="tel"
+                          inputMode="tel"
+                          maxLength={20}
+                          placeholder="+33 6 12 34 56 78"
                           value={personalInfoForm.data.phone}
-                          onChange={(e) => personalInfoForm.setData("phone", e.target.value)}
+                          onChange={(e) => {
+                            const cleaned = e.target.value
+                              .replace(/[^\d\s+.\-]/g, '')
+                              .replace(/(?!^)\+/g, '');
+                            personalInfoForm.setData("phone", cleaned);
+                          }}
                           className="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         />
                         {personalInfoForm.errors.phone && (
