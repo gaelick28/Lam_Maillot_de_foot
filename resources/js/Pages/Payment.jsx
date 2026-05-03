@@ -224,11 +224,14 @@ const flashError = flash?.error
                     <div key={item.id} className="flex gap-3">
                       <img 
                        src={imageUrl(item.image)}
-                        alt={item.title} 
+                        alt={item.club_name ? `${item.club_name} - ${item.title}` : item.title}
                         className="w-16 h-16 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{item.title}</p>
+                       {item.club_name && (
+        <p className="text-sm font-medium text-gray-900">{item.club_name}</p>
+      )}
+      <p className="text-xs text-gray-600">{item.title}</p>
                         <p className="text-xs text-gray-500">
                           Taille: {item.size} • Qté: {item.quantity}
                         </p>

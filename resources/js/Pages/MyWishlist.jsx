@@ -135,6 +135,7 @@ export default function Wishlist({ wishlistItems = [], user }) {
                     key={item.id}
                     maillot={item.maillot}
                     href={`/maillots/${item.maillot.id}`}
+                    clubName={item.maillot.club_name}
                     maillotName={item.maillot.nom}
                     footer={
                       <>

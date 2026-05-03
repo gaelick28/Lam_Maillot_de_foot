@@ -67,7 +67,7 @@ export default function OrderHistory({ user, orders = [] }) {
                     <div className="p-6 border-b border-gray-200 bg-red-300">
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">Commande {order.id}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900">Commande {order.order_number}</h3>
                           <p className="text-sm text-gray-800 mt-1">{order.date}</p>
                         </div>
 
@@ -185,6 +185,18 @@ export default function OrderHistory({ user, orders = [] }) {
   )}
                         </div>
                       </div>
+                      {/* Bouton Voir le détail */}
+<div className="mt-6 pt-4 border-t border-gray-200 flex justify-end">
+  <Link
+    href={`/orders/${order.id}`}
+    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+  >
+    Voir le détail
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </Link>
+</div>
                     </div>
                   </div>
                 ))

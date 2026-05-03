@@ -16,7 +16,7 @@ class OrderController extends Controller
      * Formate un item de commande en tableau pour le frontend.
      * Centralise le mapping commun à confirmation(), history() et show().
      */
-    private function formatItem($item): array
+    private function formatItem(\App\Models\OrderItem $item): array
     {
         return [
             'id'                   => $item->id,
@@ -39,7 +39,7 @@ class OrderController extends Controller
     /**
      * Formate une adresse en tableau pour le frontend.
      */
-    private function formatAddress($address): ?array
+    private function formatAddress(?\App\Models\UserAddress $address): ?array
     {
         if (!$address) return null;
 
@@ -56,7 +56,7 @@ class OrderController extends Controller
     /**
      * Page de confirmation de commande
      */
-    public function confirmation(Request $request, $orderId)
+    public function confirmation(Request $request, int $orderId)
     {
         $user  = $request->user();
         $order = Order::with(['items.maillot', 'shippingAddress', 'billingAddress'])
@@ -101,7 +101,8 @@ class OrderController extends Controller
                 $billing  = $order->billingAddress;
 
                 return [
-                    'id'              => $order->order_number,
+                    'id'              => $order->id,
+    'order_number'    => $order->order_number,
                     'date'            => $order->created_at->format('d F Y'),
                     'items'           => $order->items->count(),
                     'total'           => $order->total_amount,
@@ -128,7 +129,7 @@ class OrderController extends Controller
     /**
      * Détails d'une commande
      */
-    public function show(Request $request, $orderId)
+    public function show(Request $request, int $orderId)
     {
         $user  = $request->user();
         $order = Order::with(['items.maillot', 'shippingAddress', 'billingAddress'])
