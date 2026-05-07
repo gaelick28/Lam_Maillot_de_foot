@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Head, useForm, usePage } from "@inertiajs/react"
+import { Head, useForm, usePage, router } from "@inertiajs/react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
 import Sidebar from "@/Components/Sidebar"
@@ -13,6 +13,7 @@ export default function AddressPage({user, addresses = [],  countries = [] }) {
   // SÉPARER les états d'édition
   const [editingBilling, setEditingBilling] = useState(null)
   const [editingShipping, setEditingShipping] = useState(null)
+  const [sameAsBilling, setSameAsBilling] = useState(false)
   const [showTooltipBillingPhone, setShowTooltipBillingPhone] = useState(false)   
   const [showTooltipShippingPhone, setShowTooltipShippingPhone] = useState(false)
 
@@ -166,6 +167,16 @@ const shippingAddresses = addresses
     return new Date(b.created_at) - new Date(a.created_at)
   })
   .slice(0, 1)
+
+  const handleSameAsBilling = (checked) => {
+    setSameAsBilling(checked)
+    if (checked) {
+        router.post('/addresses/copy-billing-to-shipping', {}, {
+            onSuccess: () => setSameAsBilling(false),
+            onError: () => setSameAsBilling(false),
+        })
+    }
+}
   
   return (
     <>
@@ -416,11 +427,26 @@ const shippingAddresses = addresses
               </div>
             </div>
 
+{billingAddresses.length > 0 && (
+    <div className="my-6 p-4 bg-blue-50 rounded-lg border border-blue-200 flex items-center gap-3">
+        <input
+            type="checkbox"
+            id="sameAsBilling"
+            checked={sameAsBilling}
+            onChange={(e) => handleSameAsBilling(e.target.checked)}
+            className="w-5 h-5 text-blue-600 rounded cursor-pointer"
+        />
+        <label htmlFor="sameAsBilling" className="text-sm text-gray-700 cursor-pointer select-none">
+            Utiliser mon adresse de facturation comme adresse de livraison
+        </label>
+    </div>
+)}
+
             {/* SECTION LIVRAISON */}
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">Adresse de livraison</h3>
-                {shippingAddresses.length === 0 && (
+                {shippingAddresses.length === 0 && !sameAsBilling && (
                   <button
                     onClick={handleShippingAddNew}
                     className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"

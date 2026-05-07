@@ -130,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+    Route::post('/addresses/copy-billing-to-shipping', [AddressController::class, 'copyBillingToShipping'])->name('addresses.copyBillingToShipping');
 });
 
 Route::middleware(['auth'])->group(function () {

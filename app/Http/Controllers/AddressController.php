@@ -192,4 +192,54 @@ class AddressController extends Controller
         return redirect()->route('addresses.index')
             ->with('success', 'Adresse supprimée avec succès.');
     }
+
+
+    // Copier l'adresse de facturation vers l'adresse de livraison
+        public function copyBillingToShipping(Request $request)
+{
+    $user = $request->user();
+
+    $billing = UserAddress::where('user_id', $user->id)
+        ->where('type', 'billing')
+        ->where('is_archived', false)
+        ->orderBy('is_default', 'desc')
+        ->first();
+
+    if (!$billing) {
+        return back()->withErrors(['billing' => 'Aucune adresse de facturation trouvée.']);
+    }
+
+    $shipping = UserAddress::where('user_id', $user->id)
+        ->where('type', 'shipping')
+        ->where('is_archived', false)
+        ->first();
+
+    if ($shipping) {
+        $shipping->update([
+            'first_name'  => $billing->first_name,
+            'last_name'   => $billing->last_name,
+            'street'      => $billing->street,
+            'city'        => $billing->city,
+            'postal_code' => $billing->postal_code,
+            'country'     => $billing->country,
+            'phone'       => $billing->phone,
+        ]);
+    } else {
+        UserAddress::create([
+            'user_id'     => $user->id,
+            'type'        => 'shipping',
+            'first_name'  => $billing->first_name,
+            'last_name'   => $billing->last_name,
+            'street'      => $billing->street,
+            'city'        => $billing->city,
+            'postal_code' => $billing->postal_code,
+            'country'     => $billing->country,
+            'phone'       => $billing->phone,
+            'is_default'  => true,
+            'is_archived' => false,
+        ]);
+    }
+
+    return back()->with('success', 'Adresse de livraison mise à jour avec succès.');
+}
 }
