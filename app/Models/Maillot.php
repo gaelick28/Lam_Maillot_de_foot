@@ -44,7 +44,7 @@ class Maillot extends Model
     /**
      * Calculer le stock total pour ce maillot
      */
-    public function getTotalStockAttribute()
+    public function getTotalStockAttribute(): int
     {
         return $this->stock_s + $this->stock_m + $this->stock_l + $this->stock_xl + $this->stock_xxl;
     }
@@ -52,7 +52,7 @@ class Maillot extends Model
     /**
      * Vérifier si une taille est en stock
      */
-    public function hasSizeInStock($size)
+    public function hasSizeInStock(string $size): bool
     {
         $stockColumn = 'stock_' . strtolower($size);
         return $this->$stockColumn > 0;
@@ -61,7 +61,7 @@ class Maillot extends Model
     /**
      * Obtenir le stock pour une taille donnée
      */
-    public function getStockForSize($size)
+    public function getStockForSize(string $size): int
     {
         $stockColumn = 'stock_' . strtolower($size);
         return $this->$stockColumn ?? 0;
@@ -70,7 +70,7 @@ class Maillot extends Model
     /**
      * Décrémenter le stock d'une taille
      */
-    public function decrementStock($size, $quantity = 1)
+    public function decrementStock(string $size, $quantity = 1): bool
     {
         $stockColumn = 'stock_' . strtolower($size);
         
@@ -85,7 +85,7 @@ class Maillot extends Model
     /**
      * Incrémenter le stock d'une taille
      */
-    public function incrementStock($size, $quantity = 1)
+    public function incrementStock(string $size, $quantity = 1): void
     {
         $stockColumn = 'stock_' . strtolower($size);
         $this->increment($stockColumn, $quantity);
