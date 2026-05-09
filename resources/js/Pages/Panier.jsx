@@ -27,7 +27,7 @@ export default function Panier() {
 );
 
   // --- Validation utilitaires ---
-  const validateNom = useCallback((val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\s-]*$/.test(val), []);
+  const validateNom = useCallback((val) => /^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\u2019\s-]*$/.test(val), []);
   const validateNumero = useCallback((val) => {
     if (val === "") return true;
     if (/^\d+$/.test(val)) {
@@ -332,11 +332,13 @@ useEffect(() => {
                           type="text"
                           value={item.nom || ""}
                           onChange={(e) => {
-                            const val = e.target.value.toUpperCase();
-                            if (validateNom(val) && val.length <= 25) {
-                              handleEdit(item.id, "nom", val);
-                            }
-                          }}
+  const val = e.target.value
+    .toUpperCase()
+    .replace(/\u2019/g, "'");  // normalise apostrophe iOS → apostrophe droite
+  if (validateNom(val) && val.length <= 25) {
+    handleEdit(item.id, "nom", val);
+  }
+}}
                           onFocus={() => setFocusedNomId(item.id)}
                           onBlur={() => setFocusedNomId(null)}
                           onKeyDown={(e) => handleKeyDown(e, item)}
@@ -505,10 +507,12 @@ useEffect(() => {
       id={`nom-d-${item.id}`}
       type="text"
       value={item.nom || ""}
-      onChange={(e) => {
-        const val = e.target.value.toUpperCase();
-        if (validateNom(val) && val.length <= 25) handleEdit(item.id, "nom", val);
-      }}
+     onChange={(e) => {
+  const val = e.target.value
+    .toUpperCase()
+    .replace(/\u2019/g, "'");  // normalise apostrophe iOS → apostrophe droite
+  if (validateNom(val) && val.length <= 25) handleEdit(item.id, "nom", val);
+}}
       onFocus={() => setFocusedNomId(item.id)}
       onBlur={() => setFocusedNomId(null)}
       onKeyDown={(e) => handleKeyDown(e, item)}
