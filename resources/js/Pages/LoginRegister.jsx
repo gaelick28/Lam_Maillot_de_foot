@@ -179,13 +179,24 @@ const handleResetSubmit = (e) => {
                 </div>
 
                 <div className="flex gap-3">
-                  <button
+                   <button
                     type="submit"
                     disabled={processingReset}
                     className="flex-1 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                   >
-                    {processingReset ? "Envoi..." : "Réinitialiser"}
+                    {processingReset ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Envoi...
+                      </span>
+                    ) : (
+                      "Réinitialiser"
+                    )}
                   </button>
+                  
                   <button
                     type="button"
                     onClick={() => setShowReset(false)}
@@ -327,38 +338,48 @@ const handleResetSubmit = (e) => {
                 </div>
               )}
 
-{!isLogin && (
-  <div className="space-y-3">
-    <div className="flex items-start gap-2">
-      <input
-        id="accept_terms"
-        type="checkbox"
-        required
-        className="h-4 w-4 mt-1 text-blue-600 border-gray-300 rounded"
-      />
-      <label htmlFor="accept_terms" className="text-sm text-gray-600">
-        J'accepte les{" "}
-        <a href="/terms" className="text-blue-600 hover:underline">Conditions Générales de Vente</a>
-        {" "}et la{" "}
-        <a href="/privacy" className="text-blue-600 hover:underline">Politique de confidentialité</a>
-        {" "}*
-      </label>
-    </div>
+              {!isLogin && (
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <input
+                      id="accept_terms"
+                      type="checkbox"
+                      required
+                      className="h-4 w-4 mt-1 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="accept_terms" className="text-sm text-gray-600">
+                      J'accepte les{" "}
+                      <a href="/terms" className="text-blue-600 hover:underline">Conditions Générales de Vente</a>
+                      {" "}et la{" "}
+                      <a href="/privacy" className="text-blue-600 hover:underline">Politique de confidentialité</a>
+                      {" "}*
+                    </label>
+                  </div>
 
-    <p className="text-xs text-gray-500">
-      Les données collectées (nom d'utilisateur, email) sont utilisées uniquement
-      pour la gestion de votre compte et de vos commandes, conformément au{" "}
-      <a href="/legal" className="text-blue-600 hover:underline">RGPD</a>.
-    </p>
-  </div>
-)}
+                  <p className="text-xs text-gray-500">
+                    Les données collectées (nom d'utilisateur, email) sont utilisées uniquement
+                    pour la gestion de votre compte et de vos commandes, conformément au{" "}
+                    <a href="/legal" className="text-blue-600 hover:underline">RGPD</a>.
+                  </p>
+                </div>
+              )}
               <button
-                type="submit"
-                disabled={processing}
-                className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                {isLogin ? "Se connecter" : "S'inscrire"}
-              </button>
+              type="submit"
+              disabled={processing}
+              className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {processing ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  {isLogin ? 'Connexion...' : 'Inscription...'}
+                </span>
+              ) : (
+                isLogin ? 'Se connecter' : "S'inscrire"
+              )}
+            </button>
             </form>
           )}
         </div>
