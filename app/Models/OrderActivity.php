@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderActivity extends Model
 {
@@ -19,17 +20,17 @@ class OrderActivity extends Model
         'details',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    public static function recordStatusChange($order, $oldStatus, $newStatus)
+    public static function recordStatusChange(Order $order, string $oldStatus, string $newStatus): self
     {
         $statusLabels = [
             'pending' => 'En attente',

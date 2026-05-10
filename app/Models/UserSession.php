@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserSession extends Model
 {
@@ -32,18 +33,18 @@ class UserSession extends Model
     }
 
     // Scopes
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('expires_at', '>', now());
     }
 
     // Méthodes utilitaires
-    public function isExpired()
+    public function isExpired(): bool
     {
         return $this->expires_at < now();
     }
 
-    public function updateActivity()
+    public function updateActivity(): void
     {
         $this->update(['last_activity' => now()]);
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
@@ -84,7 +85,7 @@ class Order extends Model
     /**
      * Scope : Commandes d'un utilisateur
      */
-    public function scopeForUser($query, $userId)
+    public function scopeForUser(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
@@ -92,7 +93,7 @@ class Order extends Model
     /**
      * Scope : Commandes payées
      */
-    public function scopePaid($query)
+    public function scopePaid(Builder $query): Builder
     {
         return $query->where('payment_status', 'paid');
     }

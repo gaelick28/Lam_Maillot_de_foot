@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use App\Models\UserAddress;
-
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -56,7 +55,7 @@ class User extends Authenticatable
 
 
     // Scopes
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
