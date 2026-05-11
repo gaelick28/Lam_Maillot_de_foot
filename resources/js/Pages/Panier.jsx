@@ -19,6 +19,7 @@ export default function Panier() {
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [loadingId, setLoadingId] = useState(null);
   const [dirtyMap, setDirtyMap] = useState({});
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   // --- Adresse de livraison par défaut (UNE source de vérité) ---
  const shippingAddress = useMemo(
@@ -160,6 +161,7 @@ const handleKeyDown = useCallback((e, item) => {
     }
   }, []);
 
+  
   const goToCheckout = useCallback(() => {
   // Si non connecté, rediriger vers login
   if (!user) {
@@ -184,6 +186,7 @@ const handleKeyDown = useCallback((e, item) => {
     return;
   }
   
+   setCheckoutLoading(true);
   router.visit("/checkout");
 }, [user, shippingAddress, cartItems]);
 
@@ -420,7 +423,15 @@ useEffect(() => {
                           }`}
                           disabled={loadingId === item.id}
                         >
-                          {loadingId === item.id ? "Enregistrement..." : "Sauvegarder"}
+                          {loadingId === item.id ? (
+    <span className="flex items-center justify-center gap-2">
+      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      </svg>
+      Enregistrement...
+    </span>
+  ) : "Sauvegarder"}
                         </button>
                       )}
                     </div>
@@ -687,7 +698,17 @@ useEffect(() => {
                   onClick={goToCheckout}
                   className="w-full block bg-gradient-to-r from-red-800 to-blue-500 text-white py-3 px-4 sm:px-6 rounded-md hover:opacity-95 focus:ring-2 focus:ring-blue-300 font-semibold text-base sm:text-lg transition-colors"
                 >
-                  Confirmer ma commande ({formatPrice.format(prixTotal)})
+                 {checkoutLoading ? (
+    <span className="flex items-center justify-center gap-2">
+      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      </svg>
+      Chargement...
+    </span>
+  ) : (
+    `Confirmer ma commande (${formatPrice.format(prixTotal)})`
+  )}
                 </button>
               </div>
             </div>
