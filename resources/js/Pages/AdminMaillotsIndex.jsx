@@ -31,6 +31,8 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     badge: '',
     home_order: '',
     description: '',
+    remove_image: false,
+    remove_image_dos: false,
   })
 
   const handleSearch = (e) => {
@@ -170,16 +172,16 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             </select>
 
             <select
-  value={stockFilter}
-  onChange={(e) => setStockFilter(e.target.value)}
-  className="bg-yellow-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
->
-  <option value="">Tous les stocks</option>
-              <option value="partial">Rupture partielle (au moins 1 taille)</option>
-              <option value="out">Rupture totale (toutes les tailles)</option>
-              <option value="low_partial">Stock faible partiel (au moins 1 taille &lt; 5)</option>
-              <option value="low">Stock faible total (&lt; 10)</option>
-</select>
+            value={stockFilter}
+            onChange={(e) => setStockFilter(e.target.value)}
+            className="bg-yellow-50 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Tous les stocks</option>
+                        <option value="partial">Rupture partielle (au moins 1 taille)</option>
+                        <option value="out">Rupture totale (toutes les tailles)</option>
+                        <option value="low_partial">Stock faible partiel (au moins 1 taille &lt; 5)</option>
+                        <option value="low">Stock faible total (&lt; 10)</option>
+          </select>
 
             <button
               type="submit"
@@ -285,17 +287,17 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       <td className="px-3 py-4">
                         <div className="flex gap-2">
                          <button onClick={() => openEditModal(maillot)}
-  className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-  title="Modifier"
->
-  ✏️
-</button>
-<button onClick={() => handleDelete(maillot)}
-  className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-  title="Supprimer"
->
-  🗑️
-</button>
+                          className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                          title="Modifier"
+                        >
+                          ✏️
+                        </button>
+                        <button onClick={() => handleDelete(maillot)}
+                          className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                          title="Supprimer"
+                        >
+                          🗑️
+                        </button>
                         </div>
                       </td>
                     </tr>
@@ -448,16 +450,16 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                     />
                   </div>
                   <div>
-    <label className="block text-xs text-gray-600 mb-1">XXL</label>
-    <input
-        type="number"
-        min="0"
-        value={data.stock_xxl}
-        onChange={(e) => setData('stock_xxl', parseInt(e.target.value) || 0)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-    />
-</div>
+                    <label className="block text-xs text-gray-600 mb-1">XXL</label>
+                    <input
+                        type="number"
+                        min="0"
+                        value={data.stock_xxl}
+                        onChange={(e) => setData('stock_xxl', parseInt(e.target.value) || 0)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
                   Stock total: {data.stock_s + data.stock_m + data.stock_l + data.stock_xl + data.stock_xxl}
@@ -486,6 +488,15 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       alt={editingMaillot.nom}
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />
+                    <label className="flex items-center gap-2 mt-2 text-sm text-red-600 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={data.remove_image}
+        onChange={(e) => setData('remove_image', e.target.checked)}
+        className="h-4 w-4"
+      />
+      Supprimer cette image
+    </label>
                   </div>
                 )}
               </div>
@@ -511,6 +522,15 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       alt={`${editingMaillot.nom} - dos`}
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />
+                    <label className="flex items-center gap-2 mt-2 text-sm text-red-600 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={data.remove_image_dos}
+        onChange={(e) => setData('remove_image_dos', e.target.checked)}
+        className="h-4 w-4"
+      />
+      Supprimer cette image
+    </label>
                   </div>
                 )}
               </div>

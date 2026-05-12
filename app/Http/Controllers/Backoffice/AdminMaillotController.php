@@ -72,6 +72,23 @@ class AdminMaillotController extends Controller
     return 'images/maillot/images_maillot/' . $filename;
 }
 
+// Supprime une image de Cloudinary à partir de son URL
+private function deleteCloudinaryImage(string $url): void
+{
+    if (!str_starts_with($url, 'https://res.cloudinary.com')) return;
+
+    $cloudinary = new \Cloudinary\Cloudinary([
+        'cloud' => [
+            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => env('CLOUDINARY_API_KEY'),
+            'api_secret' => env('CLOUDINARY_API_SECRET'),
+        ],
+    ]);
+
+    $publicId = 'fou2foot/maillots/' . pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_FILENAME);
+    $cloudinary->uploadApi()->destroy($publicId);
+}
+
 
     /**
      * Afficher la liste des maillots
@@ -156,26 +173,34 @@ $q->where('nom', $operator, "%{$search}%")
      * Mettre à jour un maillot
      */
     public function update(Request $request, Maillot $maillot)
-    {
-        $validated = $request->validate($this->validationRules(isStore: false));
+{
+    $validated = $request->validate($this->validationRules(isStore: false));
 
-        if ($path = $this->handleImageUpload($request, 'image', $maillot->image)) {
-            $validated['image'] = $path;
-        } else {
-            unset($validated['image']);
-        }
-
-        if ($path = $this->handleImageUpload($request, 'image_dos', $maillot->image_dos)) {
-            $validated['image_dos'] = $path;
-        } else {
-            unset($validated['image_dos']);
-        }
-
-        $maillot->update($validated);
-
-        return redirect()->route('admin.maillots.index')
-            ->with('success', 'Maillot modifié avec succès.');
+    // Gestion image principale
+    if ($request->boolean('remove_image') && $maillot->image) {
+        if (env('RENDER')) $this->deleteCloudinaryImage($maillot->image);
+        $validated['image'] = null;
+    } elseif ($path = $this->handleImageUpload($request, 'image', $maillot->image)) {
+        $validated['image'] = $path;
+    } else {
+        unset($validated['image']);
     }
+
+    // Gestion image dos
+    if ($request->boolean('remove_image_dos') && $maillot->image_dos) {
+        if (env('RENDER')) $this->deleteCloudinaryImage($maillot->image_dos);
+        $validated['image_dos'] = null;
+    } elseif ($path = $this->handleImageUpload($request, 'image_dos', $maillot->image_dos)) {
+        $validated['image_dos'] = $path;
+    } else {
+        unset($validated['image_dos']);
+    }
+
+    $maillot->update($validated);
+
+    return redirect()->route('admin.maillots.index')
+        ->with('success', 'Maillot modifié avec succès.');
+}
 
     /**
      * Supprimer un maillot
