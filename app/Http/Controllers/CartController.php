@@ -320,8 +320,10 @@ class CartController extends Controller
     }
 
     /**
-     * Mettre à jour un article
-     */
+ * Mettre à jour un article
+ * @param Request $request
+ * @param int|string $itemId  (int pour DB, string pour session ex: "session_abc123")
+ */
     public function update(Request $request, $itemId)
     {
         $data = $request->validate([
@@ -366,24 +368,57 @@ class CartController extends Controller
         }
 
         // Item de session
+        // Item de session
         if (str_starts_with($itemId, 'session_')) {
             $sessionCart = Session::get('cart', []);
 
-            foreach ($sessionCart as &$sessionItem) {
-                if ($sessionItem['id'] === $itemId) {
-                    $sessionItem['size']     = $data['size'];
-                    $sessionItem['quantity'] = $data['quantity'];
-                    $sessionItem['nom']      = $data['nom'];
-                    $sessionItem['numero']   = $data['numero'];
-                    $sessionItem['patches']  = $data['patches'];
+            // Récupérer le maillot_id de l'item modifié
+            $currentMaillotId = null;
+            foreach ($sessionCart as $si) {
+                if ($si['id'] === $itemId) {
+                    $currentMaillotId = $si['maillot_id'];
                     break;
+                }
+            }
+
+            // Chercher un doublon (même maillot, même taille, même nom/numero/patches)
+            $duplicateIndex = null;
+            foreach ($sessionCart as $index => $si) {
+                if (
+                    $si['id'] !== $itemId &&
+                    $si['maillot_id'] == $currentMaillotId &&
+                    $si['size'] == $data['size'] &&
+                    ($si['nom'] ?? null) == $data['nom'] &&
+                    ($si['numero'] ?? null) == $data['numero'] &&
+                    ($si['patches'] ?? []) == $data['patches']
+                ) {
+                    $duplicateIndex = $index;
+                    break;
+                }
+            }
+
+            if ($duplicateIndex !== null) {
+                // Fusionner avec le doublon existant
+                $sessionCart[$duplicateIndex]['quantity'] += $data['quantity'];
+                // Supprimer l'item modifié
+                $sessionCart = array_values(array_filter($sessionCart, fn($si) => $si['id'] !== $itemId));
+            } else {
+                // Pas de doublon, simple mise à jour
+                foreach ($sessionCart as &$sessionItem) {
+                    if ($sessionItem['id'] === $itemId) {
+                        $sessionItem['size']     = $data['size'];
+                        $sessionItem['quantity'] = $data['quantity'];
+                        $sessionItem['nom']      = $data['nom'];
+                        $sessionItem['numero']   = $data['numero'];
+                        $sessionItem['patches']  = $data['patches'];
+                        break;
+                    }
                 }
             }
 
             Session::put('cart', $sessionCart);
             return redirect()->route('cart.show')->with('success', 'Article sauvegardé');
         }
-
         // Item de la DB
         $item = CartItem::findOrFail($itemId);
 
@@ -422,8 +457,9 @@ class CartController extends Controller
     }
 
     /**
-     * Supprimer un article
-     */
+ * Supprimer un article
+ * @param int|string $itemId  (int pour DB, string pour session ex: "session_abc123")
+ */
     public function remove($itemId)
     {
         if (str_starts_with($itemId, 'session_')) {
