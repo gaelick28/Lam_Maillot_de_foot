@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 class MaillotController extends Controller
 {
-    public function show($id)
+    public function show(int $id)
     {
         $maillot = Maillot::with('club.patches')->findOrFail($id);
 
