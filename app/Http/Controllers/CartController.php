@@ -51,7 +51,7 @@ class CartController extends Controller
     if (config('database.default') === 'pgsql') {
         $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
     } else {
-        $q->where('patches', json_encode($sorted));
+        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
     }
 })
                 ->first();
@@ -247,7 +247,7 @@ class CartController extends Controller
     if (config('database.default') === 'pgsql') {
         $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
     } else {
-        $q->where('patches', json_encode($sorted));
+        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
     }
 })
                 ->first();
@@ -440,7 +440,7 @@ class CartController extends Controller
     if (config('database.default') === 'pgsql') {
         $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
     } else {
-        $q->where('patches', json_encode($sorted));
+        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
     }
 })
             ->first();
