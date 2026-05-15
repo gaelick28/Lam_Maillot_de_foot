@@ -25,229 +25,143 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\HomeController;
 
-// Routes publiques
+// ─── Routes publiques ────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, '__invoke'])->name('home');
-// LES 2 ROUTES SUIVANTES SONT DES DOUBLONS
-// la route suivante ne récupère pas le nombre de maillots disponibles
-// Route::get('/', [PageController::class, 'home'])->name('home');
-//  la route alternative pour la page d'accueil est mise en commentaire car elle empêche la déconnexion
-// Route::get('/', HomeController::class);
 Route::get('/login', [PageController::class, 'loginRegister'])->name('login.page');
+Route::get('/register', [PageController::class, 'loginRegister'])->name('register.page');
 
+// Pages légales & statiques (contrôleurs dédiés)
+Route::get('/legal',    [LegalController::class, 'index'])->name('legal');
+Route::get('/contact',  [ContactController::class, 'index'])->name('contact');
+Route::get('/privacy',  fn() => Inertia::render('Privacy'))->name('privacy');
+Route::get('/terms',    fn() => Inertia::render('Terms'))->name('terms');
+Route::get('/delivery', fn() => Inertia::render('Delivery'))->name('delivery');
+Route::get('/returns',  fn() => Inertia::render('Returns'))->name('returns');
 
-// Pages légales
-Route::get('/legal', function () {
-    return Inertia::render('Legal');
-})->name('legal');
-
-Route::get('/privacy', function () {
-    return Inertia::render('Privacy');
-})->name('privacy');
-
-Route::get('/terms', function () {
-    return Inertia::render('Terms');
-})->name('terms');
-
-Route::get('/delivery', function () {
-    return Inertia::render('Delivery');
-})->name('delivery');
-
-Route::get('/returns', function () {
-    return Inertia::render('Returns');
-})->name('returns');
-
-Route::get('/contact', function () {
-    return Inertia::render('Contact');
-})->name('contact');
-
-// Routes mentions légales
-Route::get('/legal', [LegalController::class, 'index'])->name('legal');
-
-// Routes de contact
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-// ✅ RATE LIMITING : 3 messages max par minute (anti-spam)
+// Contact (envoi)
 Route::post('/contact/send', [ContactController::class, 'send'])
     ->middleware('throttle:3,1')
     ->name('contact.send');
 
-// Affiche le formulaire
-// ✅ RATE LIMITING : 5 tentatives max par minute (anti-brute force)
+// Auth
 Route::post('/login', [AuthController::class, 'login'])
     ->middleware('throttle:5,1')
     ->name('login');
-
-// inscription
-// ✅ RATE LIMITING : 10 inscriptions max par minute (anti-bots)
 Route::post('/register', [AuthController::class, 'register'])
     ->middleware('throttle:10,1')
     ->name('register');
-// Affiche le formulaire d'inscription
-    Route::get('/register', [PageController::class, 'loginRegister'])->name('register.page'); 
-
-
-// Déconnexion
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/logout', function () {
     Auth::logout();
     return redirect()->route('home');
 })->name('logout');
-
-// Mot de passe oublié
-// ✅ RATE LIMITING : 5 demandes max par minute (anti-spam email)
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->middleware('throttle:5,1')
     ->name('forgotPassword');
 
+// ─── Recherche ───────────────────────────────────────────────────────────────
+Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
+Route::get('/search',              [SearchController::class, 'search'])->name('search.results');
+Route::get('/club-slug',           [SearchController::class, 'getClubSlug'])->name('club.slug');
 
-// Routes de recherche
-Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])
-    ->name('search.autocomplete');
-
-Route::get('/search', [SearchController::class, 'search'])
-    ->name('search.results');
-
-// Garder la compatibilité avec l'ancienne route
-Route::get('/club-slug', [SearchController::class, 'getClubSlug'])
-    ->name('club.slug');
-
-
-// 🔥 Routes API pour la wishlist - HORS DU MIDDLEWARE AUTH
-// Ces routes doivent être accessibles même sans connexion
+// ─── Wishlist (publique) ──────────────────────────────────────────────────────
 Route::prefix('api/wishlist')->group(function () {
-    Route::get('/ids', [WishlistController::class, 'getIds'])->name('wishlist.ids');
-    Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
-    Route::delete('/remove/{maillotId}', [WishlistController::class, 'remove'])->name('wishlist.remove');
-    Route::post('/sync', [WishlistController::class, 'sync'])->name('wishlist.sync');
+    Route::get('/ids',                  [WishlistController::class, 'getIds'])->name('wishlist.ids');
+    Route::post('/add',                 [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/remove/{maillotId}',[WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::post('/sync',                [WishlistController::class, 'sync'])->name('wishlist.sync');
 });
 
-
-// Routes protégées
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
-    Route::get('/compte', [PageController::class, 'account'])->name('account');
-    Route::get('/order', [OrderController::class, 'history'])->name('order');
-    Route::get('/accountdetails', [PageController::class, 'accountDetails'])->name('account.details');
-
-    // 🔥 Route wishlist - UTILISE WishlistController au lieu de PageController
-    Route::get('/mywishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
-});
-
-
-Route::fallback([PageController::class, 'page404']);
-
-
-// Routes pour la gestion des adresses
-Route::middleware(['auth'])->group(function () {
-    Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
-    Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
-    Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
-    Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
-    Route::post('/addresses/copy-billing-to-shipping', [AddressController::class, 'copyBillingToShipping'])->name('addresses.copyBillingToShipping');
-});
-
-Route::middleware(['auth'])->group(function () {
-    // Route::get('/account-details', [AccountDetailController::class, 'edit'])->name('account.edit');
-    Route::put('/account-details', [AccountDetailController::class, 'update'])->name('account.update');
-    Route::get('/accountdetails', [AccountDetailController::class, 'edit'])->name('account.details');
-    Route::put('/account/personal-info', [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
-    Route::put('/account/password', [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
-});
-
-
-// Routes pour les clubs
+// ─── Clubs & Maillots ────────────────────────────────────────────────────────
 Route::get('/clubs/{slug}/maillots', [ClubController::class, 'maillots'])->name('clubs.maillots');
-Route::get('/clubs/{slug}', [ClubController::class, 'show'])->name('clubs.show');
-Route::get('/maillots/{id}', [ClubController::class, 'maillotDetail'])->name('maillot.detail');
-Route::get('/club-slug', [ClubController::class, 'findSlugByName']);
+Route::get('/clubs/{slug}',          [ClubController::class, 'show'])->name('clubs.show');
+Route::get('/maillots/{id}',         [MaillotController::class, 'show'])->name('maillots.show'); // ✅ ClubController::maillotDetail supprimé
 
-
-// Routes pour les maillots
-Route::get('/maillots/{id}', [MaillotController::class, 'show'])->name('maillots.show');
-
-
-// Routes pour toutes les catégories (utilise la méthode générique)
+// ─── Catégories ──────────────────────────────────────────────────────────────
 Route::get('/category/{categorySlug}', [CategoryController::class, 'show'])
     ->name('category.show')
     ->where('categorySlug', 'selections-nationales|ligue-1|premier-league|bundesliga|liga|serie-a|autres-clubs');
 
-// Routes spécifiques (optionnel, pour des URLs plus jolies)
-Route::get('/selections-nationales', [CategoryController::class, 'selectionsNationales'])
-    ->name('category.selections');
-Route::get('/ligue-1', [CategoryController::class, 'ligue1'])
-    ->name('category.ligue1');
-Route::get('/premier-league', [CategoryController::class, 'premierLeague'])
-    ->name('category.premier-league');
-Route::get('/bundesliga', [CategoryController::class, 'bundesliga'])
-    ->name('category.bundesliga');
-Route::get('/liga', [CategoryController::class, 'liga'])
-    ->name('category.liga');
-Route::get('/serie-a', [CategoryController::class, 'serieA'])
-    ->name('category.serie-a');
-Route::get('/autres-clubs', [CategoryController::class, 'autresClubs'])
-    ->name('category.autres');
+Route::get('/selections-nationales', [CategoryController::class, 'selectionsNationales'])->name('category.selections');
+Route::get('/ligue-1',               [CategoryController::class, 'ligue1'])->name('category.ligue1');
+Route::get('/premier-league',        [CategoryController::class, 'premierLeague'])->name('category.premier-league');
+Route::get('/bundesliga',            [CategoryController::class, 'bundesliga'])->name('category.bundesliga');
+Route::get('/liga',                  [CategoryController::class, 'liga'])->name('category.liga');
+Route::get('/serie-a',               [CategoryController::class, 'serieA'])->name('category.serie-a');
+Route::get('/autres-clubs',          [CategoryController::class, 'autresClubs'])->name('category.autres');
 
+// ─── Panier ──────────────────────────────────────────────────────────────────
+Route::get('/panier',              [CartController::class, 'show'])->name('cart.show');
+// Route::post('/cart/add',           [CartController::class, 'add']); // compatibilité frontend MaillotDetail.jsx
+Route::post('/panier/add',         [CartController::class, 'add'])->name('cart.add');
+Route::get('/panier/count',        [CartController::class, 'getCount'])->name('cart.count');
+Route::post('/panier/clear',       [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/panier/checkout',    [CartController::class, 'checkout'])->name('cart.checkout');
+Route::put('/panier/item/{item}',  [CartController::class, 'update'])->name('cart.update');
+Route::delete('/panier/item/{item}',[CartController::class, 'remove'])->name('cart.remove'); // ✅ un seul nom
 
-Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/panier/add', [CartController::class, 'add'])->name('cart.add');
-Route::get('/panier/count', [CartController::class, 'getCount'])->name('cart.count');
-Route::post('/panier/remove/{item}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
-Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::put('/panier/item/{item}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/panier/item/{item}', [CartController::class, 'remove'])->name('cart.remove');
-
-
-// Routes Checkout & Payment
+// ─── Routes protégées (auth) ──────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/proceed', [CheckoutController::class, 'proceedToPayment'])->name('checkout.proceed');
+    Route::get('/dashboard',   [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('/compte',      [PageController::class, 'account'])->name('account');
+    Route::get('/order',       [OrderController::class, 'history'])->name('order');
+    Route::get('/mywishlist',  [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
 
-    // Routes Payment
-    Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
-    // ✅ RATE LIMITING : 10 tentatives max par minute (anti-fraude paiement)
-    Route::post('/payment/process', [PaymentController::class, 'process'])
+    // Adresses
+    Route::get('/addresses',                              [AddressController::class, 'index'])->name('addresses.index');
+    Route::post('/addresses',                             [AddressController::class, 'store'])->name('addresses.store');
+    Route::put('/addresses/{address}',                    [AddressController::class, 'update'])->name('addresses.update');
+    Route::delete('/addresses/{address}',                 [AddressController::class, 'destroy'])->name('addresses.destroy');
+    Route::post('/addresses/copy-billing-to-shipping',    [AddressController::class, 'copyBillingToShipping'])->name('addresses.copyBillingToShipping');
+
+    // Compte utilisateur
+    Route::get('/accountdetails',         [AccountDetailController::class, 'edit'])->name('account.details'); // ✅ un seul
+    Route::put('/account-details',        [AccountDetailController::class, 'update'])->name('account.update');
+    Route::put('/account/personal-info',  [AccountDetailController::class, 'updatePersonalInfo'])->name('account.update.info');
+    Route::put('/account/password',       [AccountDetailController::class, 'updatePassword'])->name('account.update.password');
+
+    // Checkout & Paiement
+    Route::get('/checkout',                    [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/proceed',           [CheckoutController::class, 'proceedToPayment'])->name('checkout.proceed');
+    Route::get('/payment',                     [PaymentController::class, 'index'])->name('payment.index');
+    Route::post('/payment/process',            [PaymentController::class, 'process'])
         ->middleware('throttle:10,1')
         ->name('payment.process');
 
-    // Routes Order
+    // Commandes
     Route::get('/order-confirmation/{orderId}', [OrderController::class, 'confirmation'])->name('order.confirmation');
-    Route::get('/orders', [OrderController::class, 'history'])->name('orders.index');
-    Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders',                       [OrderController::class, 'history'])->name('orders.index');
+    Route::get('/orders/{orderId}',             [OrderController::class, 'show'])->name('orders.show');
 });
 
-
-//  ROUTES ADMIN - Backoffice
+// ─── Backoffice Admin ─────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard admin
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics');
+    Route::get('/dashboard',   [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/statistics',  [DashboardController::class, 'statistics'])->name('statistics');
 
-    // Routes users
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
-    Route::post('/users/{user}/toggle', [AdminUserController::class, 'toggleActive'])->name('users.toggle');
+    Route::get('/users',                   [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}',            [AdminUserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/toggle',    [AdminUserController::class, 'toggleActive'])->name('users.toggle');
 
-    // 📦 ROUTES ORDERS
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+    Route::get('/orders',                  [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}',          [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/status',  [AdminOrderController::class, 'updateStatus'])->name('orders.status');
 
-    // 📦 ROUTES CLUBS
-    Route::get('/clubs', [AdminClubController::class, 'index'])->name('clubs.index');
-    Route::post('/clubs', [AdminClubController::class, 'store'])->name('clubs.store');
-    Route::put('/clubs/{club}', [AdminClubController::class, 'update'])->name('clubs.update');
-    Route::delete('/clubs/{club}', [AdminClubController::class, 'destroy'])->name('clubs.destroy');
+    Route::get('/clubs',                   [AdminClubController::class, 'index'])->name('clubs.index');
+    Route::post('/clubs',                  [AdminClubController::class, 'store'])->name('clubs.store');
+    Route::put('/clubs/{club}',            [AdminClubController::class, 'update'])->name('clubs.update');
+    Route::delete('/clubs/{club}',         [AdminClubController::class, 'destroy'])->name('clubs.destroy');
 
-    // 👕 ROUTES MAILLOTS
-    Route::get('/maillots', [AdminMaillotController::class, 'index'])->name('maillots.index');
-    Route::post('/maillots', [AdminMaillotController::class, 'store'])->name('maillots.store');
-    Route::put('/maillots/{maillot}', [AdminMaillotController::class, 'update'])->name('maillots.update');
-    Route::delete('/maillots/{maillot}', [AdminMaillotController::class, 'destroy'])->name('maillots.destroy');
+    Route::get('/maillots',                [AdminMaillotController::class, 'index'])->name('maillots.index');
+    Route::post('/maillots',               [AdminMaillotController::class, 'store'])->name('maillots.store');
+    Route::put('/maillots/{maillot}',      [AdminMaillotController::class, 'update'])->name('maillots.update');
+    Route::delete('/maillots/{maillot}',   [AdminMaillotController::class, 'destroy'])->name('maillots.destroy');
 
-    // 👤 ROUTES PROFIL ADMIN
-    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::put('/profile/info', [AdminProfileController::class, 'updateInfo'])->name('profile.info');
+    Route::get('/profile',                 [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/password',        [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::put('/profile/info',            [AdminProfileController::class, 'updateInfo'])->name('profile.info');
 });
+
+// ─── Fallback ─────────────────────────────────────────────────────────────────
+Route::fallback([PageController::class, 'page404']);
+

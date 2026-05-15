@@ -91,7 +91,7 @@ const supplement =
   const total = (prixNum + supplement) * quantiteNumerique;
   
   function handleAddToCart() {
-    router.post('/cart/add', {
+    router.post('/panier/add', {
       maillot_id: maillot.id,
       size: taille,
       quantity: qte,

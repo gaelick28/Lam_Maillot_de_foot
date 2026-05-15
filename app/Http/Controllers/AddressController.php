@@ -212,6 +212,7 @@ class AddressController extends Controller
     $shipping = UserAddress::where('user_id', $user->id)
         ->where('type', 'shipping')
         ->where('is_archived', false)
+        ->orderBy('is_default', 'desc')
         ->first();
 
     if ($shipping) {
