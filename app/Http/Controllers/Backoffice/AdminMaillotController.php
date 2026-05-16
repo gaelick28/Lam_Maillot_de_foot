@@ -32,6 +32,7 @@ class AdminMaillotController extends Controller
             'badge'       => 'nullable|string|max:50',
             'home_order'  => 'nullable|integer',
             'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
         ];
     }
 

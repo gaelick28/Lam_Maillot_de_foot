@@ -7,10 +7,13 @@ use Inertia\Inertia;
 
 class ClubController extends Controller
 {
-    public function maillots($slug)
+    public function maillots(string $slug)
     {
         $club = Club::where('slug', $slug)->firstOrFail();
-        $maillots = $club->maillots()->orderBy('id', 'asc')->get();
+       $maillots = $club->maillots()
+    ->orderByRaw('COALESCE(sort_order, 9999) ASC')
+    ->orderBy('id', 'asc')
+    ->get();
 
         return Inertia::render('MaillotsList', [
             'club' => $club,

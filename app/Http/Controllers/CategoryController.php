@@ -91,7 +91,7 @@ class CategoryController extends Controller
     /**
      * Méthode générique pour afficher une catégorie
      */
-   public function show($categorySlug)
+   public function show(string $categorySlug)
 {
     $config = $this->getCategoryConfig();
 
@@ -105,9 +105,11 @@ class CategoryController extends Controller
     // ✅ NOUVEAU : Charger TOUS les clubs de cette catégorie dynamiquement
     $featuredMaillots = Club::where('category', $categorySlug)
      ->orderBy('name', 'asc')
-        ->with(['maillots' => function($query) {
-            $query->orderBy('id', 'asc')->limit(1);
-        }])
+       ->with(['maillots' => function($query) {
+    $query->orderByRaw('COALESCE(sort_order, 9999) ASC')
+          ->orderBy('id', 'asc')
+          ->limit(1);
+}])
         ->limit(30)
         ->get()
         ->map(function($club) {

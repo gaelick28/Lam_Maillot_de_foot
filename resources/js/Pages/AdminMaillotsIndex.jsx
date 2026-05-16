@@ -33,6 +33,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     description: '',
     remove_image: false,
     remove_image_dos: false,
+    sort_order: '',
   })
 
   const handleSearch = (e) => {
@@ -58,6 +59,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       badge: '', 
       home_order: '',
      description: '',
+     sort_order: '',
     })
     setEditingMaillot(null)
     setShowModal(true)
@@ -80,6 +82,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
         badge: maillot.badge || '',
         home_order: maillot.home_order || '',
         description: maillot.description || '',
+        sort_order: maillot.sort_order || '',
     })
     setEditingMaillot(maillot)
     setShowModal(true)
@@ -568,27 +571,34 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
 <div>
                
             </div>
-    {(data.is_featured || data.is_new) && (
-        <>
-            
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ordre d'affichage
-                </label>
-                <input
-                    type="number"
-                    min="1"
-                    value={data.home_order}
-                    onChange={(e) => setData('home_order', e.target.value)}
-                    placeholder="Ex: 1, 2, 3..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
-        </>
-    )}
+    <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Ordre d'affichage <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
+    </label>
+    <input
+        type="number"
+        min="1"
+        value={data.home_order}
+        onChange={(e) => setData('home_order', e.target.value)}
+        placeholder="Ex: 1, 2, 3..."
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
 </div>
-
+</div>
+{/* Ordre catégories / club */}
+<div className="border-t pt-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Ordre dans les catégories et clubs <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
+    </label>
+    <input
+        type="number"
+        min="1"
+        value={data.sort_order}
+        onChange={(e) => setData('sort_order', e.target.value)}
+        placeholder="Ex: 1, 2, 3..."
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+</div>
 {/* Badge */}
  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Badge <span className="text-gray-400 text-xs">(optionnel)</span>
