@@ -573,7 +573,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
             </div>
     <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">
-        Ordre d'affichage <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
+        Ordre d'affichage sur la page d'accueil 
     </label>
     <input
         type="number"
@@ -588,7 +588,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
 {/* Ordre catégories / club */}
 <div className="border-t pt-4">
     <label className="block text-sm font-medium text-gray-700 mb-1">
-        Ordre dans les catégories et clubs <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
+        Ordre d'affichage dans les catégories et clubs <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
     </label>
     <input
         type="number"
