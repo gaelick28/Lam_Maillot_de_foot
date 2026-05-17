@@ -197,7 +197,40 @@ $q->where('nom', $operator, "%{$search}%")
         unset($validated['image_dos']);
     }
 
-    $maillot->update($validated);
+// Décalage automatique des sort_order du même club
+if (!empty($validated['sort_order'])) {
+    $newOrder = (int) $validated['sort_order'];
+    $oldOrder = $maillot->sort_order;
+
+    if ($oldOrder && $oldOrder !== $newOrder) {
+        if ($oldOrder < $newOrder) {
+            // Déplace vers le bas : comble le trou laissé
+            Maillot::where('club_id', $maillot->club_id)
+                ->where('id', '!=', $maillot->id)
+                ->where('sort_order', '>', $oldOrder)
+                ->where('sort_order', '<=', $newOrder)
+                ->whereNotNull('sort_order')
+                ->decrement('sort_order');
+        } else {
+            // Déplace vers le haut : écarte les maillots
+            Maillot::where('club_id', $maillot->club_id)
+                ->where('id', '!=', $maillot->id)
+                ->where('sort_order', '>=', $newOrder)
+                ->where('sort_order', '<', $oldOrder)
+                ->whereNotNull('sort_order')
+                ->increment('sort_order');
+        }
+    } elseif (!$oldOrder) {
+        // sort_order était NULL : simple insertion
+        Maillot::where('club_id', $maillot->club_id)
+            ->where('id', '!=', $maillot->id)
+            ->where('sort_order', '>=', $newOrder)
+            ->whereNotNull('sort_order')
+            ->increment('sort_order');
+    }
+}
+
+$maillot->update($validated);
 
     return redirect()->route('admin.maillots.index')
         ->with('success', 'Maillot modifié avec succès.');
