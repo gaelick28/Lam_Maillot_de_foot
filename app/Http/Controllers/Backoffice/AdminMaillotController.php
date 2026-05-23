@@ -230,6 +230,33 @@ if (!empty($validated['sort_order'])) {
     }
 }
 
+// Décalage automatique des home_order (page d'accueil - tous clubs confondus)
+if (!empty($validated['home_order'])) {
+    $newOrder = (int) $validated['home_order'];
+    $oldOrder = $maillot->home_order;
+
+    if ($oldOrder && $oldOrder !== $newOrder) {
+        if ($oldOrder < $newOrder) {
+            Maillot::where('id', '!=', $maillot->id)
+                ->where('home_order', '>', $oldOrder)
+                ->where('home_order', '<=', $newOrder)
+                ->whereNotNull('home_order')
+                ->decrement('home_order');
+        } else {
+            Maillot::where('id', '!=', $maillot->id)
+                ->where('home_order', '>=', $newOrder)
+                ->where('home_order', '<', $oldOrder)
+                ->whereNotNull('home_order')
+                ->increment('home_order');
+        }
+    } elseif (!$oldOrder) {
+        Maillot::where('id', '!=', $maillot->id)
+            ->where('home_order', '>=', $newOrder)
+            ->whereNotNull('home_order')
+            ->increment('home_order');
+    }
+}
+
 $maillot->update($validated);
 
     return redirect()->route('admin.maillots.index')
