@@ -22,11 +22,11 @@ class AdminMaillotController extends Controller
             'price'       => 'required|numeric|min:0',
             'image'       => ($isStore ? 'required' : 'nullable') . '|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
             'image_dos'   => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
-            'stock_s'     => 'required|integer|min:0',
-            'stock_m'     => 'required|integer|min:0',
-            'stock_l'     => 'required|integer|min:0',
-            'stock_xl'    => 'required|integer|min:0',
-            'stock_xxl'   => 'required|integer|min:0',
+            'stock_s'   => 'nullable|integer|min:0',
+            'stock_m'   => 'nullable|integer|min:0',
+            'stock_l'   => 'nullable|integer|min:0',
+            'stock_xl'  => 'nullable|integer|min:0',
+            'stock_xxl' => 'nullable|integer|min:0',
             'is_featured' => 'boolean',
             'is_new'      => 'boolean',
             'badge'       => 'nullable|string|max:50',
@@ -163,6 +163,12 @@ $q->where('nom', $operator, "%{$search}%")
         if ($path = $this->handleImageUpload($request, 'image_dos')) {
             $validated['image_dos'] = $path;
         }
+
+        $validated['stock_s']   = $validated['stock_s']   ?? 25;
+        $validated['stock_m']   = $validated['stock_m']   ?? 25;
+        $validated['stock_l']   = $validated['stock_l']   ?? 25;
+        $validated['stock_xl']  = $validated['stock_xl']  ?? 25;
+        $validated['stock_xxl'] = $validated['stock_xxl'] ?? 25;
 
         Maillot::create($validated);
 

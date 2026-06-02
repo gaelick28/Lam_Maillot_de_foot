@@ -24,6 +24,7 @@ use App\Http\Controllers\Backoffice\AdminProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Backoffice\AdminImportMaillotController;
 
 // ─── Routes publiques ────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, '__invoke'])->name('home');
@@ -160,6 +161,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/profile',                 [AdminProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/password',        [AdminProfileController::class, 'updatePassword'])->name('profile.password');
     Route::put('/profile/info',            [AdminProfileController::class, 'updateInfo'])->name('profile.info');
+
+    Route::get('/import-maillots',  [AdminImportMaillotController::class, 'index'])->name('import-maillots.index');
+    Route::post('/import-maillots', [AdminImportMaillotController::class, 'import'])->name('import-maillots.store');
 });
 
 // ─── Fallback ─────────────────────────────────────────────────────────────────
