@@ -253,7 +253,13 @@ export default function AdminDashboard({ stats }) {
             <p className="text-sm text-gray-600">Modifier les produits et les stocks</p>
           </Link>
           
-          
+          <Link
+            href="/admin/import-maillots" 
+            className="bg-pink-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"     
+          >
+            <h3 className="font-semibold text-gray-900 mb-2">Import maillots</h3>
+            <p className="text-sm text-gray-600">Importer plusieurs maillots à partir des images</p>
+          </Link>
 
           <Link
           href="/admin/statistics"
