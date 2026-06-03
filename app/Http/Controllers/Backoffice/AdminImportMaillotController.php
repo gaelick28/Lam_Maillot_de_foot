@@ -227,7 +227,7 @@ class AdminImportMaillotController extends Controller
                     'stock_xl'   => 25,
                     'stock_xxl'  => 25,
                     'is_featured' => false,
-                    'is_new'     => true,
+                    'is_new' => false,
                 ]);
             }
 

@@ -104,15 +104,26 @@ class CategoryController extends Controller
 
     // ✅ NOUVEAU : Charger TOUS les clubs de cette catégorie dynamiquement
     $featuredMaillots = Club::where('category', $categorySlug)
-     ->orderBy('name', 'asc')
-       ->with(['maillots' => function($query) {
-    $query->orderByRaw('COALESCE(sort_order, 9999) ASC')
-          ->orderBy('id', 'asc')
-          ->limit(1);
-}])
-        ->limit(30)
-        ->get()
-        ->map(function($club) {
+    ->with(['maillots' => function($query) {
+        $query->orderByRaw('COALESCE(sort_order, 9999) ASC')
+              ->orderBy('id', 'asc')
+              ->limit(1);
+    }])
+    ->limit(30)
+    ->get()
+    ->sortBy(function($club) {
+    $name = mb_strtolower($club->name);
+    return strtr($name, [
+        'é' => 'e', 'è' => 'e', 'ê' => 'e',
+        'à' => 'a', 'â' => 'a',
+        'ù' => 'u', 'û' => 'u',
+        'ô' => 'o', 'ö' => 'o',
+        'î' => 'i', 'ï' => 'i',
+        'ç' => 'c',
+    ]);
+})
+    ->values()
+    ->map(function($club) {
             $maillot = $club->maillots->first();
             if (!$maillot) return null;
             
