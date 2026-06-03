@@ -274,7 +274,7 @@ export default function AdminImportMaillots({ auth }) {
                         {validCount > 0 && (
                             <div className="px-4 py-3 bg-gray-50 border-t flex items-center justify-between">
                                 <p className="text-sm text-gray-500">
-                                    Stock par défaut : 25 par taille · Prix : 20,00 € · Marqué "Nouveau"
+                                    Stock par défaut : 25 par taille · Prix : 20,00 € "
                                 </p>
                                 <button
                                     onClick={handleImport}
