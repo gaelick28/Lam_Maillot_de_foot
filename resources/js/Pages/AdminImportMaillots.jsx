@@ -2,161 +2,6 @@ import { useState } from "react"
 import { Head, router } from "@inertiajs/react"
 import AdminLayout from "@/Layouts/AdminLayout"
 
-// ─── Correspondance raccourci → nom affiché ──────────────────────────────────
-const CLUB_NAMES = {
-    // Ligue 1
-    'lyon': 'Olympique Lyonnais', 'bordeaux': 'Girondins de Bordeaux',
-    'angers': 'Angers SCO', 'annecy': 'Annecy FC', 'cannes': 'AS Cannes',
-    'lille': 'Lille', 'monaco': 'Monaco', 'nice': 'Nice', 'rennes': 'Rennes',
-    'strasbourg': 'Strasbourg', 'toulouse': 'Toulouse', 'nantes': 'Nantes',
-    'montpellier': 'Montpellier', 'lens': 'Lens', 'reims': 'Reims', 'auxerre': 'AJ Auxerre',
-    // Premier League
-    'liverpool': 'Liverpool', 'manchester': 'Manchester City', 'arsenal': 'Arsenal',
-    'chelsea': 'Chelsea', 'tottenham': 'Tottenham Hotspur', 'leicester': 'Leicester City',
-    'villa': 'Aston Villa', 'newcastle': 'Newcastle United', 'everton': 'Everton',
-    'wolverhampton': 'Wolverhampton Wanderers', 'brighton': 'Brighton',
-    'palace': 'Crystal Palace', 'brentford': 'Brentford', 'fulham': 'Fulham',
-    // Bundesliga
-    'bayern': 'Bayern Munich', 'dortmund': 'Borussia Dortmund',
-    'monchengladbach': 'Borussia Mönchengladbach', 'leipzig': 'RB Leipzig',
-    'leverkusen': 'Bayer Leverkusen', 'wolfsburg': 'VfL Wolfsburg',
-    'francfort': 'Eintracht Francfort', 'hoffenheim': 'Hoffenheim',
-    'berlin': 'Hertha Berlin', 'stuttgart': 'VfB Stuttgart',
-    'cologne': 'FC Cologne', 'schalke': 'Schalke 04',
-    // La Liga
-    'atletico': 'Atletico Madrid', 'bilbao': 'Athletic Bilbao', 'real': 'Real Madrid',
-    'barcelone': 'FC Barcelone', 'sociedad': 'Real Sociedad', 'valence': 'Valence CF',
-    'villarreal': 'Villarreal', 'sevilla': 'Sevilla FC', 'betis': 'Real Betis',
-    'espanyol': 'Espanyol',
-    // Serie A
-    'inter': 'Inter Milan', 'ac-milan': 'AC Milan', 'naples': 'Naples',
-    'juventus': 'Juventus', 'roma': 'AS Roma', 'lazio': 'Lazio Rome',
-    'atalanta': 'Atalanta', 'fiorentina': 'Fiorentina', 'torino': 'Torino',
-    'bologne': 'Bologne', 'come': 'Côme',
-    // Autres clubs
-    'porto': 'Porto', 'benfica': 'Benfica', 'sporting': 'Sporting CP',
-    'galatasaray': 'Galatasaray', 'fenerbahce': 'Fenerbahçe',
-    'celtic': 'Celtic FC', 'rangers': 'Rangers FC', 'ajax': 'Ajax Amsterdam',
-    'psv': 'PSV Eindhoven', 'gremio': 'Grêmio', 'flamengo': 'Flamengo',
-    'anderlecht': 'Anderlecht',
-    // Sélections nationales
-    'france': 'France', 'bresil': 'Brésil', 'espagne': 'Espagne',
-    'pays-bas': 'Pays-Bas', 'belgique': 'Belgique', 'senegal': 'Sénégal',
-    'cote-divoire': "Côte d'Ivoire", 'maroc': 'Maroc', 'suisse': 'Suisse',
-    'pologne': 'Pologne', 'croatie': 'Croatie', 'suede': 'Suède',
-    'danemark': 'Danemark', 'ukraine': 'Ukraine', 'japon': 'Japon',
-    'coree-du-sud': 'Corée du Sud', 'mexique': 'Mexique', 'inde': 'Inde',
-    'colombie': 'Colombie', 'uruguay': 'Uruguay', 'tunisie': 'Tunisie',
-    'perou': 'Pérou', 'irlande': 'Irlande',
-}
-
-const SLUG_MAPPING = {
-    // Ligue 1
-    'lyon':             'olympique-lyonnais',
-    'bordeaux':         'girondins-de-bordeaux',
-    'angers':           'angers-sco',
-    'annecy':           'annecy-fc',
-    'cannes':           'cannes',
-    'lille':            'lille',
-    'monaco':           'monaco',
-    'nice':             'nice',
-    'rennes':           'rennes',
-    'strasbourg':       'strasbourg',
-    'toulouse':         'toulouse',
-    'nantes':           'nantes',
-    'montpellier':      'montpellier',
-    'lens':             'lens',
-    'reims':            'reims',
-    'auxerre':          'auxerre',
-    // Premier League
-    'liverpool':        'liverpool',
-    'manchester':       'manchester-city',
-    'arsenal':          'arsenal',
-    'chelsea':          'chelsea',
-    'tottenham':        'tottenham-hotspur',
-    'leicester':        'leicester-city',
-    'villa':            'aston-villa',
-    'newcastle':        'newcastle-united',
-    'everton':          'everton',
-    'wolverhampton':    'wolverhampton-wanderers',
-    'brighton':         'brighton',
-    'palace':           'crystal-palace',
-    'brentford':        'brentford',
-    'fulham':           'fulham',
-    // Bundesliga
-    'bayern':           'bayern-munich',
-    'dortmund':         'borussia-dortmund',
-    'monchengladbach':  'borussia-monchengladbach',
-    'leipzig':          'rb-leipzig',
-    'leverkusen':       'bayer-leverkusen',
-    'wolfsburg':        'wolfsburg',
-    'francfort':        'eintracht-francfort',
-    'hoffenheim':       'hoffenheim',
-    'berlin':           'hertha-berlin',
-    'stuttgart':        'stuttgart',
-    'cologne':          'cologne',
-    'schalke':          'schalke',
-    // La Liga
-    'atletico':         'atletico-madrid',
-    'bilbao':           'athletic-bilbao',
-    'real':             'real-madrid',
-    'barcelone':        'fc-barcelone',
-    'sociedad':         'real-sociedad',
-    'valence':          'valence-cf',
-    'villarreal':       'villarreal',
-    'sevilla':          'sevilla-fc',
-    'betis':            'real-betis',
-    'espanyol':         'espanyol',
-    // Serie A
-    'inter':            'inter-milan',
-    'ac-milan':         'ac-milan',
-    'naples':           'naples',
-    'juventus':         'juventus',
-    'roma':             'as-roma',
-    'lazio':            'lazio-rome',
-    'atalanta':         'atalanta',
-    'fiorentina':       'fiorentina',
-    'torino':           'torino',
-    'bologne':          'bologne',
-    'come':             'come',
-    // Autres clubs
-    'porto':            'porto',
-    'benfica':          'benfica',
-    'sporting':         'sporting-cp',
-    'galatasaray':      'galatasaray',
-    'fenerbahce':       'fenerbahçe',
-    'celtic':           'celtic-fc',
-    'rangers':          'rangers-fc',
-    'ajax':             'ajax-amsterdam',
-    'psv':              'psv-eindhoven',
-    'gremio':           'gremio',
-    'flamengo':         'flamengo',
-    'anderlecht':       'anderlecht',
-    // Sélections nationales
-    'france':           'france',
-    'bresil':           'bresil',
-    'espagne':          'espagne',
-    'pays-bas':         'pays-bas',
-    'belgique':         'belgique',
-    'senegal':          'senegal',
-    'cote-divoire':     'cote-divoire',
-    'maroc':            'maroc',
-    'suisse':           'suisse',
-    'pologne':          'pologne',
-    'croatie':          'croatie',
-    'suede':            'suede',
-    'danemark':         'danemark',
-    'ukraine':          'ukraine',
-    'japon':            'japon',
-    'coree-du-sud':     'coree-du-sud',
-    'mexique':          'mexique',
-    'inde':             'inde',
-    'colombie':         'colombie',
-    'uruguay':          'uruguay',
-    'tunisie':          'tunisie',
-    'perou':            'perou',
-    'irlande':          'irlande',
-}
 
 const TYPE_CONFIG = {
     'dom':   { label: 'Domicile' },
@@ -192,7 +37,7 @@ export default function AdminImportMaillots({ auth, clubs}) {
     const [importing, setImporting]         = useState(false)
 
     const handleFileChange = (e) => {
-        const fileList = Array.from(e.target.files)
+        const fileList = Array.from(e.target.files || []).slice(0, 20)
         setSelectedFiles(fileList)
 
         // Repérer les images dos
@@ -208,31 +53,33 @@ export default function AdminImportMaillots({ auth, clubs}) {
             const base = f.name.replace(/\.[^.]+$/, '')
             if (base.endsWith('-back')) return
 
-            const parsed   = parseFilename(f.name)
-            const hasBack  = backSet.has(base)
+            const parsed = parseFilename(f.name)
+            const hasBack = backSet.has(base)
 
             if (!parsed) {
                 items.push({ filename: f.name, status: 'error', message: 'Format invalide' })
                 return
             }
 
-            const mappedSlug  = SLUG_MAPPING[parsed.clubShort]
-const foundClub   = clubs?.find(c => c.slug === (mappedSlug ?? parsed.clubShort))
-const clubName    = foundClub?.name ?? CLUB_NAMES[parsed.clubShort] ?? null
-            const typeLabel  = TYPE_CONFIG[parsed.type]?.label ?? parsed.type
-            const season     = seasonToLabel(parsed.season)
-            const nom        = `${typeLabel} ${season}`
+            const foundClub = clubs?.find(c =>
+    c.sort_name?.toLowerCase() === parsed.clubShort.toLowerCase() ||
+    c.slug === parsed.clubShort
+)
+            const clubName = foundClub?.name ?? null
+            const typeLabel = TYPE_CONFIG[parsed.type]?.label ?? parsed.type
+            const season = seasonToLabel(parsed.season)
+            const nom = `${typeLabel} ${season}`
 
             items.push({
-                filename:   f.name,
-                clubShort:  parsed.clubShort,
+                filename: f.name,
+                clubShort: parsed.clubShort,
                 clubName,
-                type:       typeLabel,
+                type: typeLabel,
                 season,
                 nom,
                 hasBack,
-                status:     clubName ? 'ready' : 'error',
-                message:    clubName ? null : `Club "${parsed.clubShort}" non trouvé`,
+                status: clubName ? 'ready' : 'error',
+                message: clubName ? null : `Club "${parsed.clubShort}" non trouvé`,
             })
         })
 

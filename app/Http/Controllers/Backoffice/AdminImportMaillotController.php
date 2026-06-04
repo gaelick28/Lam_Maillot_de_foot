@@ -10,113 +10,6 @@ use Inertia\Inertia;
 
 class AdminImportMaillotController extends Controller
 {
-    private array $slugMapping = [
-        // Ligue 1
-        'lyon'              => 'olympique-lyonnais',
-        'bordeaux'          => 'girondins-de-bordeaux',
-        'angers'            => 'angers-sco',
-        'annecy'            => 'annecy-fc',
-        'cannes'            => 'cannes',
-        'lille'             => 'lille',
-        'monaco'            => 'monaco',
-        'nice'              => 'nice',
-        'rennes'            => 'rennes',
-        'strasbourg'        => 'strasbourg',
-        'toulouse'          => 'toulouse',
-        'nantes'            => 'nantes',
-        'montpellier'       => 'montpellier',
-        'lens'              => 'lens',
-        'reims'             => 'reims',
-        'auxerre'           => 'auxerre',
-        // Premier League
-        'liverpool'         => 'liverpool',
-        'manchester'        => 'manchester-city',
-        'arsenal'           => 'arsenal',
-        'chelsea'           => 'chelsea',
-        'tottenham'         => 'tottenham-hotspur',
-        'leicester'         => 'leicester-city',
-        'villa'             => 'aston-villa',
-        'newcastle'         => 'newcastle-united',
-        'everton'           => 'everton',
-        'wolverhampton'     => 'wolverhampton-wanderers',
-        'brighton'          => 'brighton',
-        'palace'            => 'crystal-palace',
-        'brentford'         => 'brentford',
-        'fulham'            => 'fulham',
-        // Bundesliga
-        'bayern'            => 'bayern-munich',
-        'dortmund'          => 'borussia-dortmund',
-        'monchengladbach'   => 'borussia-monchengladbach',
-        'leipzig'           => 'rb-leipzig',
-        'leverkusen'        => 'bayer-leverkusen',
-        'wolfsburg'         => 'wolfsburg',
-        'francfort'         => 'eintracht-francfort',
-        'hoffenheim'        => 'hoffenheim',
-        'berlin'            => 'hertha-berlin',
-        'stuttgart'         => 'stuttgart',
-        'cologne'           => 'cologne',
-        'schalke'           => 'schalke',
-        // La Liga
-        'atletico'          => 'atletico-madrid',
-        'bilbao'            => 'athletic-bilbao',
-        'real'              => 'real-madrid',
-        'barcelone'         => 'fc-barcelone',
-        'sociedad'          => 'real-sociedad',
-        'valence'           => 'valence-cf',
-        'villarreal'        => 'villarreal',
-        'sevilla'           => 'sevilla-fc',
-        'betis'             => 'real-betis',
-        'espanyol'          => 'espanyol',
-        // Serie A
-        'inter'             => 'inter-milan',
-        'ac-milan'          => 'ac-milan',
-        'naples'            => 'naples',
-        'juventus'          => 'juventus',
-        'roma'              => 'as-roma',
-        'lazio'             => 'lazio-rome',
-        'atalanta'          => 'atalanta',
-        'fiorentina'        => 'fiorentina',
-        'torino'            => 'torino',
-        'bologne'           => 'bologne',
-        'come'              => 'come',
-        // Autres clubs
-        'porto'             => 'porto',
-        'benfica'           => 'benfica',
-        'sporting'          => 'sporting-cp',
-        'galatasaray'       => 'galatasaray',
-        'fenerbahce'        => 'fenerbahçe',
-        'celtic'            => 'celtic-fc',
-        'rangers'           => 'rangers-fc',
-        'ajax'              => 'ajax-amsterdam',
-        'psv'               => 'psv-eindhoven',
-        'gremio'            => 'gremio',
-        'flamengo'          => 'flamengo',
-        'anderlecht'        => 'anderlecht',
-        // Sélections nationales
-        'france'            => 'france',
-        'bresil'            => 'bresil',
-        'espagne'           => 'espagne',
-        'pays-bas'          => 'pays-bas',
-        'belgique'          => 'belgique',
-        'senegal'           => 'senegal',
-        'cote-divoire'      => 'cote-divoire',
-        'maroc'             => 'maroc',
-        'suisse'            => 'suisse',
-        'pologne'           => 'pologne',
-        'croatie'           => 'croatie',
-        'suede'             => 'suede',
-        'danemark'          => 'danemark',
-        'ukraine'           => 'ukraine',
-        'japon'             => 'japon',
-        'coree-du-sud'      => 'coree-du-sud',
-        'mexique'           => 'mexique',
-        'inde'              => 'inde',
-        'colombie'          => 'colombie',
-        'uruguay'           => 'uruguay',
-        'tunisie'           => 'tunisie',
-        'perou'             => 'perou',
-        'irlande'           => 'irlande',
-    ];
 
     private array $typeConfig = [
         'dom'   => ['label' => 'Domicile',  'sort_order' => 1],
@@ -128,7 +21,7 @@ class AdminImportMaillotController extends Controller
     {
         return Inertia::render('AdminImportMaillots', [
             'auth' => ['user' => auth('web')->user()],
-            'clubs' => Club::select('name', 'slug')->get(),
+            'clubs' => Club::select('name', 'slug', 'sort_name')->get(),
         ]);
     }
 
@@ -167,8 +60,9 @@ class AdminImportMaillotController extends Controller
             }
 
             // Résolution du club
-            $slug = $this->slugMapping[$parsed['club']] ?? $parsed['club'];
-            $club = Club::where('slug', $slug)->first();
+            $club = Club::whereRaw('LOWER(sort_name) = ?', [strtolower($parsed['club'])])
+            ->orWhere('slug', $parsed['club'])
+            ->first();
 
             if (!$club) {
                 $errors[] = "{$baseName} : club \"{$parsed['club']}\" non trouvé";
