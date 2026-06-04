@@ -104,12 +104,12 @@ private function deleteCloudinaryImage(string $url): void
             ->with('club')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
-$q->where('nom', $operator, "%{$search}%")
-  ->orWhereHas('club', fn($cq) => $cq->where('name', $operator, "%{$search}%")
-      ->orWhere('slug', $operator, "%{$search}%"));
-                });
-            })
+                $operator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
+                $q->where('nom', $operator, "%{$search}%")
+                ->orWhereHas('club', fn($cq) => $cq->where('name', $operator, "%{$search}%")
+                    ->orWhere('slug', $operator, "%{$search}%"));
+                                });
+                            })
             ->when($clubFilter, fn($query, $clubFilter) => $query->where('club_id', $clubFilter))
             ->when($stockFilter, function ($query, $stockFilter) {
                 match ($stockFilter) {
@@ -131,7 +131,11 @@ $q->where('nom', $operator, "%{$search}%")
                 };
             })
             ->join('clubs', 'maillots.club_id', '=', 'clubs.id')
-            ->orderBy('clubs.name', 'asc')
+            ->orderByRaw(
+            config('database.default') === 'pgsql'
+                ? "lower(COALESCE(clubs.sort_name, clubs.name)) ASC"
+                : "COALESCE(clubs.sort_name, clubs.name) ASC"
+            )
             ->orderBy('maillots.nom', 'asc')
             ->select('maillots.*')
             ->paginate(20)
