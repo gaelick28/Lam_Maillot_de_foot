@@ -128,6 +128,7 @@ class AdminImportMaillotController extends Controller
     {
         return Inertia::render('AdminImportMaillots', [
             'auth' => ['user' => auth('web')->user()],
+            'clubs' => Club::select('name', 'slug')->get(),
         ]);
     }
 
