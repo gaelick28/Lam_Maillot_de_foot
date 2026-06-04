@@ -68,7 +68,7 @@ private function getCategoriesData()
     foreach ($config as $slug => $data) {
         // ✅ CHANGEMENT : Charger les clubs basé sur la catégorie en BDD
        $clubs = Club::where('category', $slug)
-    ->get(['name', 'slug', 'logo'])
+    ->get(['name', 'slug', 'logo', 'sort_name'])
     ->sortBy(function($club) {
     $key = $club->sort_name 
         ? mb_strtolower($club->sort_name) 
