@@ -143,6 +143,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Logo</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tri</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catégorie</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Nombre de Maillots</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -174,6 +175,11 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                     <td className="px-6 py-4">
                       <div className="font-medium text-gray-900">{club.name}</div>                      
                     </td>
+                
+                <td className="px-6 py-4 text-sm text-gray-500 italic">
+                    {club.sort_name || '—'}
+                </td>
+
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {club.category_name || club.category}
                     </td>

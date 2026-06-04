@@ -99,7 +99,11 @@ class AdminClubController extends Controller
 })
             ->withCount('maillots')
             ->with('patches')
-            ->orderBy('name', 'asc')
+           ->orderByRaw(
+             config('database.default') === 'pgsql'
+            ? "lower(COALESCE(sort_name, name)) ASC"
+            : "COALESCE(sort_name, name) ASC"
+)
             ->paginate(20)
             ->withQueryString();
 
