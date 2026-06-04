@@ -20,6 +20,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
     is_featured_home: false,
     home_order: '',
     patch_ids: [],
+    sort_name: '',
   })
 
   const handleSearch = (e) => {
@@ -42,6 +43,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
       is_featured_home: club.is_featured_home || false,
       home_order: club.home_order || '',
       patch_ids: club.patches ? club.patches.map(p => p.id) : [],
+      sort_name: club.sort_name || '',
     })
     setEditingClub(club)
     setShowModal(true)
@@ -253,6 +255,19 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                 />
                 {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
               </div>
+
+              <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom de tri <span className="text-gray-400 text-xs">(ville ou nom court pour le classement)</span>
+              </label>
+              <input
+                  type="text"
+                  value={data.sort_name}
+                  onChange={(e) => setData('sort_name', e.target.value)}
+                  placeholder="Ex: lyon, madrid, milan..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   />
+                 </div>
 
               {/* Catégorie */}
 <div>

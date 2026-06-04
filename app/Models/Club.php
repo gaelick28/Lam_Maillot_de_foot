@@ -14,6 +14,7 @@ protected $fillable = [
         'image',
         'is_featured_home',
          'home_order',
+         'sort_name',
     ];
 
 

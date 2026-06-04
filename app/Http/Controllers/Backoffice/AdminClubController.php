@@ -43,6 +43,7 @@ class AdminClubController extends Controller
             'home_order'       => 'nullable|integer',
             'patch_ids'        => 'nullable|array',
             'patch_ids.*'      => 'exists:patches,id',
+            'sort_name' => 'nullable|string|max:100',
         ];
     }
 
