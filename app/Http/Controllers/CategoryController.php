@@ -112,8 +112,47 @@ class CategoryController extends Controller
     ->limit(30)
     ->get()
     ->sortBy(function($club) {
-    $name = mb_strtolower($club->name);
-    return strtr($name, [
+    $cityKeys = [
+        'olympique-lyonnais'        => 'lyon',
+        'girondins-de-bordeaux'     => 'bordeaux',
+        'aj-auxerre'                => 'auxerre',
+        'angers'                    => 'angers',
+        'cannes'                    => 'cannes',
+        'atletico-madrid'           => 'atletico',
+        'real-madrid'               => 'madrid',
+        'fc-barcelone'              => 'barcelone',
+        'real-sociedad'             => 'sociedad',
+        'valence-cf'                => 'valence',
+        'sevilla-fc'                => 'sevilla',
+        'real-betis'                => 'betis',
+        'tottenham-hotspur'         => 'tottenham',
+        'leicester-city'            => 'leicester',
+        'newcastle-united'          => 'newcastle',
+        'wolverhampton-wanderers'   => 'wolverhampton',
+        'manchester-city'           => 'manchester',
+        'bayern-munich'             => 'munich',
+        'borussia-dortmund'         => 'dortmund',
+        'borussia-monchengladbach'  => 'monchengladbach',
+        'rb-leipzig'                => 'leipzig',
+        'bayer-leverkusen'          => 'leverkusen',
+        'eintracht-francfort'       => 'francfort',
+        'inter-milan'               => 'inter',
+        'ac-milan'                  => 'milan',
+        'as-roma'                   => 'roma',
+        'lazio-rome'                => 'lazio',
+        'sporting-cp'               => 'sporting',
+        'celtic-fc'                 => 'celtic',
+        'rangers-fc'                => 'rangers',
+        'ajax-amsterdam'            => 'ajax',
+        'psv-eindhoven'             => 'psv',
+        'annecy-fc'                 => 'annecy',
+        'hertha-berlin'             => 'berlin',
+        'rennes'                    => 'rennes',
+    ];
+
+    $key = $cityKeys[$club->slug] ?? mb_strtolower($club->name);
+
+    return strtr($key, [
         'é' => 'e', 'è' => 'e', 'ê' => 'e',
         'à' => 'a', 'â' => 'a',
         'ù' => 'u', 'û' => 'u',
