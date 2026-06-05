@@ -93,14 +93,25 @@ class AdminImportMaillotController extends Controller
                 continue;
             }
 
-            if ($existing && $overwrite) {
-                // Mise à jour images uniquement (sort_order inchangé)
-                $existing->update([
-                    'image'     => $imagePath,
-                    'image_dos' => $imageDospath,
-                    'is_new'    => true,
-                ]);
-            } else {
+           if ($existing && $overwrite) {
+            $updateData = [
+                'image'     => $imagePath,
+                'image_dos' => $imageDospath,
+            ];
+
+            if ($existing->sort_order === null) {
+                $sortOrder = $this->typeConfig[$parsed['type']]['sort_order'];
+                Maillot::where('club_id', $club->id)
+                    ->where('id', '!=', $existing->id)
+                    ->where('sort_order', '>=', $sortOrder)
+                    ->whereNotNull('sort_order')
+                    ->increment('sort_order');
+                $updateData['sort_order'] = $sortOrder;
+            }
+
+            $existing->update($updateData);
+            }
+            else {
                 // Nouveau maillot : décaler le sort_order du club
                 $sortOrder = $this->typeConfig[$parsed['type']]['sort_order'];
 
