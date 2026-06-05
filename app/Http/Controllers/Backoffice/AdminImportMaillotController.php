@@ -100,14 +100,11 @@ class AdminImportMaillotController extends Controller
             ];
 
             if ($existing->sort_order === null) {
-                $sortOrder = $this->typeConfig[$parsed['type']]['sort_order'];
-                Maillot::where('club_id', $club->id)
-                    ->where('id', '!=', $existing->id)
-                    ->where('sort_order', '>=', $sortOrder)
-                    ->whereNotNull('sort_order')
-                    ->increment('sort_order');
-                $updateData['sort_order'] = $sortOrder;
-            }
+    $maxOrder = Maillot::where('club_id', $club->id)
+        ->whereNotNull('sort_order')
+        ->max('sort_order') ?? 0;
+    $updateData['sort_order'] = $maxOrder + 1;
+}
 
             $existing->update($updateData);
             }
