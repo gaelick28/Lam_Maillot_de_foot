@@ -33,6 +33,8 @@ class AdminMaillotController extends Controller
             'home_order'  => 'nullable|integer',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer',
+            'featured_order' => 'nullable|integer',
+            'new_order'      => 'nullable|integer',
         ];
     }
 
@@ -241,30 +243,48 @@ if (!empty($validated['sort_order'])) {
     }
 }
 
-// Décalage automatique des home_order (page d'accueil - tous clubs confondus)
-if (!empty($validated['home_order'])) {
-    $newOrder = (int) $validated['home_order'];
-    $oldOrder = $maillot->home_order;
+// home_order 
+// Décalage featured_order
+if (!empty($validated['featured_order'])) {
+    $newOrder = (int) $validated['featured_order'];
+    $oldOrder = $maillot->featured_order;
 
     if ($oldOrder && $oldOrder !== $newOrder) {
         if ($oldOrder < $newOrder) {
-            Maillot::where('id', '!=', $maillot->id)
-                ->where('home_order', '>', $oldOrder)
-                ->where('home_order', '<=', $newOrder)
-                ->whereNotNull('home_order')
-                ->decrement('home_order');
+            Maillot::where('id', '!=', $maillot->id)->where('is_featured', true)
+                ->where('featured_order', '>', $oldOrder)->where('featured_order', '<=', $newOrder)
+                ->whereNotNull('featured_order')->decrement('featured_order');
         } else {
-            Maillot::where('id', '!=', $maillot->id)
-                ->where('home_order', '>=', $newOrder)
-                ->where('home_order', '<', $oldOrder)
-                ->whereNotNull('home_order')
-                ->increment('home_order');
+            Maillot::where('id', '!=', $maillot->id)->where('is_featured', true)
+                ->where('featured_order', '>=', $newOrder)->where('featured_order', '<', $oldOrder)
+                ->whereNotNull('featured_order')->increment('featured_order');
         }
     } elseif (!$oldOrder) {
-        Maillot::where('id', '!=', $maillot->id)
-            ->where('home_order', '>=', $newOrder)
-            ->whereNotNull('home_order')
-            ->increment('home_order');
+        Maillot::where('id', '!=', $maillot->id)->where('is_featured', true)
+            ->where('featured_order', '>=', $newOrder)
+            ->whereNotNull('featured_order')->increment('featured_order');
+    }
+}
+
+// Décalage new_order
+if (!empty($validated['new_order'])) {
+    $newOrder = (int) $validated['new_order'];
+    $oldOrder = $maillot->new_order;
+
+    if ($oldOrder && $oldOrder !== $newOrder) {
+        if ($oldOrder < $newOrder) {
+            Maillot::where('id', '!=', $maillot->id)->where('is_new', true)
+                ->where('new_order', '>', $oldOrder)->where('new_order', '<=', $newOrder)
+                ->whereNotNull('new_order')->decrement('new_order');
+        } else {
+            Maillot::where('id', '!=', $maillot->id)->where('is_new', true)
+                ->where('new_order', '>=', $newOrder)->where('new_order', '<', $oldOrder)
+                ->whereNotNull('new_order')->increment('new_order');
+        }
+    } elseif (!$oldOrder) {
+        Maillot::where('id', '!=', $maillot->id)->where('is_new', true)
+            ->where('new_order', '>=', $newOrder)
+            ->whereNotNull('new_order')->increment('new_order');
     }
 }
 

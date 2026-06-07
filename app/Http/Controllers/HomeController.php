@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function __invoke()
     {
         $featuredMaillots = Maillot::where('is_featured', true)
-            ->orderBy('home_order')
+            ->orderByRaw('COALESCE(featured_order, 9999) ASC')
             ->get(['id', 'nom', 'price', 'image', 'image_dos', 'badge', 'club_id'])
             ->map(fn($m) => [
                 'id' => $m->id,
@@ -24,7 +24,7 @@ class HomeController extends Controller
             ]);
 
         $newMaillots = Maillot::where('is_new', true)
-            ->orderBy('home_order')
+            ->orderByRaw('COALESCE(new_order, 9999) ASC')
             ->get(['id', 'nom', 'price', 'image','image_dos', 'badge', 'club_id'])
             ->map(fn($m) => [
                 'id' => $m->id,

@@ -30,6 +30,8 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     is_new: false,
     badge: '',
     home_order: '',
+    featured_order: '',
+    new_order: '',
     description: '',
     remove_image: false,
     remove_image_dos: false,
@@ -58,6 +60,8 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       is_new: false, 
       badge: '', 
       home_order: '',
+      featured_order: '',
+      new_order: '',
      description: '',
      sort_order: '',
     })
@@ -78,11 +82,13 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       image: null,
       image_dos: null,
       is_featured: maillot.is_featured || false,
-        is_new: maillot.is_new || false,
-        badge: maillot.badge || '',
-        home_order: maillot.home_order || '',
-        description: maillot.description || '',
-        sort_order: maillot.sort_order || '',
+      is_new: maillot.is_new || false,
+      badge: maillot.badge || '',
+      home_order: maillot.home_order || '',
+      featured_order: maillot.featured_order || '',
+      new_order: maillot.new_order || '',
+      description: maillot.description || '',
+      sort_order: maillot.sort_order || '',
     })
     setEditingMaillot(maillot)
     setShowModal(true)
@@ -526,14 +532,14 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
                       className="w-32 h-32 object-cover mt-1 rounded"
                     />
                     <label className="flex items-center gap-2 mt-2 text-sm text-red-600 cursor-pointer">
-      <input
-        type="checkbox"
-        checked={data.remove_image_dos}
-        onChange={(e) => setData('remove_image_dos', e.target.checked)}
-        className="h-4 w-4"
-      />
-      Supprimer cette image
-    </label>
+                    <input
+                      type="checkbox"
+                      checked={data.remove_image_dos}
+                      onChange={(e) => setData('remove_image_dos', e.target.checked)}
+                      className="h-4 w-4"
+                    />
+                    Supprimer cette image
+                  </label>
                   </div>
                 )}
               </div>
@@ -571,36 +577,55 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
 <div>
                
             </div>
+    {data.is_featured && (
     <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-        Ordre d'affichage sur la page d'accueil 
-    </label>
-    <input
-        type="number"
-        min="1"
-        value={data.home_order}
-        onChange={(e) => setData('home_order', e.target.value)}
-        placeholder="Ex: 1, 2, 3..."
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-</div>
-</div>
-{/* Ordre catégories / club */}
-<div className="border-t pt-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-        Ordre d'affichage dans les catégories et clubs <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
-    </label>
-    <input
-        type="number"
-        min="1"
-        value={data.sort_order}
-        onChange={(e) => setData('sort_order', e.target.value)}
-        placeholder="Ex: 1, 2, 3..."
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-</div>
-{/* Badge */}
- <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+            Ordre dans "Maillots Phares"
+        </label>
+        <input
+            type="number"
+            min="1"
+            value={data.featured_order}
+            onChange={(e) => setData('featured_order', e.target.value)}
+            placeholder="Ex: 1, 2, 3..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+    </div>
+)}
+
+          {data.is_new && (
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Ordre dans "Nouveaux Maillots"
+                  </label>
+                  <input
+                      type="number"
+                      min="1"
+                      value={data.new_order}
+                      onChange={(e) => setData('new_order', e.target.value)}
+                      placeholder="Ex: 1, 2, 3..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+              </div>
+          )}
+          </div>
+          {/* Ordre catégories / club */}
+          <div className="border-t pt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Ordre dans les catégories et clubs <span className="text-gray-400 text-xs">(1 = priorité max, vide = par défaut)</span>
+              </label>
+              <input
+                  type="number"
+                  min="1"
+                  value={data.sort_order}
+                  onChange={(e) => setData('sort_order', e.target.value)}
+                  placeholder="Ex: 1, 2, 3..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+          </div>
+
+                {/* Badge */}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                     Badge <span className="text-gray-400 text-xs">(optionnel)</span>
                 </label>
                 <input

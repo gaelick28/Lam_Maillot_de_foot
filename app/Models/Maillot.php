@@ -23,6 +23,8 @@ class Maillot extends Model
         'badge', 
         'home_order',
         'sort_order',
+        'featured_order',
+        'new_order',
     ];
 
     protected $casts = [
