@@ -234,16 +234,19 @@ if (!empty($validated['sort_order'])) {
                 ->increment('sort_order');
         }
     } elseif (!$oldOrder) {
-        // sort_order était NULL : simple insertion
-        Maillot::where('club_id', $maillot->club_id)
-            ->where('id', '!=', $maillot->id)
-            ->where('sort_order', '>=', $newOrder)
-            ->whereNotNull('sort_order')
-            ->increment('sort_order');
+        $positionTaken = Maillot::where('club_id', $maillot->club_id)
+            ->where('id', '!=', $maillot->id)->where('sort_order', $newOrder)
+            ->whereNotNull('sort_order')->exists();
+        if ($positionTaken) {
+            Maillot::where('club_id', $maillot->club_id)
+                ->where('id', '!=', $maillot->id)
+                ->where('sort_order', '>=', $newOrder)
+                ->whereNotNull('sort_order')->increment('sort_order');
+        }
     }
 }
 
-// home_order 
+
 // Décalage featured_order
 if (!empty($validated['featured_order'])) {
     $newOrder = (int) $validated['featured_order'];
@@ -260,9 +263,14 @@ if (!empty($validated['featured_order'])) {
                 ->whereNotNull('featured_order')->increment('featured_order');
         }
     } elseif (!$oldOrder) {
-        Maillot::where('id', '!=', $maillot->id)->where('is_featured', true)
-            ->where('featured_order', '>=', $newOrder)
-            ->whereNotNull('featured_order')->increment('featured_order');
+        $positionTaken = Maillot::where('id', '!=', $maillot->id)
+            ->where('is_featured', true)->where('featured_order', $newOrder)
+            ->whereNotNull('featured_order')->exists();
+        if ($positionTaken) {
+            Maillot::where('id', '!=', $maillot->id)->where('is_featured', true)
+                ->where('featured_order', '>=', $newOrder)
+                ->whereNotNull('featured_order')->increment('featured_order');
+        }
     }
 }
 
@@ -282,9 +290,14 @@ if (!empty($validated['new_order'])) {
                 ->whereNotNull('new_order')->increment('new_order');
         }
     } elseif (!$oldOrder) {
-        Maillot::where('id', '!=', $maillot->id)->where('is_new', true)
-            ->where('new_order', '>=', $newOrder)
-            ->whereNotNull('new_order')->increment('new_order');
+        $positionTaken = Maillot::where('id', '!=', $maillot->id)
+            ->where('is_new', true)->where('new_order', $newOrder)
+            ->whereNotNull('new_order')->exists();
+        if ($positionTaken) {
+            Maillot::where('id', '!=', $maillot->id)->where('is_new', true)
+                ->where('new_order', '>=', $newOrder)
+                ->whereNotNull('new_order')->increment('new_order');
+        }
     }
 }
 
