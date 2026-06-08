@@ -177,6 +177,46 @@ private function deleteCloudinaryImage(string $url): void
         $validated['stock_xl']  = $validated['stock_xl']  ?? 25;
         $validated['stock_xxl'] = $validated['stock_xxl'] ?? 25;
 
+
+        // Décalage new_order à la création
+        if (!empty($validated['new_order'])) {
+            $newOrder = (int) $validated['new_order'];
+            $positionTaken = Maillot::where('is_new', true)
+                ->where('new_order', $newOrder)
+                ->whereNotNull('new_order')->exists();
+            if ($positionTaken) {
+                Maillot::where('is_new', true)
+                    ->where('new_order', '>=', $newOrder)
+                    ->whereNotNull('new_order')->increment('new_order');
+            }
+        }
+
+        // Décalage featured_order à la création
+        if (!empty($validated['featured_order'])) {
+            $newOrder = (int) $validated['featured_order'];
+            $positionTaken = Maillot::where('is_featured', true)
+                ->where('featured_order', $newOrder)
+                ->whereNotNull('featured_order')->exists();
+            if ($positionTaken) {
+                Maillot::where('is_featured', true)
+                    ->where('featured_order', '>=', $newOrder)
+                    ->whereNotNull('featured_order')->increment('featured_order');
+            }
+        }
+
+        // Décalage sort_order à la création
+        if (!empty($validated['sort_order']) && !empty($validated['club_id'])) {
+            $newOrder = (int) $validated['sort_order'];
+            $positionTaken = Maillot::where('club_id', $validated['club_id'])
+                ->where('sort_order', $newOrder)
+                ->whereNotNull('sort_order')->exists();
+            if ($positionTaken) {
+                Maillot::where('club_id', $validated['club_id'])
+                    ->where('sort_order', '>=', $newOrder)
+                    ->whereNotNull('sort_order')->increment('sort_order');
+            }
+        }
+
         Maillot::create($validated);
 
         return redirect()->route('admin.maillots.index')
@@ -301,6 +341,29 @@ if (!empty($validated['new_order'])) {
     }
 }
 
+// Si is_new passe à false, effacer new_order
+if (isset($validated['is_new']) && !$validated['is_new'] && $maillot->is_new) {
+    $validated['new_order'] = null;
+    // Fermer le trou laissé
+    if ($maillot->new_order) {
+        Maillot::where('is_new', true)
+            ->where('new_order', '>', $maillot->new_order)
+            ->whereNotNull('new_order')
+            ->decrement('new_order');
+    }
+}
+
+// Si is_featured passe à false, effacer featured_order
+if (isset($validated['is_featured']) && !$validated['is_featured'] && $maillot->is_featured) {
+    $validated['featured_order'] = null;
+    if ($maillot->featured_order) {
+        Maillot::where('is_featured', true)
+            ->where('featured_order', '>', $maillot->featured_order)
+            ->whereNotNull('featured_order')
+            ->decrement('featured_order');
+    }
+}
+
 $maillot->update($validated);
 
     return redirect()->route('admin.maillots.index')
@@ -338,6 +401,28 @@ $maillot->update($validated);
             unlink(public_path($maillot->image_dos));
         }
     }
+
+        // Fermer les trous après suppression
+        if ($maillot->new_order) {
+            Maillot::where('is_new', true)
+                ->where('new_order', '>', $maillot->new_order)
+                ->whereNotNull('new_order')
+                ->decrement('new_order');
+        }
+
+        if ($maillot->featured_order) {
+            Maillot::where('is_featured', true)
+                ->where('featured_order', '>', $maillot->featured_order)
+                ->whereNotNull('featured_order')
+                ->decrement('featured_order');
+        }
+
+        if ($maillot->sort_order) {
+            Maillot::where('club_id', $maillot->club_id)
+                ->where('sort_order', '>', $maillot->sort_order)
+                ->whereNotNull('sort_order')
+                ->decrement('sort_order');
+        }    
 
     $maillot->delete();
 
