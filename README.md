@@ -1,46 +1,82 @@
-<<<<<<< HEAD
-# Dead Simple Laravel-Inertia-React Starter Kit
+# Fou2Foot 🎽
 
-This is a dead simple to kickstart your Laravel Inertia with React. Powered with:
+Application e-commerce de maillots de football, développée en autonomie dans le cadre du Titre Professionnel Développeur Web et Web Mobile (DWWM, Niveau 5).
 
-+ [Laravel](https://laravel.com)
-+ [React](https://react.dev)
-+ [Inertia](https://inertiajs.com)
-+ [Vite](https://vitejs.dev)
-+ [Tailwindcss](https://tailwindcss.com)
-+ [Tailwindui](https://tailwindui.com)
-+ [Heroicons](https://heroicons.com/)
-+ [Eslint](https://eslint.org)
+🌐 **Site en production : [https://fou2foot.eu](https://fou2foot.eu)**
 
-> Blogpost: [Simple Laravel Inertia React and Tailwindcss Starter Kit](https://blog.didiktrisusanto.dev/simple-laravel-inertia-react-and-tailwindcss-starter-kit)
+---
 
-## Application Structure
+## Stack technique
 
-Available two separate basic application structures which are:
+- **Back-end :** Laravel 11 (PHP orienté objet), PostgreSQL (Neon), API REST
+- **Front-end :** React 18, Inertia.js, Tailwind CSS, Vite
+- **Infrastructure :** Docker, Render (déploiement cloud)
+- **Services :** Stripe (paiement), Cloudinary (stockage images), Resend (emails SMTP production), Mailtrap (emails SMTP développement)
+- **Outils :** Git / GitHub, Composer, npm
 
-+ Landing Pages: Landing or your common end user web front applications. `https://yourapplication.com/*`
-+ Backoffice: Your internal application for backoffice or admin panel. `https://yourapplication.com/backoffice/*`
+---
 
-## Installation
+## Fonctionnalités
 
-+ Clone this repository `git clone git@github.com:didikz/laravel-inertia-react-starter.git`
-+ Move to the project directory
-+ Create `.env` file: `cp .env.example .env`
-+ Install Laravel `composer install`
-+ Setup app key `php artisan key:generate`
-+ Install node dependencies `npm install`
+### Espace utilisateur
+- Authentification (inscription, connexion, gestion de profil)
+- Catalogue de maillots avec filtres et recherche
+- Gestion du panier et des adresses de livraison
+- Paiement sécurisé via Stripe
+- Suivi des commandes
+- Emails transactionnels via Brevo SMTP
 
-## Running the project
+### Panel d'administration
+- Gestion des maillots : création, modification, suppression (avec upload d'images recto/verso)
+- Gestion des clubs : création, modification, suppression
+- Import de maillots en masse à partir des images
+- Positionnement éditorial sur la page d'accueil : gestion de l'ordre d'affichage dans les sections "Maillots phares" et "Nouveaux maillots" avec réordonnancement automatique des positions (insertion, déplacement, suppression sans trou)
+- Ordre d'affichage des maillots par club avec le même mécanisme de réordonnancement
+- Gestion des stocks par taille (S, M, L, XL, XXL) avec filtres avancés (rupture, stock faible, stock partiel)
+- Statistiques
+- Gestion du profil administrateur
+
+---
+
+## Points techniques notables
+
+- Système de positionnement éditorial en pur PHP côté serveur (sans librairie externe) : insertion à une position précise avec décalage automatique, déplacement avec réajustement des positions intermédiaires, fermeture des trous à la suppression
+- Upload et stockage d'images via Cloudinary en production, stockage local en développement (environnement branché via `env('RENDER')`)
+- Migration de base de données MySQL → PostgreSQL en production avec script de migration personnalisé
+- Déploiement containerisé via Docker sur Render (filesystem éphémère)
+- Requêtes SQL compatibles MySQL et PostgreSQL (`ILIKE` / `LIKE`, `COALESCE`, `whereRaw`)
+- Configuration multi-environnements (local / production)
+
+---
+
+## Installation locale
 
 ```bash
-# running laravel
+git clone https://github.com/gaelick28/Lam_Maillot_de_foot.git
+cd Lam_Maillot_de_foot
+cp .env.example .env
+composer install
+npm install
+php artisan key:generate
+php artisan migrate --seed
+```
+
+Configurer les variables d'environnement dans `.env` (DB, Stripe, Cloudinary, Mailtrap pour les emails en local), puis lancer dans deux terminaux séparés :
+
+```bash
+# Terminal 1 — serveur Laravel
 php artisan serve
 
-# build local frontend
+# Terminal 2 — compilation des assets React
 npm run dev
 ```
 
-Visit `http://localhost:8000` to see your runing project.
-=======
-# Lam_Maillot_de_foot
->>>>>>> 05e38c001192ccba5874840e29d3435b7dd958e7
+L'application est accessible sur `http://localhost:8000`.
+
+---
+
+## Auteur
+
+**Gaëlick Rigoux** — Développeur Web Full Stack  
+📧 [gaelick28@gmail.com](mailto:gaelick28@gmail.com)  
+🌐 [https://fou2foot.eu](https://fou2foot.eu)
