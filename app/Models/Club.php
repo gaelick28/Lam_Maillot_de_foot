@@ -25,6 +25,7 @@ protected $fillable = [
 
     public function patches()
 {
-    return $this->belongsToMany(Patch::class);
+    return $this->belongsToMany(Patch::class)
+        ->orderBy('patches.display_order');
 }
 }
