@@ -461,23 +461,39 @@ const supplement =
             </div>
 
           {/* PATCHS */}
+{/* PATCHS */}
 {maillot.club?.patches?.length > 0 && (
     <div className="mb-2 mt-3 border-t pt-3">
         <p className="font-medium mb-2">Ajouter un patch :</p>
-        {maillot.club.patches.map(patch => (
-            <label key={patch.id} className="flex items-center gap-2 mb-1">
-                <input
-                    type="checkbox"
-                    checked={personnalisation[`patch_${patch.id}`] || false}
-                    onChange={e => setPersonnalisation(p => ({ ...p, [`patch_${patch.id}`]: e.target.checked }))}
-                    className="mr-2"
-                />
-                {patch.nom} (+{patch.prix} €)
-            </label>
-        ))}
+        {maillot.club.patches.map(patch => {
+            const patchIcons = {
+                'Ligue 1':                        <span className="fi fi-fr"></span>,
+                'Premier League':                 <span className="fi fi-gb"></span>,
+                'Bundesliga':                     <span className="fi fi-de"></span>,
+                'Liga':                           <span className="fi fi-es"></span>,
+                'Serie A':                        <span className="fi fi-it"></span>,
+                'Champions League':               '⭐',
+                'UEFA Nations League':            '🏆',
+                'Fondation UEFA pour l\'enfance': '💙',
+                'FIFA World Cup':                 '🌍',
+                'CAN':                            '🏅',
+                'CONMEBOL Copa América':          '🏅',
+            };
+            return (
+                <label key={patch.id} className="flex items-center gap-2 mb-1">
+                    <input
+                        type="checkbox"
+                        checked={personnalisation[`patch_${patch.id}`] || false}
+                        onChange={e => setPersonnalisation(p => ({ ...p, [`patch_${patch.id}`]: e.target.checked }))}
+                        className="mr-2"
+                    />
+                    <span className="text-xl">{patchIcons[patch.nom] || '🏅'}</span>
+                    {patch.nom} (+{patch.prix} €)
+                </label>
+            );
+        })}
     </div>
 )}
-
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
             
             {/* ✅ Bouton conditionnel selon le stock */}
