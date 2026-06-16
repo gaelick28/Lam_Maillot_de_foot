@@ -116,6 +116,23 @@ const supplement =
   setZoomPosition({ x, y });
 };
 
+const handleTogglePatch = (patchId, patchNom, checked) => {
+    setPersonnalisation(prev => {
+        const newState = { ...prev, [`patch_${patchId}`]: checked };
+        
+        // Si on coche Champions League → décocher Europa League (et inversement)
+        if (checked && (patchNom === 'Champions League' || patchNom === 'Europa League')) {
+            const autrePatch = patchNom === 'Champions League' ? 'Europa League' : 'Champions League';
+            const autrePatchObj = maillot.club.patches.find(p => p.nom === autrePatch);
+            if (autrePatchObj) {
+                newState[`patch_${autrePatchObj.id}`] = false;
+            }
+        }
+        
+        return newState;
+    });
+};
+
   return (
     <>
       <Header />
@@ -466,25 +483,38 @@ const supplement =
     <div className="mb-2 mt-3 border-t pt-3">
         <p className="font-medium mb-2">Ajouter un patch :</p>
         {maillot.club.patches.map(patch => {
-            const patchIcons = {
-                'Ligue 1':                        <span className="fi fi-fr"></span>,
-                'Premier League':                 <span className="fi fi-gb"></span>,
-                'Bundesliga':                     <span className="fi fi-de"></span>,
-                'Liga':                           <span className="fi fi-es"></span>,
-                'Serie A':                        <span className="fi fi-it"></span>,
-                'Champions League':               '⭐',
-                'UEFA Nations League':            '🏆',
-                'Fondation UEFA pour l\'enfance': '💙',
-                'FIFA World Cup':                 '🌍',
-                'CAN':                            '🏅',
-                'CONMEBOL Copa América':          '🏅',
-            };
+           const patchIcons = {
+    'Ligue 1':                        <span className="fi fi-fr"></span>,
+    'Premier League':                 <span className="fi fi-gb"></span>,
+    'Bundesliga':                     <span className="fi fi-de"></span>,
+    'Liga':                           <span className="fi fi-es"></span>,
+    'Serie A':                        <span className="fi fi-it"></span>,
+    'Eredivisie':                     <span className="fi fi-nl"></span>,
+    'Jupiler Pro League':             <span className="fi fi-be"></span>,
+    'Primeira Liga':                  <span className="fi fi-pt"></span>,
+    'Scottish Premiership':           <span className="fi fi-gb-sct"></span>,
+    'Süper Lig':                      <span className="fi fi-tr"></span>,
+    'Brasileirão':                    <span className="fi fi-br"></span>,
+    'Swiss Super League':             <span className="fi fi-ch"></span>,
+    'Austrian Bundesliga':            <span className="fi fi-at"></span>,
+    'Greek Super League':             <span className="fi fi-gr"></span>,
+    'MLS':                            <span className="fi fi-us"></span>,
+    'Saudi Pro League':               <span className="fi fi-sa"></span>,
+    'Champions League':               '⭐',
+    'Europa League':                  '🟠',
+    'Copa Libertadores':              '🌎',
+    'UEFA Nations League':            '🏆',
+    'Fondation UEFA pour l\'enfance': '💙',
+    'FIFA World Cup':                 '🌍',
+    'CAN':                            '🥇',
+    'CONMEBOL Copa América':          '🏅',
+};
             return (
                 <label key={patch.id} className="flex items-center gap-2 mb-1">
                     <input
                         type="checkbox"
                         checked={personnalisation[`patch_${patch.id}`] || false}
-                        onChange={e => setPersonnalisation(p => ({ ...p, [`patch_${patch.id}`]: e.target.checked }))}
+                       onChange={e => handleTogglePatch(patch.id, patch.nom, e.target.checked)}
                         className="mr-2"
                     />
                     <span className="text-xl">{patchIcons[patch.nom] || '🏅'}</span>
