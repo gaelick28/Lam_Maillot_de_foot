@@ -555,7 +555,7 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
                                 <p className="font-medium mb-2">Patches mutuellement exclusifs :</p>
                                 <ul className="list-disc list-inside space-y-1">
                                     {relevantPairs.map((pair, index) => (
-                                        <li key={index}>{pair[0]} / {pair[1]}</li>
+                                        <li key={index}>{pair[0]} ou {pair[1]}</li>
                                     ))}
                                 </ul>
                                 <p className="mt-2 text-xs text-gray-500 italic">Vous ne pouvez pas cocher ces deux patches simultanément.</p>
