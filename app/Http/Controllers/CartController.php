@@ -220,6 +220,11 @@ class CartController extends Controller
         $patches = $request->input('patches', []);
         $patches = Patch::whereIn('id', $patches)->pluck('id')->toArray();
         sort($patches);
+        // Validation des patches mutuellement exclusifs
+        $error = $this->validateExclusivePatches($patches);
+        if ($error) {
+            return back()->with('error', $error);
+}
 
         $maillot = Maillot::findOrFail($request->maillot_id);
 
@@ -337,6 +342,11 @@ class CartController extends Controller
         $data['nom']     = $request->filled('nom') ? $request->nom : null;
         $data['numero']  = $request->filled('numero') ? $request->numero : null;
         $data['patches'] = $request->input('patches', []);
+        // Validation des patches mutuellement exclusifs
+        $error = $this->validateExclusivePatches($data['patches']);
+        if ($error) {
+            return redirect()->route('cart.show')->with('error', $error);
+        }
 
         // Vérification du stock avant mise à jour
         if (str_starts_with($itemId, 'session_')) {
@@ -513,4 +523,32 @@ class CartController extends Controller
 
         return redirect()->route('orders.index')->with('success', 'Commande validée !');
     }
+    /**
+     * Valide qu'aucune paire de patches mutuellement exclusifs n'est cochée ensemble.
+     *
+     * @param array $patchIds  Liste d'IDs de patches
+     * @return string|null  Message d'erreur ou null si OK
+     */
+    private function validateExclusivePatches(array $patchIds): ?string
+    {
+        $exclusivePairs = config('patches.exclusive_pairs');
+
+        if (empty($patchIds)) {
+            return null;
+        }
+
+        $patchNames = Patch::whereIn('id', $patchIds)->pluck('nom')->toArray();
+
+        foreach ($exclusivePairs as $pair) {
+            if (count(array_intersect($pair, $patchNames)) === 2) {
+                return sprintf(
+                    'Patches incompatibles : vous ne pouvez pas sélectionner "%s" et "%s" simultanément.',
+                    $pair[0],
+                    $pair[1]
+                );
+            }
+        }
+
+        return null;
+    } 
 }

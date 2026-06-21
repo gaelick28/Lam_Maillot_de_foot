@@ -7,7 +7,8 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
 export default function Panier() {
-  const { auth, cartItems: initialCartItems = [] } = usePage().props;
+  const { auth, cartItems: initialCartItems = [], config } = usePage().props;
+  const exclusivePairs = config?.exclusivePatchPairs || [];
   const user = auth?.user;
 
   // Prix fixes pour les suppléments
@@ -384,6 +385,44 @@ useEffect(() => {
                       />
                     </div>
 
+                    {/* Patches mobile */}
+{item.available_patches && item.available_patches.length > 0 && (
+  <div className="mt-3">
+    <p className="text-xs font-medium text-gray-600 mb-2">Patches</p>
+    <div className="flex flex-col gap-1">
+      {item.available_patches.map(patch => (
+        <label key={patch.id} className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={(item.patches || []).map(Number).includes(Number(patch.id))}
+            onChange={(e) => {
+              let updated = e.target.checked
+                ? [...(item.patches || []), patch.id]
+                : (item.patches || []).filter(id => Number(id) !== Number(patch.id));
+              
+              // Si on coche, retirer les patches exclusifs
+              if (e.target.checked) {
+                const pairs = exclusivePairs.filter(p => p.includes(patch.nom));
+                pairs.forEach(pair => {
+                  const autreNom = pair.find(n => n !== patch.nom);
+                  const autrePatchObj = item.available_patches.find(p => p.nom === autreNom);
+                  if (autrePatchObj) {
+                    updated = updated.filter(id => Number(id) !== Number(autrePatchObj.id));
+                  }
+                });
+              }
+              
+              handleEdit(item.id, 'patches', updated);
+            }}
+            className="w-4 h-4"
+          />
+          <span>{patch.nom} (+{patch.prix} €)</span>
+        </label>
+      ))}
+    </div>
+  </div>
+)}
+
                     {/* Prix & totaux */}
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
                       <div>
@@ -573,17 +612,29 @@ useEffect(() => {
         {(item.available_patches || []).map(patch => (
             <label key={patch.id} className="flex items-center gap-1 text-xs">
                 <input
-                    type="checkbox"
-                    checked={(item.patches || []).map(Number).includes(Number(patch.id))}
-                    onChange={(e) => {
-                        const current = item.patches || [];
-                        const updated = e.target.checked
-                            ? [...current, patch.id]
-                            : current.filter(id => id !== patch.id);
-                        handleEdit(item.id, 'patches', updated);
-                    }}
-                    className="w-3 h-3"
-                />
+    type="checkbox"
+    checked={(item.patches || []).map(Number).includes(Number(patch.id))}
+    onChange={(e) => {
+        let updated = e.target.checked
+            ? [...(item.patches || []), patch.id]
+            : (item.patches || []).filter(id => Number(id) !== Number(patch.id));
+        
+        // Si on coche, retirer les patches exclusifs
+        if (e.target.checked) {
+            const pairs = exclusivePairs.filter(p => p.includes(patch.nom));
+            pairs.forEach(pair => {
+                const autreNom = pair.find(n => n !== patch.nom);
+                const autrePatchObj = item.available_patches.find(p => p.nom === autreNom);
+                if (autrePatchObj) {
+                    updated = updated.filter(id => Number(id) !== Number(autrePatchObj.id));
+                }
+            });
+        }
+        
+        handleEdit(item.id, 'patches', updated);
+    }}
+    className="w-3 h-3"
+/>
                 {patch.nom}
             </label>
         ))}

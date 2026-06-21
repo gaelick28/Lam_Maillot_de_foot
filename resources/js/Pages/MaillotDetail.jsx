@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { imageUrl } from "@/utils/imageUrl";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import { router } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
 import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
 export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix, prix_numero, prix_nom, autresMaillots = [] }) {
-// FORCER la conversion en nombres
+    const { config } = usePage().props;
+    const exclusivePairs = config?.exclusivePatchPairs || [];
+  // FORCER la conversion en nombres
   const prixNum = Number(prix);
   const prixNumeroNum = Number(prix_numero);
   const prixNomNum = Number(prix_nom);
@@ -117,14 +119,6 @@ const supplement =
   setZoomPosition({ x, y });
 };
 
-// Paires de patches mutuellement exclusifs
-const exclusivePairs = [
-    ['Champions League', 'Europa League'],
-    ['Euro', 'FIFA World Cup'],
-    ['CAN', 'FIFA World Cup'],
-    ['CONMEBOL Copa América', 'FIFA World Cup'],
-    ['AFC Asian Cup', 'FIFA World Cup'],
-];
 
 const handleTogglePatch = (patchId, patchNom, checked) => {
     setPersonnalisation(prev => {
