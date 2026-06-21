@@ -26,6 +26,7 @@ export default function MaillotDetail({ maillot, tailles, stocks, quantite, prix
   const images = [maillot.image, ...(maillot.image_dos ? [maillot.image_dos] : [])];
   const [activeTab, setActiveTab] = useState('description');
   const [showTooltipTaille, setShowTooltipTaille] = useState(false);
+  const [showTooltipPatch, setShowTooltipPatch] = useState(false);
 
   //  Obtenir le stock disponible pour la taille sélectionnée
   const stockDisponible = stocks[taille] || 0;
@@ -116,17 +117,29 @@ const supplement =
   setZoomPosition({ x, y });
 };
 
+// Paires de patches mutuellement exclusifs
+const exclusivePairs = [
+    ['Champions League', 'Europa League'],
+    ['Euro', 'FIFA World Cup'],
+    ['CAN', 'FIFA World Cup'],
+    ['CONMEBOL Copa América', 'FIFA World Cup'],
+    ['AFC Asian Cup', 'FIFA World Cup'],
+];
+
 const handleTogglePatch = (patchId, patchNom, checked) => {
     setPersonnalisation(prev => {
         const newState = { ...prev, [`patch_${patchId}`]: checked };
         
-        // Si on coche Champions League → décocher Europa League (et inversement)
-        if (checked && (patchNom === 'Champions League' || patchNom === 'Europa League')) {
-            const autrePatch = patchNom === 'Champions League' ? 'Europa League' : 'Champions League';
-            const autrePatchObj = maillot.club.patches.find(p => p.nom === autrePatch);
-            if (autrePatchObj) {
-                newState[`patch_${autrePatchObj.id}`] = false;
-            }
+        if (checked) {
+            // Chercher TOUTES les paires exclusives qui contiennent ce patch
+            const pairs = exclusivePairs.filter(p => p.includes(patchNom));
+            pairs.forEach(pair => {
+                const autreNom = pair.find(n => n !== patchNom);
+                const autrePatchObj = maillot.club.patches.find(p => p.nom === autreNom);
+                if (autrePatchObj) {
+                    newState[`patch_${autrePatchObj.id}`] = false;
+                }
+            });
         }
         
         return newState;
@@ -479,51 +492,93 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
 
           {/* PATCHS */}
 {/* PATCHS */}
-{maillot.club?.patches?.length > 0 && (
-    <div className="mb-2 mt-3 border-t pt-3">
-        <p className="font-medium mb-2">Ajouter un patch :</p>
-        {maillot.club.patches.map(patch => {
-           const patchIcons = {
-    'Ligue 1':                        <span className="fi fi-fr"></span>,
-    'Premier League':                 <span className="fi fi-gb"></span>,
-    'Bundesliga':                     <span className="fi fi-de"></span>,
-    'Liga':                           <span className="fi fi-es"></span>,
-    'Serie A':                        <span className="fi fi-it"></span>,
-    'Eredivisie':                     <span className="fi fi-nl"></span>,
-    'Jupiler Pro League':             <span className="fi fi-be"></span>,
-    'Primeira Liga':                  <span className="fi fi-pt"></span>,
-    'Scottish Premiership':           <span className="fi fi-gb-sct"></span>,
-    'Süper Lig':                      <span className="fi fi-tr"></span>,
-    'Brasileirão':                    <span className="fi fi-br"></span>,
-    'Swiss Super League':             <span className="fi fi-ch"></span>,
-    'Austrian Bundesliga':            <span className="fi fi-at"></span>,
-    'Greek Super League':             <span className="fi fi-gr"></span>,
-    'MLS':                            <span className="fi fi-us"></span>,
-    'Saudi Pro League':               <span className="fi fi-sa"></span>,
-    'Champions League':               '⭐',
-    'Europa League':                  '🟠',
-    'Copa Libertadores':              '🌎',
-    'UEFA Nations League':            '🏆',
-    'Fondation UEFA pour l\'enfance': '💙',
-    'FIFA World Cup':                 '🌍',
-    'CAN':                            '🥇',
-    'CONMEBOL Copa América':          '🏅',
-};
-            return (
+{maillot.club?.patches?.length > 0 && (() => {
+    // Calculer dynamiquement les paires exclusives présentes pour ce club
+    const patchNames = maillot.club.patches.map(p => p.nom);
+    const relevantPairs = exclusivePairs.filter(pair => 
+        pair.every(name => patchNames.includes(name))
+    );
+    const hasExclusivePairs = relevantPairs.length > 0;
+
+    const patchIcons = {
+        'Ligue 1':                        <span className="fi fi-fr"></span>,
+        'Premier League':                 <span className="fi fi-gb"></span>,
+        'Bundesliga':                     <span className="fi fi-de"></span>,
+        'Liga':                           <span className="fi fi-es"></span>,
+        'Serie A':                        <span className="fi fi-it"></span>,
+        'Eredivisie':                     <span className="fi fi-nl"></span>,
+        'Jupiler Pro League':             <span className="fi fi-be"></span>,
+        'Primeira Liga':                  <span className="fi fi-pt"></span>,
+        'Scottish Premiership':           <span className="fi fi-gb-sct"></span>,
+        'Süper Lig':                      <span className="fi fi-tr"></span>,
+        'Brasileirão':                    <span className="fi fi-br"></span>,
+        'Swiss Super League':             <span className="fi fi-ch"></span>,
+        'Austrian Bundesliga':            <span className="fi fi-at"></span>,
+        'Greek Super League':             <span className="fi fi-gr"></span>,
+        'MLS':                            <span className="fi fi-us"></span>,
+        'Saudi Pro League':               <span className="fi fi-sa"></span>,
+        'Champions League':               '⭐',
+        'Europa League':                  '🟠',
+        'Copa Libertadores':              '🌎',
+        'Euro':                           '🏆',
+        'Fondation UEFA pour l\'enfance': '💙',
+        'FIFA World Cup':                 '🌍',
+        'CAN':                            '🥇',
+        'CONMEBOL Copa América':          '🏅',
+        'AFC Asian Cup':                  '⚽',
+    };
+
+    return (
+        <div className="mb-2 mt-3 border-t pt-3">
+            <p className="font-medium mb-2 flex items-center gap-2">
+                Ajouter un patch :
+                {hasExclusivePairs && (
+                    <span
+                        className="relative inline-block"
+                        onMouseEnter={() => setShowTooltipPatch(true)}
+                        onMouseLeave={() => setShowTooltipPatch(false)}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4 cursor-pointer text-blue-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="8" strokeLinecap="round" strokeWidth={3} />
+                            <line x1="12" y1="12" x2="12" y2="16" strokeLinecap="round" strokeWidth={2} />
+                        </svg>
+                        {showTooltipPatch && (
+                            <div className="absolute left-6 top-0 z-20 w-72 bg-white border border-gray-200 rounded shadow-lg p-3 text-sm text-gray-700 font-normal">
+                                <p className="font-medium mb-2">Patches mutuellement exclusifs :</p>
+                                <ul className="list-disc list-inside space-y-1">
+                                    {relevantPairs.map((pair, index) => (
+                                        <li key={index}>{pair[0]} / {pair[1]}</li>
+                                    ))}
+                                </ul>
+                                <p className="mt-2 text-xs text-gray-500 italic">Vous ne pouvez cocher qu'un seul patch par paire.</p>
+                            </div>
+                        )}
+                    </span>
+                )}
+            </p>
+            {maillot.club.patches.map(patch => (
                 <label key={patch.id} className="flex items-center gap-2 mb-1">
                     <input
                         type="checkbox"
                         checked={personnalisation[`patch_${patch.id}`] || false}
-                       onChange={e => handleTogglePatch(patch.id, patch.nom, e.target.checked)}
+                        onChange={e => handleTogglePatch(patch.id, patch.nom, e.target.checked)}
                         className="mr-2"
                     />
                     <span className="text-xl">{patchIcons[patch.nom] || '🏅'}</span>
                     {patch.nom} (+{patch.prix} €)
                 </label>
-            );
-        })}
-    </div>
-)}
+            ))}
+        </div>
+    );
+})()}
             <div className="text-xl font-bold mt-4">Total : {total} €</div>
             
             {/* ✅ Bouton conditionnel selon le stock */}
