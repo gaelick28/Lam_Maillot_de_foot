@@ -558,7 +558,7 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
                                         <li key={index}>{pair[0]} / {pair[1]}</li>
                                     ))}
                                 </ul>
-                                <p className="mt-2 text-xs text-gray-500 italic">Vous ne pouvez cocher qu'un seul patch par paire.</p>
+                                <p className="mt-2 text-xs text-gray-500 italic">Vous ne pouvez pas cocher ces deux patches simultanément.</p>
                             </div>
                         )}
                     </span>
