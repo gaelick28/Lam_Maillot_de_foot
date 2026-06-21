@@ -40,20 +40,22 @@ class CartController extends Controller
             $nom    = $sessionItem['nom'] ?? null;
             $numero = $sessionItem['numero'] ?? null;
 
+            // extraire et trier les patches
+            $patches = $sessionItem['patches'] ?? [];
+            sort($patches);
+
             $existingItem = $cart->items()
                 ->where('maillot_id', $sessionItem['maillot_id'])
                 ->where('size', $sessionItem['size'])
                 ->where('nom', $nom)
                 ->where('numero', $numero)
-                ->where(function ($q) use ($sessionItem) {
-    $sorted = $sessionItem['patches'] ?? [];
-    sort($sorted);
-    if (config('database.default') === 'pgsql') {
-        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
-    } else {
-        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
-    }
-})
+                ->where(function ($q) use ($patches) {
+                if (config('database.default') === 'pgsql') {
+                    $q->whereRaw("patches::text = ?", [json_encode($patches)]);
+                } else {
+                    $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($patches)]);
+                }
+            })
                 ->first();
 
             if ($existingItem) {
@@ -65,7 +67,7 @@ class CartController extends Controller
                     'quantity'   => $sessionItem['quantity'],
                     'nom'        => $nom,
                     'numero'     => $numero,
-                    'patches'    => $sessionItem['patches'] ?? [],
+                    'patches'    => $patches,
                 ]);
             }
         }
@@ -247,12 +249,10 @@ class CartController extends Controller
                 ->where('numero', $numero)
                 ->where('nom', $nom)
                 ->where(function ($q) use ($patches) {
-    $sorted = $patches;
-    sort($sorted);
     if (config('database.default') === 'pgsql') {
-        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
+        $q->whereRaw("patches::text = ?", [json_encode($patches)]);
     } else {
-        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
+        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($patches)]);
     }
 })
                 ->first();
@@ -274,7 +274,7 @@ class CartController extends Controller
                     'quantity'   => $request->quantity,
                     'numero'     => $numero,
                     'nom'        => $nom,
-                    'patches'    => $request->input('patches', []),
+                    'patches'    => $patches, 
                 ]);
             }
 
@@ -291,7 +291,7 @@ class CartController extends Controller
                 $sessionItem['size'] == $request->size &&
                 ($sessionItem['nom'] ?? null) == $nom &&
                 ($sessionItem['numero'] ?? null) == $numero &&
-                ($sessionItem['patches'] ?? []) == $request->input('patches', [])
+                ($sessionItem['patches'] ?? []) == $patches
             ) {
                 $nouvelleQuantite = $sessionItem['quantity'] + $request->quantity;
 
@@ -315,7 +315,7 @@ class CartController extends Controller
                 'quantity'   => $request->quantity,
                 'nom'        => $nom,
                 'numero'     => $numero,
-                'patches'    => $request->input('patches', []),
+                'patches'    => $patches, 
             ];
         }
 
@@ -342,6 +342,7 @@ class CartController extends Controller
         $data['nom']     = $request->filled('nom') ? $request->nom : null;
         $data['numero']  = $request->filled('numero') ? $request->numero : null;
         $data['patches'] = $request->input('patches', []);
+        sort($data['patches']);
         // Validation des patches mutuellement exclusifs
         $error = $this->validateExclusivePatches($data['patches']);
         if ($error) {
@@ -377,7 +378,6 @@ class CartController extends Controller
             }
         }
 
-        // Item de session
         // Item de session
         if (str_starts_with($itemId, 'session_')) {
             $sessionCart = Session::get('cart', []);
@@ -445,12 +445,10 @@ class CartController extends Controller
             ->where('nom', $data['nom'])
             ->where('numero', $data['numero'])
             ->where(function ($q) use ($data) {
-    $sorted = $data['patches'];
-    sort($sorted);
     if (config('database.default') === 'pgsql') {
-        $q->whereRaw("patches::text = ?", [json_encode($sorted)]);
+        $q->whereRaw("patches::text = ?", [json_encode($data['patches'])]);
     } else {
-        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($sorted)]);
+        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(patches, '$')) = ?", [json_encode($data['patches'])]);
     }
 })
             ->first();
