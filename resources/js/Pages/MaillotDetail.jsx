@@ -518,7 +518,7 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
     </svg>
         ),
         'Copa Libertadores': (
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="#1E40AF">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#e7800a">
                 <path d="M18 2H6v7a6 6 0 0 0 12 0V2zM6 9H4.5a2.5 2.5 0 0 1 0-5H6v5zm12 0V4h1.5a2.5 2.5 0 0 1 0 5H18zM10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22h10c0-1.76-.85-3.25-2.03-3.79-.5-.23-.97-.66-.97-1.21v-2.34A6 6 0 0 1 10 14.66z" />
             </svg>
         ),
