@@ -511,11 +511,19 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
         'Greek Super League':             <span className="fi fi-gr"></span>,
         'MLS':                            <span className="fi fi-us"></span>,
         'Saudi Pro League':               <span className="fi fi-sa"></span>,
-        'Champions League':               '⭐',
-        'Europa League':                  '🟠',
-        'Copa Libertadores':              '🌎',
+        'Champions League':               '🏆',
+        'Europa League': (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#1E40AF" stroke="#78350F" strokeWidth="0.8">
+        <path d="M5 4h14v2c0 3-2 5-4 5.5V14h1a1 1 0 0 1 1 1v1H7v-1a1 1 0 0 1 1-1h1v-2.5C7 11 5 9 5 6V4zm-2 1h2v1c0 1.5 0.7 2.7 1.7 3.5C5.7 9.2 5 8.2 5 7V5H3v1c0 2.4 1.5 4 3.5 4.5 0 0-3.5-1-3.5-5.5zm18 0v1c0 4.5-3.5 5.5-3.5 5.5C19.5 11 21 9.4 21 7V5h-2v2c0 1.2-0.7 2.2-1.7 2.5C18.3 8.7 19 7.5 19 6V5h2zM8 17h8v2H8v-2z" />
+    </svg>
+        ),
+        'Copa Libertadores': (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#1E40AF">
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2zM6 9H4.5a2.5 2.5 0 0 1 0-5H6v5zm12 0V4h1.5a2.5 2.5 0 0 1 0 5H18zM10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22h10c0-1.76-.85-3.25-2.03-3.79-.5-.23-.97-.66-.97-1.21v-2.34A6 6 0 0 1 10 14.66z" />
+            </svg>
+        ),
         'Euro':                           '🏆',
-        'Fondation UEFA pour l\'enfance': '💙',
+        'Fondation UEFA pour l\'enfance': '🎈',
         'FIFA World Cup':                 '🌍',
         'CAN':                            '🥇',
         'CONMEBOL Copa América':          '🏅',
