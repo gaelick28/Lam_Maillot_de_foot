@@ -485,7 +485,6 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
             </div>
 
           {/* PATCHS */}
-{/* PATCHS */}
 {maillot.club?.patches?.length > 0 && (() => {
     // Calculer dynamiquement les paires exclusives présentes pour ce club
     const patchNames = maillot.club.patches.map(p => p.nom);
@@ -601,10 +600,9 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
             )}
           
 
-        {/* Description */}
-      {/* Onglets */}
+        {/*Onglets Description */}
 <div className="mt-14">
-    {/* Navigation onglets */}
+    {/* Navigation des onglets */}
     <div className="flex border-b border-gray-300" role="tablist">
         <button
         role="tab"
@@ -624,8 +622,9 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
         </button>
     </div>
 
-    {/* Contenu onglets */}
+    {/* Contenu de l'onglet actif */}
     <div role="tabpanel" className="pt-4 text-base text-gray-700">
+      {/* Onglet Description : texte admin si renseigné, sinon description générée automatiquement */}
         {activeTab === 'description' && (
             <p className="leading-relaxed text-justify">
                 {maillot.description ? maillot.description : (
@@ -641,6 +640,7 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
                 )}
             </p>
         )}
+        {/* Onglet Informations complémentaires */}
         {activeTab === 'infos' && (
             <table className="w-full">
                 <tbody>
