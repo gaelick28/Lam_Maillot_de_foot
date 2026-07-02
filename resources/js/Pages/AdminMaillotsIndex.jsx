@@ -33,6 +33,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
     featured_order: '',
     new_order: '',
     description: '',
+    infos: '',
     remove_image: false,
     remove_image_dos: false,
     sort_order: '',
@@ -62,8 +63,9 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       home_order: '',
       featured_order: '',
       new_order: '',
-     description: '',
-     sort_order: '',
+      description: '',
+      infos: '',
+      sort_order: '',
     })
     setEditingMaillot(null)
     setShowModal(true)
@@ -88,6 +90,7 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
       featured_order: maillot.featured_order || '',
       new_order: maillot.new_order || '',
       description: maillot.description || '',
+      infos: maillot.infos || '',
       sort_order: maillot.sort_order || '',
     })
     setEditingMaillot(maillot)
@@ -647,10 +650,21 @@ export default function AdminMaillotsIndex({ maillots, clubs, filters, auth }) {
         rows={4}
         placeholder="Description du maillot..."
         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-   
+    />  
 </div>
-
+{/* Informations complémentaires */}
+<div className="border-t pt-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Informations complémentaires <span className="text-gray-400 text-xs">(optionnelles — poids 0.25 kg affiché par défaut)</span>
+    </label>
+    <textarea
+        value={data.infos}
+        onChange={(e) => setData('infos', e.target.value)}
+        rows={4}
+        placeholder="Ex: Poids : 0.25 kg&#10;Matière : 100% polyester..."
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+</div>
               {/* Boutons */}
               <div className="flex gap-3 pt-4">
                 <button

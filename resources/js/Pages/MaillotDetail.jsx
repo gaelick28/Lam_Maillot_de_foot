@@ -640,17 +640,36 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
                 )}
             </p>
         )}
-        {/* Onglet Informations complémentaires */}
-        {activeTab === 'infos' && (
-            <table className="w-full">
-                <tbody>
-                    <tr className="border-b border-gray-200">
-                        <td className="py-2 font-medium text-gray-700 w-1/3">Poids</td>
-                        <td className="py-2">0.25 kg</td>
-                    </tr>
-                </tbody>
-            </table>
-        )}
+       {/* Onglet Informations complémentaires : texte admin si renseigné, sinon infos par défaut */}
+{activeTab === 'infos' && (
+   maillot.infos ? (
+    <p className="leading-relaxed whitespace-pre-line"
+       dangerouslySetInnerHTML={{
+           __html: maillot.infos
+               .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+               .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+               .replace(/\n/g, '<br/>')
+       }}
+    />
+    ) : (
+        <table className="w-full">
+            <tbody>
+                <tr className="border-b border-gray-200">
+                    <td className="py-2 font-medium text-gray-700 w-1/3">Type</td>
+                    <td className="py-2">Maillot à manches courtes</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                    <td className="py-2 font-medium text-gray-700 w-1/3">Composition</td>
+                    <td className="py-2">100% polyester</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                    <td className="py-2 font-medium text-gray-700 w-1/3">Poids</td>
+                    <td className="py-2">0.25 kg</td>
+                </tr>
+            </tbody>
+        </table>
+    )
+)}
     </div>
     
 </div>

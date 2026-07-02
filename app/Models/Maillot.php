@@ -25,6 +25,7 @@ class Maillot extends Model
         'sort_order',
         'featured_order',
         'new_order',
+        'infos',
     ];
 
     protected $casts = [
