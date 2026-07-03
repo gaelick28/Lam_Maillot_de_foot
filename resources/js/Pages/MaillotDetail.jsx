@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { imageUrl } from "@/utils/imageUrl";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router, Head } from "@inertiajs/react";
 import WishlistButton from "@/Components/WishlistButton";
 import MaillotCardCarousel from "@/Components/MaillotCardCarousel";
 
@@ -143,6 +143,7 @@ const handleTogglePatch = (patchId, patchNom, checked) => {
   return (
     <>
       <Header />
+      <Head title={`${maillot.nom} - Fou2Foot`} />
       <main className="bg-gradient-to-r from-purple-200 to-blue-100 flex-1 p-8">
         <div className="container mx-auto py-8 flex flex-col md:flex-row gap-8">
           
