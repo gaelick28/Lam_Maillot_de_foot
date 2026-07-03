@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/react"
+import { useForm , Head} from "@inertiajs/react"
 import { useState, useEffect } from "react"
 import Header from "@/Components/Header"
 import Footer from "@/Components/Footer"
@@ -122,6 +122,7 @@ const handleResetSubmit = (e) => {
   return (
     <>
       <Header />
+      <Head title="Connexion / Inscription - Fou2Foot" />
         <main className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-200 to-blue-200 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           {/* Tabs */}
