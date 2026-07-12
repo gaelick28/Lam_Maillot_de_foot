@@ -10,16 +10,16 @@ class ContactFormMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $contactData;
+    public array $contactData;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($contactData)
+    public function __construct(array $contactData)
     {
         $this->contactData = $contactData;
     }
-
+    
     /**
      * Build the message.
      */
@@ -32,6 +32,7 @@ class ContactFormMail extends Mailable
                 'name' => $this->contactData['name'],
                 'email' => $this->contactData['email'],
                 'subject' => $this->contactData['subject'],
+                'orderNumber' => $this->contactData['order_number'] ?? null,
                 'messageContent' => $this->contactData['message'],
                 'sentAt' => now()->format('d/m/Y à H:i'),
             ]);

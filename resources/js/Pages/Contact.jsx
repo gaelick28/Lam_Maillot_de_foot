@@ -9,6 +9,7 @@ export default function Contact({ flash, contactInfo }) {
     email: '',
     subject: 'Question sur un produit',
     message: '',
+    order_number: '',
   });
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -173,6 +174,7 @@ export default function Contact({ flash, contactInfo }) {
                     >
                       <option>Question sur un produit</option>
                       <option>Problème de commande</option>
+                      <option>Annulation de commande</option>
                       <option>Retour/Échange</option>
                       <option>Service client</option>
                       <option>Autre</option>
@@ -182,6 +184,21 @@ export default function Contact({ flash, contactInfo }) {
                     )}
                   </div>
                   
+                  {['Annulation de commande', 'Problème de commande', 'Retour/Échange'].includes(data.subject) && (
+                      <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                              N° de commande <span className="text-gray-400 text-xs">(optionnel)</span>
+                          </label>
+                          <input
+                              type="text"
+                              value={data.order_number}
+                              onChange={(e) => setData('order_number', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Ex: CMD-2026-00128"
+                          />
+                      </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Message <span className="text-red-500">*</span>

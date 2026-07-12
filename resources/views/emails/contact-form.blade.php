@@ -110,6 +110,9 @@
                 <p><strong>Nom :</strong> {{ $name }}</p>
                 <p><strong>Email :</strong> <a href="mailto:{{ $email }}" style="color: #2563eb;">{{ $email }}</a></p>
                 <p><strong>Sujet :</strong> <span class="badge">{{ $subject }}</span></p>
+                @if($orderNumber)
+                <p><strong>N° de commande :</strong> {{ $orderNumber }}</p>
+                @endif
             </div>
 
             <!-- Message -->
