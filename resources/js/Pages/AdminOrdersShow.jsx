@@ -7,6 +7,39 @@ import { useState } from "react"
 export default function AdminOrdersShow({ order, auth }) {
   const [newStatus, setNewStatus] = useState(order.order_status)
 
+  const [editingItem, setEditingItem] = useState(null)
+const [editData, setEditData] = useState({ size: '', nom: '', numero: '' })
+const [isUpdating, setIsUpdating] = useState(false)
+
+const canEdit = ['pending', 'processing'].includes(order.order_status)
+
+const openEditItem = (item) => {
+    setEditData({
+        size: item.size || '',
+        nom: item.nom || '',
+        numero: item.numero || '',
+    })
+    setEditingItem(item)
+}
+
+const handleUpdateItem = () => {
+    if (!editingItem) return
+    setIsUpdating(true)
+    router.put(`/admin/orders/${order.id}/items`, {
+        item_id: editingItem.id,
+        size: editData.size,
+        nom: editData.nom || null,
+        numero: editData.numero || null,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            setEditingItem(null)
+            setEditData({ size: '', nom: '', numero: '' })
+        },
+        onFinish: () => setIsUpdating(false),
+    })
+}
+
   const handleStatusChange = () => {
     if (confirm('Êtes-vous sûr de vouloir changer le statut de cette commande ?')) {
       router.post(`/admin/orders/${order.id}/status`, {
@@ -172,6 +205,9 @@ export default function AdminOrdersShow({ order, auth }) {
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Personnalisation</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix perso.</th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total ligne</th>
+          {canEdit && (
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modifier</th>
+          )}
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200">
@@ -232,19 +268,30 @@ export default function AdminOrdersShow({ order, auth }) {
               <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                 {totalLine.toFixed(2)} €
               </td>
+              {canEdit && (
+    <td className="px-6 py-4">
+        <button
+            onClick={() => openEditItem(item)}
+            className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+            title="Modifier taille / personnalisation"
+        >
+            ✏️
+        </button>
+    </td>
+)}
             </tr>
           );
         })}
         
         {/* Ligne de total */}
         <tr className="bg-gray-50 font-bold">
-          <td colSpan="5" className="px-6 py-4 text-right text-gray-900 text-base">
-            TOTAL COMMANDE :
-          </td>
-          <td className="px-6 py-4 text-lg text-gray-900">
-            {Number(order.total_amount || 0).toFixed(2)} €
-          </td>
-        </tr>
+    <td colSpan={canEdit ? "6" : "5"} className="px-6 py-4 text-right text-gray-900 text-base">
+        TOTAL COMMANDE :
+    </td>
+    <td className="px-6 py-4 text-lg text-gray-900">
+        {Number(order.total_amount || 0).toFixed(2)} €
+    </td>
+</tr>
       </tbody>
     </table>
   </div>
@@ -299,6 +346,116 @@ export default function AdminOrdersShow({ order, auth }) {
 </div>
         </div>
       </div>
+      {/* Modale modification article */}
+{editingItem && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Modifier l'article
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+                {editingItem.club_name} — {editingItem.maillot_name}
+            </p>
+
+            <div className="space-y-4">
+                {/* Taille */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Taille
+                    </label>
+                    <select
+                        value={editData.size}
+                        onChange={(e) => setEditData(prev => ({ ...prev, size: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        {['S', 'M', 'L', 'XL', 'XXL'].map(t => (
+                            <option key={t} value={t}>{t}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Nom (seulement si personnalisation existante) */}
+                {editingItem.nom !== null && editingItem.nom !== undefined && (
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Nom (flocage)
+                        </label>
+                        <input
+                            type="text"
+                            value={editData.nom}
+                            onChange={(e) => {
+                                const val = e.target.value.toUpperCase()
+                                if (/^[A-ZÀÂÇÉÈÊËÎÏÙÛÜŸÔŒÆÁÓÚÑÃÕÄÖØÅČŠŽĆĐŁ'\s-]*$/.test(val) && val.length <= 25) {
+                                    setEditData(prev => ({ ...prev, nom: val }))
+                                }
+                            }}
+                            maxLength={25}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="NOM EN MAJUSCULES"
+                        />
+                        <span className={`text-xs mt-1 ${editData.nom.length >= 23 ? 'text-red-500' : 'text-gray-400'}`}>
+                            {editData.nom.length}/25
+                        </span>
+                    </div>
+                )}
+
+                {/* Numéro (seulement si personnalisation existante) */}
+                {editingItem.numero !== null && editingItem.numero !== undefined && (
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Numéro (flocage)
+                        </label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            value={editData.numero}
+                            onChange={(e) => {
+                                const val = e.target.value
+                                const num = parseInt(val, 10)
+                                if (val === '' || (num >= 1 && num <= 99)) {
+                                    setEditData(prev => ({ ...prev, numero: val }))
+                                }
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="1-99"
+                        />
+                    </div>
+                )}
+
+                <p className="text-xs text-gray-500 italic">
+                    Seuls la taille et la correction du nom/numéro existants sont modifiables. Pour tout autre changement, procéder par annulation et recommande.
+                </p>
+            </div>
+
+            {/* Boutons */}
+            <div className="flex gap-3 pt-4">
+                <button
+                    type="button"
+                    onClick={() => setEditingItem(null)}
+                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                    Annuler
+                </button>
+                <button
+                    onClick={handleUpdateItem}
+                    disabled={isUpdating}
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                    {isUpdating ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Mise à jour...
+                        </span>
+                    ) : 'Enregistrer'}
+                </button>
+            </div>
+        </div>
+    </div>
+)}
     </AdminLayout>
   )
 }

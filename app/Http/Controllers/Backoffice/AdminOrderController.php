@@ -118,4 +118,44 @@ class AdminOrderController extends Controller
 
         return back()->with('success', "Commande #{$order->order_number} : statut changé de '{$statusLabels[$oldStatus]}' à '{$statusLabels[$newStatus]}'");
     }
+
+    public function updateItem(Order $order, Request $request)
+{
+    // Bloquer si commande expédiée ou livrée
+    if (in_array($order->order_status, ['shipped', 'delivered', 'cancelled'])) {
+        return back()->with('error', 'Impossible de modifier une commande expédiée, livrée ou annulée.');
+    }
+
+    $validated = $request->validate([
+        'item_id' => 'required|exists:order_items,id',
+        'size'    => 'nullable|in:S,M,L,XL,XXL',
+        'nom'     => 'nullable|string|max:25',
+        'numero'  => 'nullable|integer|min:1|max:99',
+    ]);
+
+    $item = $order->items()->findOrFail($validated['item_id']);
+
+    // Changement de taille → réajustement stocks
+    if (isset($validated['size']) && $validated['size'] !== $item->size) {
+        $maillot = $item->maillot;
+        $oldSize = strtolower('stock_' . $item->size);
+        $newSize = strtolower('stock_' . $validated['size']);
+
+        if ($maillot->$newSize < $item->quantity) {
+            return back()->with('error', "Stock insuffisant pour la taille {$validated['size']}.");
+        }
+
+        $maillot->increment($oldSize, $item->quantity);
+        $maillot->decrement($newSize, $item->quantity);
+        $item->size = $validated['size'];
+    }
+
+    if (array_key_exists('nom', $validated)) $item->nom = $validated['nom'] ?: null;
+    if (array_key_exists('numero', $validated)) $item->numero = $validated['numero'] ?: null;
+
+    $item->save();
+
+    return back()->with('success', 'Article mis à jour avec succès.');
+}
+
 }

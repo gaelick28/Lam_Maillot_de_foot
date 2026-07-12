@@ -147,6 +147,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/orders',                  [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}',          [AdminOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/status',  [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+    Route::put('/orders/{order}/items', [AdminOrderController::class, 'updateItem'])->name('orders.item.update');
 
     Route::get('/clubs',                   [AdminClubController::class, 'index'])->name('clubs.index');
     Route::post('/clubs',                  [AdminClubController::class, 'store'])->name('clubs.store');
