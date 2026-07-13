@@ -288,7 +288,7 @@ const handleUpdateItem = () => {
     <td colSpan={canEdit ? "6" : "5"} className="px-6 py-4 text-right text-gray-900 text-base">
         TOTAL COMMANDE :
     </td>
-    <td className="px-6 py-4 text-lg text-gray-900">
+    <td className="px-6 py-4 text-lg text-gray-900 whitespace-nowrap">
         {Number(order.total_amount || 0).toFixed(2)} €
     </td>
 </tr>
@@ -375,7 +375,7 @@ const handleUpdateItem = () => {
                 </div>
 
                 {/* Nom (seulement si personnalisation existante) */}
-                {editingItem.nom !== null && editingItem.nom !== undefined && (
+                {!!editingItem.nom && (
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Nom (flocage)
@@ -400,7 +400,7 @@ const handleUpdateItem = () => {
                 )}
 
                 {/* Numéro (seulement si personnalisation existante) */}
-                {editingItem.numero !== null && editingItem.numero !== undefined && (
+                {!!editingItem.numero &&  (
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Numéro (flocage)
