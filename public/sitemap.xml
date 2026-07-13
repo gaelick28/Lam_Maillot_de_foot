@@ -6,18 +6,78 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://fou2foot.eu/maillots</loc>
+        <loc>https://fou2foot.eu/ligue-1</loc>
         <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/premier-league</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/liga</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/serie-a</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/bundesliga</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/selections-nationales</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/autres-clubs</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/contact</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/legal</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/privacy</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/terms</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/delivery</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://fou2foot.eu/returns</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
     </url>
     <url>
         <loc>https://fou2foot.eu/login</loc>
         <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.4</priority>
     </url>
     <url>
         <loc>https://fou2foot.eu/register</loc>
         <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.4</priority>
     </url>
 </urlset>

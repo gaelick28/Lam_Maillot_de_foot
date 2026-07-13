@@ -168,6 +168,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/import-maillots', [AdminImportMaillotController::class, 'import'])->name('import-maillots.store');
 });
 
+// ─── Sitemap ──────────────────────────────────────────────────────────────────
+Route::get('/sitemap.xml', function () {
+    return response(file_get_contents(public_path('sitemap.xml')), 200)
+        ->header('Content-Type', 'application/xml');
+});
+
 // ─── Fallback ─────────────────────────────────────────────────────────────────
 Route::fallback([PageController::class, 'page404']);
 
