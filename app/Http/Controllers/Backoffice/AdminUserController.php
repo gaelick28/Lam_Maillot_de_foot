@@ -57,10 +57,21 @@ class AdminUserController extends Controller
         $address->country_name = CountryHelper::name($address->country);
     }
 
+    // Récupérer la liste des pays : si la méthode getCountries existe, l'utiliser,
+    // sinon construire une liste à partir des adresses de l'utilisateur.
+    if (method_exists(CountryHelper::class, 'getCountries')) {
+        $countries = CountryHelper::getCountries();
+    } else {
+        $countries = collect($user->addresses)->mapWithKeys(function ($address) {
+            return [$address->country => CountryHelper::name($address->country)];
+        })->toArray();
+    }
+
     return Inertia::render('AdminUsersShow', [
         'user' => $user,
         'ordersCount' => $user->orders()->count(),
         'totalSpent' => $user->orders()->sum('total_amount'),
+        'countries' => $countries,
         'auth' => [
             'user' => auth('web')->user()
         ]
@@ -109,4 +120,19 @@ class AdminUserController extends Controller
 
         return back()->with('success', "Le rôle de {$user->username} a été modifié avec succès.");
     }
+    
+    public function update(Request $request, User $user)
+    {
+        $validatedData = $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255', 
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        ]);
+
+        $user->update($validatedData);
+
+        return back()->with('success', 'Les informations de l\'utilisateur ont été mises à jour.');
+    }
+
 }

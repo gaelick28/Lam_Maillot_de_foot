@@ -143,6 +143,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users',                   [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}',            [AdminUserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}/toggle',    [AdminUserController::class, 'toggleActive'])->name('users.toggle');
+    Route::put('/users/{user}',            [AdminUserController::class, 'update'])->name('users.update');
 
     Route::get('/orders',                  [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}',          [AdminOrderController::class, 'show'])->name('orders.show');

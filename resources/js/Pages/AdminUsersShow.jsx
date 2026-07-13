@@ -4,6 +4,17 @@ import { useState } from "react"
 
 export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) {
    const [activeTab, setActiveTab] = useState('shipping')
+
+//initialisation de l'état form
+  const [form, setForm] = useState({
+    username: user.username,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+  })
+
+  const [errors, setErrors] = useState({})
+
   const toggleActive = () => {
     if (confirm('Êtes-vous sûr de vouloir changer le statut de ce compte ?')) {
       router.post(`/admin/users/${user.id}/toggle`, {}, {
@@ -11,6 +22,30 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
       })
     }
   }
+
+const updateUser = (e) => {
+  e.preventDefault()
+  router.put(`/admin/users/${user.id}`, form, {
+    preserveScroll: true,
+    onSuccess: () => {
+      setForm({...form})
+      setErrors({}) // Réinitialise les erreurs en cas de succès
+    },
+    onError: (errors) => {
+      setErrors(errors) // Stocke les erreurs renvoyées par le serveur
+    }
+  })
+}
+const handleChange = (e) => {
+    const key = e.target.id
+    const value = e.target.value
+    setForm(values => ({
+      ...values,
+      [key]: value,
+    }))
+  }
+
+const [showEditForm, setShowEditForm] = useState(false)
 
   return (
     <AdminLayout>
@@ -108,7 +143,7 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
             </div>
           </div>
 
-          {/* Statut du compte */}
+           {/* Statut du compte */}
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Compte</h3>
             <div className="space-y-3">
@@ -149,6 +184,94 @@ export default function AdminUsersShow({ user, ordersCount, totalSpent, auth }) 
             </div>
           </div>
         </div>
+
+         {/* Formulaire de modification */}
+<div className="bg-white rounded-lg shadow">
+  <div className="p-6 border-b flex justify-between items-center">
+    <h2 className="text-xl font-semibold text-gray-900">Modifier les informations</h2>
+    <button
+      onClick={() => setShowEditForm(!showEditForm)}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+        showEditForm
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          : 'bg-blue-600 text-white hover:bg-blue-700'
+      }`}
+    >
+      {showEditForm ? '✕ Fermer' : '✏️ Modifier'}
+    </button>
+  </div>
+
+  {showEditForm && (
+    <form onSubmit={updateUser} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+          Nom d'utilisateur
+        </label>
+        <input
+          type="text"
+          id="username"
+          value={form.username}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        />
+        {errors.username && <div className="text-sm text-red-500 mt-1">{errors.username}</div>}
+      </div>
+
+       <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          Adresse e-mail
+        </label>
+        <input
+          type="email"
+          id="email"
+          value={form.email}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        />
+        {errors.email && <div className="text-sm text-red-500 mt-1">{errors.email}</div>}
+      </div>
+
+      <div>
+        <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+          Prénom
+        </label>
+        <input
+          type="text"
+          id="first_name"
+          value={form.first_name}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        />
+        {errors.first_name && <div className="text-sm text-red-500 mt-1">{errors.first_name}</div>}
+      </div>
+
+      <div>
+        <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+          Nom
+        </label>
+        <input
+          type="text"
+          id="last_name"
+          value={form.last_name}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        />
+        {errors.last_name && <div className="text-sm text-red-500 mt-1">{errors.last_name}</div>}
+      </div>
+
+      <div className="md:col-span-2">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+    </form>
+  )}
+</div>
+
+         
 
 {/* Adresses avec onglets */}
 <div className="bg-white rounded-lg shadow">
