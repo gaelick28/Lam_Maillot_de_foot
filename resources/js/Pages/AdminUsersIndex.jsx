@@ -69,95 +69,95 @@ export default function UsersIndex({ users, filters, auth }) {
         </div>
 
         {/* Tableau des utilisateurs */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commandes</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Inscription</th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {users.data.length > 0 ? (
-                users.data.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-4 text-sm text-gray-900">#{user.id}</td>
-                    <td className="px-3 py-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{user.username}</p>
-                        {user.first_name && (
-                          <p className="text-xs text-gray-500">{user.first_name} {user.last_name}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-3 py-4 text-sm text-gray-600">{user.email}</td>
-                    <td className="px-3 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.role === 'admin' 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
-                      </span>
-                    </td>
-                    <td className="px-3 py-4 text-sm text-gray-900 font-semibold text-center">
-                      {user.orders_count}
-                    </td>
-                    <td className="px-3 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        user.is_active 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {user.is_active ? 'Actif' : 'Bloqué'}
-                      </span>
-                    </td>
-                    <td className="px-3 py-4 text-sm text-gray-600">
-                      {new Date(user.created_at).toLocaleDateString('fr-FR')}
-                    </td>
-                    <td className="px-3 py-4">
-                      <div className="flex gap-2">
-                        {/* Bouton Bloquer/Activer */}
-                        {user.role !== 'admin' && user.id !== auth.user.id && (
-                          <button
-                            onClick={() => toggleActive(user.id)}
-                            className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                              user.is_active
-                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {user.is_active ? 'Bloquer' : 'Activer'}
-                          </button>
-                        )}
-                        
-                        {/* Bouton Détails */}
-                        <Link
-                          href={`/admin/users/${user.id}`}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200 transition-colors"
-                        >
-                          Détails
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
-                    Aucun utilisateur trouvé
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+<div className="bg-white rounded-lg shadow overflow-hidden">
+  <div className="overflow-x-auto">
+    <table className="w-full">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">ID</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Email</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Rôle</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Commandes</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Inscription</th>
+          <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-200">
+        {users.data.length > 0 ? (
+          users.data.map((user) => (
+            <tr key={user.id} className="hover:bg-gray-50">
+              <td className="px-3 py-4 text-sm text-gray-900 hidden sm:table-cell">#{user.id}</td>
+              <td className="px-3 py-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                  {user.first_name && (
+                    <p className="text-xs text-gray-500">{user.first_name} {user.last_name}</p>
+                  )}
+                  <p className="text-xs text-gray-500 sm:hidden">{user.email}</p>
+                </div>
+              </td>
+              <td className="px-3 py-4 text-sm text-gray-600 hidden sm:table-cell">{user.email}</td>
+              <td className="px-3 py-4 hidden md:table-cell">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  user.role === 'admin'
+                    ? 'bg-purple-100 text-purple-800'
+                    : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
+                </span>
+              </td>
+              <td className="px-3 py-4 text-sm text-gray-900 font-semibold text-center hidden md:table-cell">
+                {user.orders_count}
+              </td>
+              <td className="px-3 py-4">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  user.is_active
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {user.is_active ? 'Actif' : 'Bloqué'}
+                </span>
+              </td>
+              <td className="px-3 py-4 text-sm text-gray-600 hidden lg:table-cell">
+                {new Date(user.created_at).toLocaleDateString('fr-FR')}
+              </td>
+              <td className="px-3 py-4">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  {user.role !== 'admin' && user.id !== auth.user.id && (
+                    <button
+                      onClick={() => toggleActive(user.id)}
+                      className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                        user.is_active
+                          ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      }`}
+                    >
+                      {user.is_active ? 'Bloquer' : 'Activer'}
+                    </button>
+                  )}
+                  <Link
+                    href={`/admin/users/${user.id}`}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200 transition-colors text-center"
+                  >
+                    Détails
+                  </Link>
+                </div>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+              Aucun utilisateur trouvé
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
 
         {/* Pagination */}
         {users.last_page > 1 && (
