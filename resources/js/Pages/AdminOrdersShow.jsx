@@ -4,7 +4,7 @@ import AdminLayout from "@/Layouts/AdminLayout"
 import { useState } from "react"
 
 
-export default function AdminOrdersShow({ order, auth }) {
+export default function AdminOrdersShow({ order, auth, maillots }) {
   const [newStatus, setNewStatus] = useState(order.order_status)
 
   const [editingItem, setEditingItem] = useState(null)
@@ -18,6 +18,7 @@ const openEditItem = (item) => {
         size: item.size || '',
         nom: item.nom || '',
         numero: item.numero || '',
+        maillot_id: String(item.maillot_id) || '',
     })
     setEditingItem(item)
 }
@@ -30,6 +31,7 @@ const handleUpdateItem = () => {
         size: editData.size,
         nom: editData.nom || null,
         numero: editData.numero || null,
+        maillot_id: editData.maillot_id ? parseInt(editData.maillot_id) : null,
     }, {
         preserveScroll: true,
         onSuccess: () => {
@@ -346,6 +348,7 @@ const handleUpdateItem = () => {
 </div>
         </div>
       </div>
+
       {/* Modale modification article */}
 {editingItem && (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -356,6 +359,30 @@ const handleUpdateItem = () => {
             <p className="text-sm text-gray-600 mb-4">
                 {editingItem.club_name} — {editingItem.maillot_name}
             </p>
+
+          {/* Maillot */}
+<div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Maillot
+    </label>
+    <select
+        value={editData.maillot_id}
+        onChange={(e) => setEditData(prev => ({ ...prev, maillot_id: e.target.value }))}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+        {maillots.map(m => (
+            <option key={m.id} value={m.id}>
+            {m.club?.name} — {m.nom} ({Number(m.price).toFixed(2)} €)
+            {String(m.id) == String(editingItem.maillot_id) ? ' ✓' : ''}
+            </option>
+        ))}
+    </select>
+    {editData.maillot_id != editingItem.maillot_id && (
+        <p className="text-xs text-orange-500 mt-1">
+            ⚠️ Changement de maillot — uniquement possible si même prix
+        </p>
+    )}
+</div>
 
             <div className="space-y-4">
                 {/* Taille */}

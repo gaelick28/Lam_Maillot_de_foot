@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backoffice;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Maillot;
 use Illuminate\Http\Request;
 use App\Helpers\CountryHelper;
 use App\Models\OrderActivity;
@@ -77,8 +78,15 @@ class AdminOrderController extends Controller
             $order->billingAddress->country_name = CountryHelper::name($order->billingAddress->country);
         }
 
+        $maillots = Maillot::select('id', 'nom', 'price', 'club_id')
+    ->with('club:id,name,sort_name')
+    ->get()
+    ->sortBy(fn($m) => \Illuminate\Support\Str::ascii(mb_strtolower(($m->club?->sort_name ?? $m->club?->name ?? '') . ' ' . $m->nom)))
+    ->values();
+    
         return Inertia::render('AdminOrdersShow', [
             'order' => $order,
+            'maillots' => $maillots,
             'auth'  => ['user' => auth('web')->user()],
         ]);
     }
@@ -131,13 +139,36 @@ class AdminOrderController extends Controller
         'size'    => 'nullable|in:S,M,L,XL,XXL',
         'nom'     => 'nullable|string|max:25',
         'numero'  => 'nullable|integer|min:1|max:99',
+        'maillot_id' => 'nullable|exists:maillots,id',
     ]);
 
     $item = $order->items()->findOrFail($validated['item_id']);
 
+    // Changement de maillot
+        if (!empty($validated['maillot_id']) && $validated['maillot_id'] != $item->maillot_id) {
+            $newMaillot = Maillot::findOrFail($validated['maillot_id']);
+            $oldMaillot = $item->maillot;
+
+            if ((float) $newMaillot->price !== (float) $oldMaillot->price) {
+                return back()->with('error', "Changement impossible : prix différent ({$oldMaillot->price} € → {$newMaillot->price} €). Procéder par annulation et nouvelle commande.");
+            }
+
+            $sizeCol = strtolower('stock_' . $item->size);
+            if ($newMaillot->$sizeCol < $item->quantity) {
+                return back()->with('error', "Stock insuffisant pour ce maillot en taille {$item->size}.");
+            }
+
+            $oldMaillot->increment($sizeCol, $item->quantity);
+            $newMaillot->decrement($sizeCol, $item->quantity);
+            
+            $item->maillot_id   = $newMaillot->id;
+            $item->maillot_name = $newMaillot->nom;
+            $item->club_name    = $newMaillot->club->name;
+        }
+
     // Changement de taille → réajustement stocks
     if (isset($validated['size']) && $validated['size'] !== $item->size) {
-        $maillot = $item->maillot;
+        $maillot = $item->fresh()->maillot;
         $oldSize = strtolower('stock_' . $item->size);
         $newSize = strtolower('stock_' . $validated['size']);
 
