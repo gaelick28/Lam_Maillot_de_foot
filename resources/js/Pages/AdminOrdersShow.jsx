@@ -378,10 +378,18 @@ const handleUpdateItem = () => {
         ))}
     </select>
     {editData.maillot_id != editingItem.maillot_id && (
+    <>
         <p className="text-xs text-orange-500 mt-1">
             ⚠️ Changement de maillot — uniquement possible si même prix
         </p>
-    )}
+        {editingItem.patches?.length > 0 && (
+            <p className="text-xs text-red-500 mt-1">
+                ⚠️ Cet article contient des patches ({editingItem.patch_names?.join(', ')}). 
+                Vérifiez leur compatibilité avec le nouveau maillot.
+            </p>
+        )}
+    </>
+)}
 </div>
 
             <div className="space-y-4">
@@ -451,7 +459,7 @@ const handleUpdateItem = () => {
                 )}
 
                 <p className="text-xs text-gray-500 italic">
-                    Seuls la taille et la correction du nom/numéro existants sont modifiables. Pour tout autre changement, procéder par annulation et recommande.
+                    Seules la taille et la correction du nom/numéro existants sont modifiables. Pour tout autre changement, procéder par annulation et recommande.
                 </p>
             </div>
 
