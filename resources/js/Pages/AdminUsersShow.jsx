@@ -59,35 +59,22 @@ const [showEditForm, setShowEditForm] = useState(false)
           <span className="text-gray-900 font-medium">{user.username}</span>
         </div>
 
-        {/* En-tête avec actions */}
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{user.username}</h1>
-            <p className="text-gray-600 mt-1">{user.email}</p>
-          </div>
-          
-          <div className="flex gap-3">
-            <Link
-              href="/admin/users"
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-            >
-              ← Retour
-            </Link>
-            
-            {user.role !== 'admin' && user.id !== auth.user.id && (
-              <button
-                onClick={toggleActive}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  user.is_active
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                }`}
-              >
-                {user.is_active ? '🔒 Bloquer ce compte' : '✅ Activer ce compte'}
-              </button>
-            )}
-          </div>
-        </div>
+       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+  <div>
+    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{user.username}</h1>
+    <p className="text-gray-600 mt-1">{user.email}</p>
+  </div>
+  <div className="flex flex-wrap gap-2">
+    <Link href="/admin/users" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm">
+      ← Retour
+    </Link>
+    {user.role !== 'admin' && user.id !== auth.user.id && (
+      <button onClick={toggleActive} className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${user.is_active ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-green-600 text-white hover:bg-green-700'}`}>
+        {user.is_active ? '🔒 Bloquer' : '✅ Activer'}
+      </button>
+    )}
+  </div>
+</div>
 
         {/* Cartes d'informations */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -388,7 +375,7 @@ const [showEditForm, setShowEditForm] = useState(false)
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">N° Commande</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Date</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Montant</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -400,7 +387,7 @@ const [showEditForm, setShowEditForm] = useState(false)
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">
                         {order.order_number}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-gray-600 hidden sm:table-cell">
                         {new Date(order.created_at).toLocaleDateString('fr-FR')}
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
