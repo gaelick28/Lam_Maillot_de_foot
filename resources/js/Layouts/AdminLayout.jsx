@@ -3,8 +3,8 @@ import { useState, useEffect } from "react"
 
 export default function AdminLayout({ children }) {
   const { auth, flash } = usePage().props
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [flashMessage, setFlashMessage] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (flash?.success || flash?.error) {
@@ -20,9 +20,20 @@ export default function AdminLayout({ children }) {
   }, [flash])
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex  overflow-x-hidden">
       {/* Sidebar */}
-     <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-gray-800 text-white transition-all duration-300 flex flex-col h-screen`}>
+     {/* Overlay mobile */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`
+          bg-gray-800 text-white transition-all duration-300 flex flex-col h-screen sticky top-0
+          fixed md:static z-50 md:z-auto
+          ${sidebarOpen ? 'w-64 left-0' : '-left-64 md:left-0 md:w-20'}
+          md:flex
+        `}>
         {/* Header Sidebar */}
         <div className="p-4 flex items-center justify-between border-b border-gray-700">
           {sidebarOpen && (
@@ -138,19 +149,28 @@ export default function AdminLayout({ children }) {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="bg-white shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
-            <h2 className="text-2xl font-semibold text-gray-800">Administration</h2>
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="md:hidden p-2 rounded hover:bg-gray-200"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <h2 className="text-lg sm:text-2xl font-semibold text-gray-800">Administration</h2>
+            </div>
             
-            {/* User Info */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-xs sm:text-sm text-gray-600 hidden sm:inline">
                 Connecté en tant que <strong>{auth.user.username}</strong>
               </span>
               <Link
                 href="/logout"
                 method="post"
                 as="button"
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-xs sm:text-sm"
               >
                 Déconnexion
               </Link>
