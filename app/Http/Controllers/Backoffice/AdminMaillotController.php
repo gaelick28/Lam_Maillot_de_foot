@@ -151,7 +151,9 @@ private function deleteCloudinaryImage(string $url): void
 
         return Inertia::render('AdminMaillotsIndex', [
             'maillots' => $maillots,
-            'clubs'    => Club::orderBy('name', 'asc')->get(['id', 'name']),
+            'clubs' => Club::orderBy('name', 'asc')->get(['id', 'name', 'sort_name'])
+                    ->sortBy(fn($c) => \Illuminate\Support\Str::ascii(mb_strtolower($c->sort_name ?? $c->name)))
+                    ->values(),
             'filters'  => ['search' => $search, 'club' => $clubFilter, 'stock' => $stockFilter],
             'auth'     => ['user' => auth('web')->user()],
         ]);
