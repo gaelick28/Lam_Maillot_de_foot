@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 export default function AdminLayout({ children }) {
   const { auth, flash } = usePage().props
   const [flashMessage, setFlashMessage] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768)
 
   useEffect(() => {
     if (flash?.success || flash?.error) {
