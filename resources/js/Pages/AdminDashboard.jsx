@@ -9,18 +9,18 @@ export default function AdminDashboard({ stats }) {
       <div className="space-y-6">
         {/* Titre */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tableau de bord</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Tableau de bord</h1>
           <p className="text-gray-600 mt-1">Vue d'ensemble de votre boutique</p>
         </div>
 
         {/* Cartes de statistiques principales */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Total Utilisateurs */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Utilisateurs</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalUsers}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalUsers}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,11 +34,11 @@ export default function AdminDashboard({ stats }) {
           </div>
 
           {/* Total Commandes */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Commandes</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalOrders}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalOrders}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,11 +52,11 @@ export default function AdminDashboard({ stats }) {
           </div>
 
           {/* Revenus Total */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Revenus Totaux</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {Number(stats.totalRevenue).toLocaleString('fr-FR')}€
                 </p>
               </div>
@@ -73,11 +73,11 @@ export default function AdminDashboard({ stats }) {
           </div>
 
           {/* Total Produits */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Produits</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
                 <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,14 +93,14 @@ export default function AdminDashboard({ stats }) {
 
         {/* ✅ NOUVELLE SECTION : Statistiques de stock */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">État des stocks</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">État des stocks</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Stock normal */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">En stock</p>
-                  <p className="text-3xl font-bold text-green-600">{stats.stockStats.inStock}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.stockStats.inStock}</p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-full">
                   <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,11 +112,11 @@ export default function AdminDashboard({ stats }) {
             </div>
 
             {/* Stock faible */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Stock faible</p>
-                  <p className="text-3xl font-bold text-orange-600">{stats.stockStats.lowStock}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-orange-600">{stats.stockStats.lowStock}</p>
                 </div>
                 <div className="p-3 bg-orange-100 rounded-full">
                   <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,11 +128,11 @@ export default function AdminDashboard({ stats }) {
             </div>
 
             {/* Rupture de stock */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Rupture</p>
-                  <p className="text-3xl font-bold text-red-600">{stats.stockStats.outOfStock}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-red-600">{stats.stockStats.outOfStock}</p>
                 </div>
                 <div className="p-3 bg-red-100 rounded-full">
                   <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,7 +144,7 @@ export default function AdminDashboard({ stats }) {
             </div>
 
             {/* Valeur du stock */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Valeur stock</p>
@@ -168,10 +168,10 @@ export default function AdminDashboard({ stats }) {
         {/* Commandes récentes */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold text-gray-900">Dernières commandes</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Dernières commandes</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">N° Commande</th>
@@ -225,7 +225,7 @@ export default function AdminDashboard({ stats }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link
             href="/admin/users"
-            className="bg-orange-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-orange-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les utilisateurs</h3>
             <p className="text-sm text-gray-600">Actions et informations comptes utilisateurs</p>
@@ -233,21 +233,21 @@ export default function AdminDashboard({ stats }) {
           
           <Link
             href="/admin/orders"
-            className="bg-green-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-green-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les commandes</h3>
             <p className="text-sm text-gray-600">Voir et traiter les commandes en attente</p>
           </Link>
           <Link
             href="/admin/clubs"
-           className="bg-blue-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+           className="bg-blue-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les clubs</h3>
             <p className="text-sm text-gray-600">Ajouter ou modifier des clubs</p>
           </Link>
           <Link
             href="/admin/maillots" 
-            className="bg-purple-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"     
+            className="bg-purple-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"     
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gérer les maillots</h3>
             <p className="text-sm text-gray-600">Modifier les produits et les stocks</p>
@@ -255,7 +255,7 @@ export default function AdminDashboard({ stats }) {
           
           <Link
             href="/admin/import-maillots" 
-            className="bg-pink-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"     
+            className="bg-pink-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"     
           >
             <h3 className="font-semibold text-gray-900 mb-2">Import maillots</h3>
             <p className="text-sm text-gray-600">Importer plusieurs maillots à partir des images</p>
@@ -263,7 +263,7 @@ export default function AdminDashboard({ stats }) {
 
           <Link
           href="/admin/statistics"
-          className="bg-red-200 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+          className="bg-red-200 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"
         >
           <h3 className="font-semibold text-gray-900 mb-2">📊 Statistiques avancées</h3>
           <p className="text-sm text-gray-600">Graphiques et analyses détaillées</p>
@@ -271,16 +271,11 @@ export default function AdminDashboard({ stats }) {
 
         <Link
             href="/admin/profile"
-            className="bg-yellow-100 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
+            className="bg-yellow-100 rounded-lg shadow p-4 sm:p-6 hover:shadow-lg transition-shadow"
           >
             <h3 className="font-semibold text-gray-900 mb-2">Gestion du profil Administrateur</h3>
             <p className="text-sm text-gray-600">Modifier les informations du compte</p>
           </Link>
-
-
-
-
-
         </div>
       </div>
     </AdminLayout>
