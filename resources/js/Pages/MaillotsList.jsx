@@ -21,13 +21,15 @@ export default function MaillotsList({ club, maillots }) {
             <div className="flex items-center gap-4 mb-2">
               {/* // Version avec fond blanc// */}
               {club.logo && (
-  <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg">
-    <img
-      src={imageUrl(club.logo)}
-      alt={`Logo ${club.name}`}
-      className="w-full h-full object-contain"
-    />
-  </div>
+  <a href={`/clubs/${club.slug}/maillots`}>
+    <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+      <img
+        src={imageUrl(club.logo)}
+        alt={`Logo ${club.name}`}
+        className="w-full h-full object-contain"
+      />
+    </div>
+  </a>
 )}
        {/* // ou autre version en transparence avec le mix-blend-multiply// */}
               {/* {club.logo && (
