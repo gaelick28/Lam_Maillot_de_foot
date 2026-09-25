@@ -70,19 +70,19 @@ const handleUpdateItem = () => {
     <AdminLayout>
       <Head title={`Commande ${order.order_number}`} />
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Link href="/admin/orders" className="hover:text-blue-600">Commandes</Link>
+        <div className="flex items-center gap-2 text-sm text-gray-600 overflow-hidden">
+          <Link href="/admin/orders" className="hover:text-blue-600 truncate">Commandes</Link>
           <span>›</span>
-          <span className="text-gray-900 font-medium">{order.order_number}</span>
+          <span className="text-gray-900 font-medium truncate">{order.order_number}</span>
         </div>
 
         {/* En-tête */}
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Commande {order.order_number}</h1>
-            <p className="text-gray-600 mt-1">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 truncate">Commande {order.order_number}</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">
               Passée le {new Date(order.created_at).toLocaleDateString('fr-FR', {
                 day: 'numeric',
                 month: 'long',
@@ -95,16 +95,16 @@ const handleUpdateItem = () => {
           
           <Link
             href="/admin/orders"
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+           className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base whitespace-nowrap"
           >
             ← Retour
           </Link>
         </div>
 
         {/* Cartes d'informations principales */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Statut et changement */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Statut de la commande</h3>
             <div className="space-y-4">
               <div>
@@ -140,7 +140,7 @@ const handleUpdateItem = () => {
           </div>
 
           {/* Client */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Client</h3>
             <div className="space-y-2 text-sm">
               <div>
@@ -161,7 +161,7 @@ const handleUpdateItem = () => {
           </div>
 
           {/* Paiement */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Paiement</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
@@ -194,21 +194,21 @@ const handleUpdateItem = () => {
 
         {/* Articles commandés */}
 <div className="bg-white rounded-lg shadow">
-  <div className="p-6 border-b">
-    <h2 className="text-xl font-semibold text-gray-900">Articles commandés</h2>
-  </div>
+  <div className="p-4 sm:p-6 border-b">
+  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Articles commandés</h2>
+</div>
   <div className="overflow-x-auto">
-    <table className="w-full">
+    <table className="w-full min-w-[900px]">
       <thead className="bg-gray-50">
         <tr>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produit</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix unitaire</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantité</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Personnalisation</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix perso.</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total ligne</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Produit</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Prix unitaire</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Quantité</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Personnalisation</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Prix perso.</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Total ligne</th>
           {canEdit && (
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modifier</th>
+          <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Modifier</th>
           )}
         </tr>
       </thead>
@@ -221,33 +221,33 @@ const handleUpdateItem = () => {
 
           return (
             <tr key={item.id}>
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-4">
+              <td className="px-4 sm:px-6 py-3 sm:py-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   {item.maillot?.image && (
                     <img 
                       src={imageUrl(item.maillot.image)} 
                       alt={item.maillot_name || 'Produit'}
-                      className="w-16 h-16 object-cover rounded"
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded shrink-0"
                     />
                   )}
-                  <div>
+                  <div className="min-w-0">
                     {item.club_name && (
-  <p className="font-medium text-gray-900">{item.club_name}</p>
+  <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{item.club_name}</p>
 )}
-<p className="text-sm text-gray-600">{item.maillot_name || 'N/A'}</p>
+<p className="text-sm text-gray-600 truncate">{item.maillot_name || 'N/A'}</p>
                     {item.size && (
                       <p className="text-xs text-gray-500">Taille: {item.size}</p>
                     )}
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 text-sm text-gray-900">
+              <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-900 whitespace-nowrap">
                 {unitPrice.toFixed(2)} €
               </td>
-              <td className="px-6 py-4 text-sm text-gray-900 text-center font-medium">
+              <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-900 text-center font-medium whitespace-nowrap">
                 {quantity}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-600">
+              <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-600">
     {item.nom || item.numero || (item.patches?.length > 0) ? (
         <div className="space-y-1">
             {item.nom && (
@@ -264,21 +264,22 @@ const handleUpdateItem = () => {
         <span className="text-gray-400 italic">Aucune</span>
     )}
 </td>
-              <td className="px-6 py-4 text-sm text-gray-900">
+              <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-900 whitespace-nowrap">
                 {persoPrice > 0 ? `${persoPrice.toFixed(2)} €` : '-'}
               </td>
-              <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+              <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {totalLine.toFixed(2)} €
               </td>
               {canEdit && (
-    <td className="px-6 py-4">
+    <td className="px-4 sm:px-6 py-3 sm:py-4">
         <button
-            onClick={() => openEditItem(item)}
-            className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-            title="Modifier taille / personnalisation"
-        >
-            ✏️
-        </button>
+                            onClick={() => openEditItem(item)}
+                            className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                            title="Modifier taille / personnalisation"
+                          >
+                            <span className="hidden sm:inline">✏️</span>
+                            <span className="sm:hidden text-xs font-medium">Modif</span>
+                          </button>
     </td>
 )}
             </tr>
@@ -287,12 +288,12 @@ const handleUpdateItem = () => {
         
         {/* Ligne de total */}
         <tr className="bg-gray-50 font-bold">
-    <td colSpan={canEdit ? "6" : "5"} className="px-6 py-4 text-right text-gray-900 text-base">
-        TOTAL COMMANDE :
-    </td>
-    <td className="px-6 py-4 text-lg text-gray-900 whitespace-nowrap">
-        {Number(order.total_amount || 0).toFixed(2)} €
-    </td>
+  <td colSpan={canEdit ? "6" : "5"} className="px-4 sm:px-6 py-3 sm:py-4 text-right text-gray-900 text-sm sm:text-base">
+    TOTAL :
+  </td>
+  <td className="px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg text-gray-900 whitespace-nowrap">
+    {Number(order.total_amount || 0).toFixed(2)} €
+  </td>
 </tr>
       </tbody>
     </table>
@@ -300,9 +301,9 @@ const handleUpdateItem = () => {
 </div>
 
         {/* Adresses */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
        {/* Adresse de livraison */}
-<div className="bg-white rounded-lg shadow p-6">
+<div className="bg-white rounded-lg shadow p-4 sm:p-6">
   <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse de livraison</h3>
   {order.shipping_address ? (
     <div className="text-sm text-gray-600 space-y-1">
@@ -325,7 +326,7 @@ const handleUpdateItem = () => {
 </div>
 
 {/* Adresse de facturation */}
-<div className="bg-white rounded-lg shadow p-6">
+<div className="bg-white rounded-lg shadow p-4 sm:p-6">
   <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse de facturation</h3>
   {order.billing_address ? (
     <div className="text-sm text-gray-600 space-y-1">
@@ -351,13 +352,13 @@ const handleUpdateItem = () => {
 
       {/* Modale modification article */}
 {editingItem && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Modifier l'article
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+  <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
+              Modifier l'article
             </h2>
-            <p className="text-sm text-gray-600 mb-4">
-                {editingItem.club_name} — {editingItem.maillot_name}
+            <p className="text-sm text-gray-600 mb-4 truncate">
+              {editingItem.club_name} — {editingItem.maillot_name}
             </p>
 
           {/* Maillot */}
@@ -464,18 +465,18 @@ const handleUpdateItem = () => {
             </div>
 
             {/* Boutons */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                     type="button"
                     onClick={() => setEditingItem(null)}
-                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                    className="w-full sm:flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
                 >
                     Annuler
                 </button>
                 <button
                     onClick={handleUpdateItem}
                     disabled={isUpdating}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    className="w-full sm:flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm sm:text-base"
                 >
                     {isUpdating ? (
                         <span className="flex items-center justify-center gap-2">
