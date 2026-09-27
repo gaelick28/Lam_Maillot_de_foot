@@ -52,13 +52,6 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const formData = new FormData()
-    formData.append('name', data.name)
-    formData.append('country', data.country)
-    if (data.logo) {
-      formData.append('logo', data.logo)
-    }
-
     if (editingClub) {
       // Édition
       router.post(`/admin/clubs/${editingClub.id}`, {
@@ -93,52 +86,104 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
     <AdminLayout>
       <Head title="Gestion des clubs" />
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* En-tête */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gestion des clubs</h1>
-            <p className="text-gray-600 mt-1">{clubs.total} club(s) au total</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestion des clubs</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">{clubs.total} club(s) au total</p>
           </div>
 
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center"
           >
             ➕ Créer un club
           </button>
         </div>
 
         {/* Recherche */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <form onSubmit={handleSearch} className="flex gap-4">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un club..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
+            <div className="flex gap-2">
             <button
               type="submit"
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
             >
               🔍 Rechercher
             </button>
+           
             {search && (
               <Link
                 href="/admin/clubs"
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-center text-sm"
               >
                 Réinitialiser
               </Link>
-            )}
+            )} 
+            </div>
           </form>
         </div>
 
-        {/* Tableau des clubs */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
+        {/* Cartes sur Mobile */}
+        <div className="md:hidden space-y-4">
+          {clubs.data.length === 0 ? (
+             <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+               Aucun club trouvé
+             </div>
+          ) : (
+            clubs.data.map((club) => (
+              <div key={club.id} className="bg-white rounded-lg shadow p-4 border border-gray-100">
+                <div className="flex items-start gap-4 mb-4">
+                  {club.logo ? (
+                    <img src={imageUrl(club.logo)} alt={club.name} className="w-14 h-14 object-contain rounded shrink-0" />
+                  ) : (
+                    <div className="w-14 h-14 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-2xl shrink-0">🏆</div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 truncate">{club.name}</h3>
+                    {club.sort_name && <p className="text-sm text-gray-500 italic truncate">{club.sort_name}</p>}
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">
+                      {club.category_name || club.category}
+                    </span>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="inline-flex items-center justify-center px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full font-medium text-sm">
+                      {club.maillots_count}
+                    </span>
+                    <p className="text-[10px] text-gray-500 mt-1 uppercase">maillots</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 border-t pt-3">
+                  <button
+                    onClick={() => openEditModal(club)}
+                    className="flex-1 px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors text-sm font-medium"
+                  >
+                    ✏️ Modifier
+                  </button>
+                  <button
+                    onClick={() => handleDelete(club)}
+                    className="flex-1 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm font-medium"
+                  >
+                    🗑️ Supprimer
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Tableau des clubs sur Desktop */}
+         <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Logo</th>
@@ -152,7 +197,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
             <tbody className="divide-y divide-gray-200">
               {clubs.data.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                     Aucun club trouvé
                   </td>
                 </tr>
@@ -209,20 +254,21 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
               )}
             </tbody>
           </table>
+          </div>
 
           {/* Pagination */}
           {clubs.last_page > 1 && (
-            <div className="px-6 py-4 bg-gray-50 border-t flex justify-between items-center">
-              <div className="text-sm text-gray-600">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t flex flex-col sm:flex-row justify-between items-center gap-3">
+              <div className="text-xs sm:text-sm text-gray-600">
                 Page {clubs.current_page} sur {clubs.last_page}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-1 sm:gap-2">
                 {clubs.links.map((link, index) => (
                   <Link
                     key={index}
                     href={link.url || '#'}
                     disabled={!link.url}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-2.5 sm:px-3 py-1 rounded text-xs sm:text-sm ${
                       link.active
                         ? 'bg-blue-600 text-white'
                         : link.url
@@ -236,13 +282,40 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
             </div>
           )}
         </div>
-      </div>
+      
+      {/* Pagination mobile */}
+          {clubs.last_page > 1 && (
+            <div className="md:hidden bg-white rounded-lg shadow px-4 py-4 flex flex-col items-center gap-3">
+              <div className="text-xs sm:text-sm text-gray-600">
+                Page {clubs.current_page} sur {clubs.last_page}
+              </div>
+              <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
+                {clubs.links.map((link, index) => (
+                  <Link
+                    key={index}
+                    href={link.url || '#'}
+                    disabled={!link.url}
+                    className={`px-2.5 sm:px-3 py-1 rounded text-xs sm:text-sm ${
+                      link.active
+                        ? 'bg-blue-600 text-white'
+                        : link.url
+                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: link.label }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+</div>
 
       {/* Modal Créer/Éditer */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50">
+          <div className="bg-white w-full sm:max-w-md sm:rounded-lg rounded-t-2xl p-4 sm:p-6 max-h-[92vh] overflow-y-auto">
+            <div className="sm:hidden mx-auto mb-3 h-1 w-10 rounded-full bg-gray-300" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
               {editingClub ? 'Modifier le club' : 'Créer un club'}
             </h2>
 
@@ -256,7 +329,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                   type="text"
                   value={data.name}
                   onChange={(e) => setData('name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   required
                 />
                 {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
@@ -271,7 +344,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                   value={data.sort_name}
                   onChange={(e) => setData('sort_name', e.target.value)}
                   placeholder="Ex: lyon, madrid, milan..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                    />
                  </div>
 
@@ -304,7 +377,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
                   type="file"
                   accept="image/*"
                   onChange={(e) => setData('logo', e.target.files[0])}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
                 {errors.logo && <div className="text-red-500 text-sm mt-1">{errors.logo}</div>}
                 
@@ -329,7 +402,7 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
         type="file"
         accept="image/*"
         onChange={(e) => setData('image', e.target.files[0])}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
     />
     {editingClub && editingClub.image && (
         <div className="mt-2">
@@ -368,51 +441,51 @@ export default function AdminClubsIndex({ clubs, filters, categories, patches, a
             min="1"
             value={data.home_order}
             onChange={(e) => setData('home_order', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             placeholder="Ex: 1, 2, 3..."
         />
     </div>
 )}
 
-{/* Patches disponibles */}
-<div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">
-        Patches disponibles
-    </label>
-    <div className="space-y-2">
-        {patches.map(patch => (
-            <label key={patch.id} className="flex items-center gap-2">
-                <input
-                    type="checkbox"
-                    checked={data.patch_ids.includes(patch.id)}
-                    onChange={(e) => {
-                        if (e.target.checked) {
-                            setData('patch_ids', [...data.patch_ids, patch.id])
-                        } else {
-                            setData('patch_ids', data.patch_ids.filter(id => id !== patch.id))
-                        }
-                    }}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                />
-                <span className="text-sm text-gray-700">{patch.nom} (+{patch.prix} €)</span>
-            </label>
-        ))}
-    </div>
-</div>
+              {/* Patches disponibles */}
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Patches disponibles
+                  </label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto border p-2 rounded-lg bg-gray-50">
+                      {patches.map(patch => (
+                          <label key={patch.id} className="flex items-center gap-2">
+                              <input
+                                  type="checkbox"
+                                  checked={data.patch_ids.includes(patch.id)}
+                                  onChange={(e) => {
+                                      if (e.target.checked) {
+                                          setData('patch_ids', [...data.patch_ids, patch.id])
+                                      } else {
+                                          setData('patch_ids', data.patch_ids.filter(id => id !== patch.id))
+                                      }
+                                  }}
+                                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                              />
+                              <span className="text-sm text-gray-700">{patch.nom} (+{patch.prix} €)</span>
+                          </label>
+                      ))}
+                  </div>
+              </div>
 
               {/* Boutons */}
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm"
                 >
                   {processing ? 'Enregistrement...' : (editingClub ? 'Modifier' : 'Créer')}
                 </button>
