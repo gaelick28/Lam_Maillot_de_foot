@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Password as PasswordBroker;
 
 
 class AuthController extends Controller
@@ -137,22 +138,55 @@ class AuthController extends Controller
     }
     
 
-    //  * Mot de passe oublié
-    public function forgotPassword(Request $request) {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        //  * Mot de passe oublié : envoi d'un lien de réinitialisation
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
 
-        $user = User::where('email', $request->email)->first();
+        PasswordBroker::sendResetLink($request->only('email'));
 
-        $newPass = Str::random(10);
-        $user->password = Hash::make($newPass);
-        $user->save();
+        // Même réponse que l'email existe ou non (anti-énumération)
+        return back()->with('success', "Si un compte existe pour cet email, un lien de réinitialisation vient d'être envoyé.");
+    }
 
-        // Envoi mail basique
-        Mail::raw("Votre nouveau mot de passe est : $newPass", function($message) use ($user) {
-            $message->to($user->email)
-                    ->subject("Votre nouveau mot de passe");
-        });
-     
-        return back()->with('success', "Un nouveau mot de passe a été envoyé à votre email.");
+    //  * Affiche le formulaire de nouveau mot de passe
+    public function showResetForm(Request $request, string $token)
+    {
+        return Inertia::render('ResetPassword', [
+            'token' => $token,
+            'email' => $request->query('email', ''),
+        ]);
+    }
+
+    //  * Enregistre le nouveau mot de passe
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+            ],
+        ]);
+
+        $status = PasswordBroker::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password'       => Hash::make($password),
+                    'remember_token' => Str::random(60), // invalide les "se souvenir de moi"
+                ])->save();
+            }
+        );
+
+        if ($status !== PasswordBroker::PASSWORD_RESET) {
+            throw ValidationException::withMessages([
+                'email' => 'Ce lien est invalide ou a expiré. Faites une nouvelle demande.',
+            ]);
+        }
+
+        return redirect()->route('login.page')->with('success', 'Mot de passe modifié.');
     }
 }

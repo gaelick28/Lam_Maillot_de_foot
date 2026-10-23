@@ -101,7 +101,7 @@ const handleResetSubmit = (e) => {
       onSuccess: () => {
         setShowReset(false)
         resetForm()
-        alert("Un nouveau mot de passe a été envoyé à votre email.")
+        alert("Si un compte existe pour cet email, un lien de réinitialisation vient d'être envoyé.")
       }
     })
   }
@@ -156,7 +156,7 @@ const handleResetSubmit = (e) => {
             <div className="space-y-6 bg-white p-6 rounded shadow">
               <h2 className="text-xl font-bold text-center text-gray-900">Réinitialiser le mot de passe</h2>
               <p className="text-sm text-gray-600 text-center">
-                Entrez votre email pour recevoir un nouveau mot de passe
+                        Entrez votre email pour recevoir un lien de réinitialisation
               </p>
               
               <form onSubmit={handleResetSubmit} className="space-y-4">

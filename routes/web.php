@@ -58,6 +58,11 @@ Route::post('/logout', function () {
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->middleware('throttle:5,1')
     ->name('forgotPassword');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])
+    ->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->middleware('throttle:5,1')
+    ->name('password.update');
 
 // ─── Recherche ───────────────────────────────────────────────────────────────
 Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
