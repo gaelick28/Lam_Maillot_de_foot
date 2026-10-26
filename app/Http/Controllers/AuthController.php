@@ -134,7 +134,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Déconnexion réussie');
+               return redirect()->route('home')->with('success', 'Déconnexion réussie');
     }
     
 
